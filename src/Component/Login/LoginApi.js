@@ -1,0 +1,4 @@
+let access_token = 'c2Lj1CwLhw3OrJ1_G5NpLtJAYiIa6ibL0x60avxaYBP9QIZx9rvJ2hOcspesDRv9o2g5pA75wmjNV5cIwhDXyLtz5-UEdgntgEOdNRM92ASvE7P_qQ8FnyGiIR_PyV14zwI0jf4GOdNI2oA3zDgSlzxevLzwSb5TFvDzuG3fqxK1pzQnuYnqiUApnJ8PVZj3BwWQA9vib_OAK7AQceoiKZk1a5KiyEqCnXLfRkWICX4';
+
+export let BearerAccessToken = 'Bearer ' + access_token;
+export let lmsURL = 'https://lms1210.azurewebsites.net/';
