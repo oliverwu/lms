@@ -134,27 +134,35 @@ class Layout extends Component {
             });
             if (URL.match('dashboard')) {
                 this.setState({
-                    selected: 'Dashboard',
+                    selected: 'DASHBOARD',
                 })
             } else if (URL.match('courses/create')) {
                 this.setState({
-                    selected: 'New course',
+                    selected: 'NEW COURSE',
                 })
             } else if (URL.match('courses/(\\d)')) {
                 this.setState({
-                    selected: 'Course details',
+                    selected: 'COURSE DETAILS',
+                })
+            } else if (URL.match('students/create')) {
+                this.setState({
+                    selected: 'NEW STUDENT',
+                })
+            } else if (URL.match('students/(\\d)')) {
+                this.setState({
+                    selected: 'STUDENT DETAILS',
                 })
             } else if (URL.match('students')) {
                 this.setState({
-                    selected: 'Students',
+                    selected: 'STUDENTS',
                 })
             } else if (URL.match('courses')) {
                 this.setState({
-                    selected: 'Courses',
+                    selected: 'COURSES',
                 })
             } else if (URL.match('lectures')) {
                 this.setState({
-                    selected: 'Lectures',
+                    selected: 'LECTURES',
                 })
             }
 
@@ -212,7 +220,8 @@ class Layout extends Component {
                             LMS
                         </Typography>
                         <IconButton onClick={this.handleDrawerClose} className={classes.ChevronLeftButton}>
-                            <ChevronLeftIcon />
+                            {/*<ChevronLeftIcon />*/}
+                            <MenuIcon/>
                         </IconButton>
                     </div>
                     <Divider />

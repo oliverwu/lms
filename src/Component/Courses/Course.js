@@ -27,7 +27,8 @@ const styles = {
 
     buttonRest: {
         width: '60px',
-        margin: '10px 10px',
+        margin: '10px 0',
+        paddingLeft: 0
     },
 
     buttonDelete: {

@@ -7,8 +7,11 @@ import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
+import {Paper, Button } from '@material-ui/core';
 import Moment from 'moment';
+import { Link } from 'react-router-dom';
+import DetailsIcon from '@material-ui/icons/Details'
+import MoreVertIcon from '@material-ui/icons/MoreVert';
 
 const styles = theme => ({
     root: {
@@ -21,8 +24,11 @@ const styles = theme => ({
     },
     table: {
         minWidth: 500,
-        textAlign: 'center',
+        // textAlign: 'right',
     },
+    detailsButton: {
+        paddingRight: 0,
+    }
 });
 
 class StudentsTable extends Component {
@@ -72,7 +78,14 @@ class StudentsTable extends Component {
                                     <TableCell numeric>{student.gender}</TableCell>
                                     <TableCell numeric>{Moment(student.DOB).format("MMM DD YYYY")}</TableCell>
                                     <TableCell numeric>{student.credit}</TableCell>
-                                    <TableCell numeric>{'Details'}</TableCell>
+                                    <TableCell numeric>
+                                        <Link to={`students/${student.id}`} style={{textDecoration: 'none'}}>
+                                            <Button className={classes.detailsButton}><MoreVertIcon/></Button>
+                                            {/*<TableCell numeric>{'Details'}</TableCell>*/}
+                                        </Link>
+                                    </TableCell>
+
+
                                 </TableRow>
                             );
                         })}

@@ -7,6 +7,7 @@ import Students from './Component/Students/Students';
 import NotFound from "./Component/Utils/NotFound";
 import Layout from './Component/Layout/Layout';
 import Course from './Component/Courses/Course';
+import Student from './Component/Students/Student';
 
 class App extends Component {
   render() {
@@ -22,6 +23,7 @@ class App extends Component {
                       <Route exact path='/courses/' component={Courses}/>
                       <Route exact path='/students' component={Students}/>
                       <Route exact path='/courses/:id(\d+|create)' component={Course}/>
+                      <Route exact path='/students/:id(\d+|create)' component={Student} />
                       <Route path='*' component={NotFound}/>
                   </Switch>
               </Layout>
