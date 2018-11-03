@@ -68,7 +68,7 @@ class Courses extends React.Component{
                         <AddNewButton name='Add new course' />
                     </div>
                 </Link>}
-                {/*Course {this.props.match.params.courseId}*/}
+                {/*Course {this.props.match.params.id !== 'create'}*/}
                 {/*会包含路由里面的变量*/}
                 {isLoading && <PageLoader/>}
                 {!isLoading && courses.length > 0 && this.renderCourseCards(courses)}

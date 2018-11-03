@@ -21,7 +21,7 @@ class App extends Component {
                       <Route exact path='/dashboard' component={Dashboard} />
                       <Route exact path='/courses/' component={Courses}/>
                       <Route exact path='/students' component={Students}/>
-                      <Route exact path='/courses/create' component={Course}/>
+                      <Route exact path='/courses/:id(\d+|create)' component={Course}/>
                       <Route path='*' component={NotFound}/>
                   </Switch>
               </Layout>

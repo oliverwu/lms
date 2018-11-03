@@ -40,8 +40,40 @@ let CourseApi = {
         } catch (e) {
             console.log(e);
         }
+    },
 
-
+    getAllCourseById: async (id) => {
+        let endpoint = `${lmsURL}api/courses/${id}`;
+        try {
+            const response = await fetch(endpoint,{
+                headers: {
+                    'Authorization': BearerAccessToken,
+                }
+            });
+            const statusCode = response.status;
+            if (response.ok) {
+                const jsonResponse = await response.json();
+                console.log(jsonResponse);
+                const { title, fee, maxStudent, description, language} = jsonResponse;
+                console.log({ title, fee, maxStudent, description, language});
+                return {
+                    statusCode: statusCode,
+                    course: {
+                        title: title,
+                        description: description,
+                        fee: fee,
+                        maxStudents: maxStudent,
+                        language: language,
+                    }
+                };
+            } else {
+                return {
+                    statusCode: statusCode,
+                }
+            }
+        } catch (e) {
+            console.log(e);
+        }
     },
 };
 

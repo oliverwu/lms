@@ -136,6 +136,14 @@ class Layout extends Component {
                 this.setState({
                     selected: 'Dashboard',
                 })
+            } else if (URL.match('courses/create')) {
+                this.setState({
+                    selected: 'New course',
+                })
+            } else if (URL.match('courses/(\\d)')) {
+                this.setState({
+                    selected: 'Course details',
+                })
             } else if (URL.match('students')) {
                 this.setState({
                     selected: 'Students',
@@ -149,6 +157,7 @@ class Layout extends Component {
                     selected: 'Lectures',
                 })
             }
+
         }
     }
 
@@ -242,10 +251,5 @@ class Layout extends Component {
         );
     }
 }
-
-// MiniDrawer.propTypes = {
-//     classes: PropTypes.object.isRequired,
-//     theme: PropTypes.object.isRequired,
-// };
 
 export default withStyles(styles, { withTheme: true })(withWidth()(Layout));
