@@ -1,7 +1,8 @@
 import React, { Component, PureComponent } from 'react';
 import LecturersApi from './LecturersApi';
 import LecturersTable from './LecturersTable';
-import PageLoader from '../Utils/PageLoader'
+import PageLoader from '../Utils/PageLoader';
+import Layout from '../Layout/Layout';
 
 class Lecturers extends PureComponent{
     constructor(props) {
@@ -34,10 +35,10 @@ class Lecturers extends PureComponent{
         const { lecturers, isLoading } = this.state;
 
         return (
-            <div>
+            <Layout selected='Lecturers' menu='LECTURERS'>
                 {isLoading && <PageLoader/>}
                 {!isLoading && <LecturersTable lecturers = {lecturers} />}
-            </div>
+            </Layout>
         );
     }
 }

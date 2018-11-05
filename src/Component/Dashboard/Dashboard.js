@@ -8,7 +8,7 @@ import Layout from '../Layout/Layout';
 class Dashboard extends Component {
     render() {
         return (
-            <Layout>
+            <Layout selected='Dashboard' menu='Dashboard' >
                 {/*<Typography variant='h2' component="h2" gutterBottom>*/}
                     {/*Dashboard*/}
                 {/*</Typography>*/}

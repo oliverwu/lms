@@ -2,9 +2,10 @@ import React, {Component, PureComponent} from 'react';
 import { TextField, MenuItem, Grid, Button, Paper} from '@material-ui/core';
 import { withStyles} from '@material-ui/core/styles';
 import StudentsApi from './StudentsApi';
+import Layout from '../Layout/Layout';
 
 const styles = {
-    root: {
+    paper: {
         width: '600px',
         padding: '20px',
     },
@@ -48,7 +49,6 @@ const styles = {
     },
 };
 
-const genderOptions = ['Male', 'Female'];
 
 class Student extends PureComponent{
     constructor(props) {
@@ -106,123 +106,125 @@ class Student extends PureComponent{
         const { id } = this.props.match.params;
 
         return (
-            <Paper className={classes.root}>
-                {console.log({ firstName, lastName, gender, DOB, email, credit })}
-                <form onSubmit={this.handleSubmit}>
-                    <Grid
-                        container
-                    >
+            <Layout selected='Students' menu={id === 'create' ? 'CREATE NEW STUDENT' : 'STUDENT DETAILS'}>
+                <Paper className={classes.paper}>
+                    {console.log({ firstName, lastName, gender, DOB, email, credit })}
+                    <form onSubmit={this.handleSubmit}>
                         <Grid
-                            item xs={6} className={classes.gridLeft}
+                            container
                         >
-                            <TextField
-                                label='First Name'
-                                id='student-firstName'
-                                placeholder='First Name'
-                                fullWidth
-                                name='firstName'
-                                value={firstName}
-                                margin='normal'
-                                onChange={this.handleChange}
-                            />
-                        </Grid>
-                        <Grid item xs={6} className={classes.gridRight}>
-                            <TextField
-                                id="student-lastName"
-                                label="Last Name"
-                                fullWidth
-                                placeholder='Last Name'
-                                margin='normal'
-                                // className={classes.maxStudents}
-                                value={lastName}
-                                name='lastName'
-                                onChange={this.handleChange}
+                            <Grid
+                                item xs={6} className={classes.gridLeft}
                             >
-                            </TextField>
+                                <TextField
+                                    label='First Name'
+                                    id='student-firstName'
+                                    placeholder='First Name'
+                                    fullWidth
+                                    name='firstName'
+                                    value={firstName}
+                                    margin='normal'
+                                    onChange={this.handleChange}
+                                />
+                            </Grid>
+                            <Grid item xs={6} className={classes.gridRight}>
+                                <TextField
+                                    id="student-lastName"
+                                    label="Last Name"
+                                    fullWidth
+                                    placeholder='Last Name'
+                                    margin='normal'
+                                    // className={classes.maxStudents}
+                                    value={lastName}
+                                    name='lastName'
+                                    onChange={this.handleChange}
+                                >
+                                </TextField>
+                            </Grid>
                         </Grid>
-                    </Grid>
-                    <Grid
-                        container
-                    >
                         <Grid
-                            item xs={6} className={classes.gridLeft}
+                            container
                         >
-                            <TextField
-                                label='Date of birth'
-                                id='student-DOB'
-                                type='date'
-                                // placeholder='Date of birth'
-                                fullWidth
-                                name='DOB'
-                                value={DOB}
-                                // margin='normal'
-                                onChange={this.handleChange}
-                            />
-                        </Grid>
-                        <Grid item xs={6} className={classes.gridRight}>
-                            <TextField
-                                id="student-gender"
-                                select
-                                label="Gender"
-                                fullWidth
-                                // margin='normal'
-                                className={classes.gender}
-                                value={gender}
-                                name='gender'
-                                onChange={this.handleChange}
-                                helperText="Please select the gender"
+                            <Grid
+                                item xs={6} className={classes.gridLeft}
                             >
-                                {['Male', 'Female'].map(option => (
-                                    <MenuItem key={option} value={option}>
-                                        {option}
-                                    </MenuItem>
-                                ))}
-                            </TextField>
+                                <TextField
+                                    label='Date of birth'
+                                    id='student-DOB'
+                                    type='date'
+                                    // placeholder='Date of birth'
+                                    fullWidth
+                                    name='DOB'
+                                    value={DOB}
+                                    // margin='normal'
+                                    onChange={this.handleChange}
+                                />
+                            </Grid>
+                            <Grid item xs={6} className={classes.gridRight}>
+                                <TextField
+                                    id="student-gender"
+                                    select
+                                    label="Gender"
+                                    fullWidth
+                                    // margin='normal'
+                                    className={classes.gender}
+                                    value={gender}
+                                    name='gender'
+                                    onChange={this.handleChange}
+                                    helperText="Please select the gender"
+                                >
+                                    {['Male', 'Female'].map(option => (
+                                        <MenuItem key={option} value={option}>
+                                            {option}
+                                        </MenuItem>
+                                    ))}
+                                </TextField>
+                            </Grid>
                         </Grid>
-                    </Grid>
-                    <TextField
-                        label="Email"
-                        placeholder='Email'
-                        type='email'
-                        fullWidth
-                        // margin='normal'
-                        name='email'
-                        value={email}
-                        onChange={this.handleChange}
-                    />
-                    <TextField
-                        label='Credit'
-                        id='student-credit'
-                        placeholder='Credit'
-                        fullWidth
-                        name='credit'
-                        value={credit}
-                        margin='normal'
-                        onChange={this.handleChange}
-                    />
-                    <div className={classes.buttons}>
-                        <Button
-                            color='default'
-                            variant='text'
-                            className={classes.buttonRest}
-                            onClick={this.handleReset}
-                        >reset</Button>
-                        <div>
+                        <TextField
+                            label="Email"
+                            placeholder='Email'
+                            type='email'
+                            fullWidth
+                            // margin='normal'
+                            name='email'
+                            value={email}
+                            onChange={this.handleChange}
+                        />
+                        <TextField
+                            label='Credit'
+                            id='student-credit'
+                            placeholder='Credit'
+                            fullWidth
+                            name='credit'
+                            value={credit}
+                            margin='normal'
+                            onChange={this.handleChange}
+                        />
+                        <div className={classes.buttons}>
                             <Button
-                                color='secondary'
-                                variant='extendedFab'
-                                className={id === 'create' ? classes.noButtonDelete : classes.buttonDelete}
-                            >Delete</Button>
-                            <Button
-                                type="submit"
-                                color='primary'
-                                variant='extendedFab'
-                                className={classes.buttonSubmit}
-                            >{id !== 'create' ? 'Save' : 'Create'}</Button>
+                                color='default'
+                                variant='text'
+                                className={classes.buttonRest}
+                                onClick={this.handleReset}
+                            >reset</Button>
+                            <div>
+                                <Button
+                                    color='secondary'
+                                    variant='extendedFab'
+                                    className={id === 'create' ? classes.noButtonDelete : classes.buttonDelete}
+                                >Delete</Button>
+                                <Button
+                                    type="submit"
+                                    color='primary'
+                                    variant='extendedFab'
+                                    className={classes.buttonSubmit}
+                                >{id !== 'create' ? 'Save' : 'Create'}</Button>
+                            </div>
                         </div>
-                    </div>
-                </form>
-            </Paper>
+                    </form>
+                </Paper>
+            </Layout>
         );
     }
 }

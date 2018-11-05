@@ -3,6 +3,7 @@ import { withStyles } from '@material-ui/core/styles';
 import { Paper, Grid, Avatar, TextField, Button } from '@material-ui/core';
 import PermIdentityIcon from '@material-ui/icons/PermIdentity';
 import LoginApi from './LoginApi';
+import { redirect } from '../Utils/Help';
 
 const styles = theme => {
     return {
@@ -73,7 +74,8 @@ class Login extends Component{
         if (data) {
             const { access_token, expire_time } = data;
             localStorage.setItem('accessToken', access_token);
-            changeLoginStatus();
+            //
+            redirect('dashboard')
         }
     };
 

@@ -6,6 +6,7 @@ import { withStyles } from '@material-ui/core/styles';
 import StudentsTableControl from './StudentsTableControl';
 import AddNewButton from "../Utils/AddNewButton";
 import {Link} from "react-router-dom";
+import Layout from '../Layout/Layout';
 
 const styles = theme => ({
     button: {
@@ -83,7 +84,7 @@ class Students extends PureComponent{
         const {classes} = this.props;
 
         return (
-            <div>
+            <Layout selected='Students' menu='STUDENTS'>
                 {!isLoading && <Link to='/students/create' style={{textDecoration: 'none'}}>
                     <div className={classes.button}>
                         <AddNewButton name='Add new student' />
@@ -94,7 +95,7 @@ class Students extends PureComponent{
                     <StudentsTable students = {students}/>
                     <StudentsTableControl pageSize={pageSize} page={currentPage - 1} changeCurrentPage={this.changeCurrentPage}/>
                 </div>}
-            </div>
+            </Layout>
         );
     }
 }

@@ -6,6 +6,7 @@ import { withStyles } from '@material-ui/core/styles'
 import CourseCard from "./CourseCard";
 import AddNewButton from '../Utils/AddNewButton';
 import { Link } from 'react-router-dom';
+import Layout from '../Layout/Layout';
 
 const styles = theme => ({
     button: {
@@ -62,7 +63,7 @@ class Courses extends React.Component{
         const { classes } = this.props;
 
         return (
-            <div >
+            <Layout selected='Courses' menu='COURSES'>
                 {!isLoading && <Link to='/courses/create' style={{textDecoration: 'none'}}>
                     <div className={classes.button}>
                         <AddNewButton name='Add new course' />
@@ -72,7 +73,7 @@ class Courses extends React.Component{
                 {/*会包含路由里面的变量*/}
                 {isLoading && <PageLoader/>}
                 {!isLoading && courses.length > 0 && this.renderCourseCards(courses)}
-            </div>
+            </Layout>
         );
     }
 }

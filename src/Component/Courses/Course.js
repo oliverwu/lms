@@ -2,6 +2,7 @@ import React, {Component, PureComponent} from 'react';
 import { TextField, MenuItem, Grid, Button} from '@material-ui/core';
 import { withStyles} from '@material-ui/core/styles';
 import CourseApi from './CourseApi';
+import Layout from '../Layout/Layout';
 
 const styles = {
     root: {
@@ -109,8 +110,7 @@ class Course extends PureComponent{
         const { id } = this.props.match.params;
 
         return (
-            <div>
-                {console.log(1)}
+            <Layout selected='Courses' menu={id === 'create' ? 'CREATE NEW COURSE' : 'COURSE DETAILS'}>
                 <form className={classes.root} onSubmit={this.handleSubmit}>
                     <TextField
                         label='Title'
@@ -208,7 +208,7 @@ class Course extends PureComponent{
                         </div>
                     </div>
                 </form>
-            </div>
+            </Layout>
         );
     }
 }
