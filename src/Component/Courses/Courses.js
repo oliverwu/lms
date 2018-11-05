@@ -31,7 +31,7 @@ class Courses extends React.Component{
                 >
                     {courses.map((course) => {
                         return (
-                            <Grid item xs={12} md={6} lg={4} key={course.id}>
+                            <Grid item xs={12} md={4} lg={3} key={course.id}>
                                 <Grid container
                                       direction="row"
                                       justify="center"

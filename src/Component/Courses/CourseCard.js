@@ -1,11 +1,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import Card from '@material-ui/core/Card';
-import CardActionArea from '@material-ui/core/CardActionArea';
-import { CardActions, Paper, MenuItem, Menu, IconButton } from '@material-ui/core';
-import CardContent from '@material-ui/core/CardContent';
-import Button from '@material-ui/core/Button';
+import { Paper, MenuItem, Menu, IconButton } from '@material-ui/core';
 import Typography from '@material-ui/core/Typography';
 import { Link } from 'react-router-dom';
 import AddIcon from '@material-ui/icons/Add';
@@ -27,7 +23,7 @@ const styles = {
     },
 
     paperTitle: {
-        backgroundColor: '#00A2B9',
+        backgroundColor: '#1D8BF1',
         color: 'white',
         padding: '15px 15px',
         textAlign:'left',

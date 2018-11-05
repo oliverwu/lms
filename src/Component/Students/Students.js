@@ -51,11 +51,8 @@ class Students extends PureComponent{
 
     async componentDidMount() {
         const data = await StudentsApi.getStudentsByPage(1);
-        console.log(data);
         if (data.statusCode >= 200 && data.statusCode <= 300) {
-
             const { students, pageNum, pageSize, totalPage } = data;
-            console.log(students);
             this.setState({
                 pageNum: pageNum,
                 pageSize: pageSize,
@@ -70,14 +67,13 @@ class Students extends PureComponent{
         let {currentPage} = this.state;
         if (prevState.currentPage !== this.state.currentPage) {
             const data = await StudentsApi.getStudentsByPage(currentPage);
-            console.log(data);
             if (data.statusCode >= 200 && data.statusCode <= 300) {
                 const { students } = data;
-                console.log(students);
+                console.log({...students, isLoading: false});
                 this.setState({
                     students: students,
-                    isLoading: false,
-                })
+                    isLoading: false
+                });
             }
         }
     }

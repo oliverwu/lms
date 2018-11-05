@@ -31,26 +31,20 @@ const styles = theme => ({
     }
 });
 
-class StudentsTable extends Component {
-    // constructor(props) {
-    //     super(props);
-    //     this.state = {
-    //         isLoading: true,
-    //         students: [],
-    //         error: ''
-    //     }
-    // }
+const StudentsTableCell = withStyles(theme => ({
+    head: {
+        backgroundColor: '#1D8BF1',
+        color: theme.palette.common.white,
+        fontSize: 16,
+    },
+    body: {
+        fontSize: 14,
+    },
+}))(TableCell);
 
-    // async componentDidMount() {
-    //     const data = await StudentApi.getStudentsByPage(this.props.pageNum);
-    //     if (data.statusCode >= 200 && data.statusCode <= 300) {
-    //         const students = data.students;
-    //         this.setState({
-    //             students: students,
-    //             isLoading: false,
-    //         })
-    //     }
-    // }
+class StudentsTable extends Component {
+
+
 
     render() {
         const { classes, students} = this.props;
@@ -59,12 +53,12 @@ class StudentsTable extends Component {
                 <Table className={classes.table}>
                     <TableHead>
                         <TableRow>
-                            <TableCell numeric={true}>Name</TableCell>
-                            <TableCell numeric>Email</TableCell>
-                            <TableCell numeric>Gender</TableCell>
-                            <TableCell numeric>Date of birth</TableCell>
-                            <TableCell numeric>Credit</TableCell>
-                            <TableCell numeric>Details</TableCell>
+                            <StudentsTableCell numeric={true}>Name</StudentsTableCell>
+                            <StudentsTableCell numeric>Email</StudentsTableCell>
+                            <StudentsTableCell numeric>Gender</StudentsTableCell>
+                            <StudentsTableCell numeric>Date of birth</StudentsTableCell>
+                            <StudentsTableCell numeric>Credit</StudentsTableCell>
+                            <StudentsTableCell numeric>Details</StudentsTableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>

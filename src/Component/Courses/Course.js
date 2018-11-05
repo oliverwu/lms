@@ -84,6 +84,10 @@ class Course extends PureComponent{
         console.log({title, fee, maxStudents, description})
     };
 
+    handleDelete = () => {
+        console.log('delete')
+    };
+
     async componentDidMount() {
         const { id } = this.props.match.params;
         console.log(id !== 'create');
@@ -193,6 +197,7 @@ class Course extends PureComponent{
                                 color='secondary'
                                 variant='extendedFab'
                                 className={id === 'create' ? classes.noButtonDelete : classes.buttonDelete}
+                                onClick={this.handleDelete}
                             >Delete</Button>
                             <Button
                                 type="submit"

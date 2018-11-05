@@ -84,6 +84,7 @@ class Layout extends Component {
         open: true,
         currentWidth: '',
         selected: 'Dashboard',
+        menu: 'DASHBOARD',
         currentURL: '',
     };
 
@@ -134,35 +135,43 @@ class Layout extends Component {
             });
             if (URL.match('dashboard')) {
                 this.setState({
-                    selected: 'DASHBOARD',
+                    selected: 'Dashboard',
+                    menu: 'DASHBOARD',
                 })
             } else if (URL.match('courses/create')) {
                 this.setState({
-                    selected: 'NEW COURSE',
+                    selected: 'Courses',
+                    menu: 'NEW COURSE',
                 })
             } else if (URL.match('courses/(\\d)')) {
                 this.setState({
-                    selected: 'COURSE DETAILS',
+                    selected: 'Courses',
+                    menu: 'COURSE DETAILS',
                 })
             } else if (URL.match('students/create')) {
                 this.setState({
-                    selected: 'NEW STUDENT',
+                    selected: 'Students',
+                    menu: 'NEW STUDENT',
                 })
             } else if (URL.match('students/(\\d)')) {
                 this.setState({
-                    selected: 'STUDENT DETAILS',
+                    selected: 'Students',
+                    menu: 'STUDENT DETAILS',
                 })
             } else if (URL.match('students')) {
                 this.setState({
-                    selected: 'STUDENTS',
+                    selected: 'Students',
+                    menu: 'STUDENTS',
                 })
             } else if (URL.match('courses')) {
                 this.setState({
-                    selected: 'COURSES',
+                    selected: 'Courses',
+                    menu: 'COURSES',
                 })
-            } else if (URL.match('lectures')) {
+            } else if (URL.match('lecturers')) {
                 this.setState({
-                    selected: 'LECTURES',
+                    selected: 'Lecturers',
+                    menu: 'LECTURERS',
                 })
             }
 
@@ -179,7 +188,7 @@ class Layout extends Component {
 
     render() {
         const { classes, children, width, theme } = this.props;
-        const { selected } = this.state;
+        const { selected, menu } = this.state;
         return (
             <div className={classes.root}>
                 <CssBaseline />
@@ -201,7 +210,7 @@ class Layout extends Component {
                             <MenuIcon />
                         </IconButton>
                         <Typography variant="h6" color="inherit" align='left' noWrap className={classes.textGrow}>
-                            {selected}
+                            {menu}
                         </Typography>
                         <Typography variant="h6" color="inherit" noWrap>
                             <Button color="inherit">Login</Button>
@@ -238,10 +247,10 @@ class Layout extends Component {
                                 <ListItemText primary='Courses' />
                             </ListItem>
                         </Link>
-                        <Link to='/lectures' style={{ textDecoration: 'none' }}>
-                            <ListItem button selected={selected === 'Lectures'} >
+                        <Link to='/lecturers' style={{ textDecoration: 'none' }}>
+                            <ListItem button selected={selected === 'Lecturers'} >
                                 <ListItemIcon>{<Class/>}</ListItemIcon>
-                                <ListItemText primary='Lectures' />
+                                <ListItemText primary='Lecturers' />
                             </ListItem>
                         </Link>
                         <Link to='/students'  style={{ textDecoration: 'none' }}>
