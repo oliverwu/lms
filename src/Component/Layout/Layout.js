@@ -9,6 +9,7 @@ import Class from '@material-ui/icons/Class';
 import LocalLibrary from '@material-ui/icons/LocalLibrary';
 import People from '@material-ui/icons/People';
 import { Link } from 'react-router-dom';
+import { redirect } from "../Utils/Help";
 
 const drawerWidth = 240;
 
@@ -97,6 +98,11 @@ class Layout extends Component {
     //         selected: option,
     //     })
     // };
+
+    handleLogout = () => {
+        localStorage.removeItem('accessToken');
+        redirect('login');
+    };
 
     responsiveSidePanel = (width) => {
         if(width === 'xs' || width === 'sm') {
@@ -210,7 +216,12 @@ class Layout extends Component {
                             {menu}
                         </Typography>
                         <Typography variant="h6" color="inherit" noWrap>
-                            <Button color="inherit">Logout</Button>
+                            <Button
+                                color="inherit"
+                                onClick={this.handleLogout}
+                            >
+                                Logout
+                            </Button>
                         </Typography>
                     </Toolbar>
                 </AppBar>
