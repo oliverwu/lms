@@ -213,7 +213,7 @@ class Layout extends Component {
                             {menu}
                         </Typography>
                         <Typography variant="h6" color="inherit" noWrap>
-                            <Button color="inherit">Login</Button>
+                            <Button color="inherit">Logout</Button>
                         </Typography>
                     </Toolbar>
                 </AppBar>

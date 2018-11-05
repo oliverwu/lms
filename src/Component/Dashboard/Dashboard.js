@@ -2,12 +2,13 @@ import React, { Component } from 'react';
 import DashboardCard from './DashboardCard';
 import {Grid} from "@material-ui/core";
 import Typography from "@material-ui/core/Typography/Typography";
+import Layout from '../Layout/Layout';
 
 
 class Dashboard extends Component {
     render() {
         return (
-            <div>
+            <Layout>
                 {/*<Typography variant='h2' component="h2" gutterBottom>*/}
                     {/*Dashboard*/}
                 {/*</Typography>*/}
@@ -61,7 +62,7 @@ class Dashboard extends Component {
                         </Grid>
                     </Grid>
                 </Grid>
-            </div>
+            </Layout>
         );
     }
 }

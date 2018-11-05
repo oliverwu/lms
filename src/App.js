@@ -26,29 +26,55 @@ class App extends Component {
         })
     };
 
-
     render() {
         const { isLogin } = this.state;
 
         return (
           <div className="App">
-              {!isLogin && <Login changeLoginStatus={this.changeLoginStatus} />}
-              {isLogin && <Router>
-                  <Layout>
-                      <Switch>
-                          {/*<Switch/> 作用就像开关一样，一次只显示一个页面  */}
-                          <Redirect exact path="/" to='/dashboard'/>
-                          {/*路由看到'/'就直接转向到'/Dashboard'去*/}
-                          <Route exact path='/dashboard' component={Dashboard} />
-                          <Route exact path='/courses/' component={Courses}/>
-                          <Route exact path='/students' component={Students}/>
-                          <Route exact path='/lecturers' component={Lecturers}/>
-                          <Route exact path='/courses/:id(\d+|create)' component={Course}/>
-                          <Route exact path='/students/:id(\d+|create)' component={Student} />
-                          <Route path='*' component={NotFound}/>
-                      </Switch>
-                  </Layout>
-              </Router>}
+              {/*{!isLogin && <Login changeLoginStatus={this.changeLoginStatus} />}*/}
+              {/*{isLogin && <Router>*/}
+                  {/*<Layout>*/}
+                      {/*<Switch>*/}
+                          {/*/!*<Switch/> 作用就像开关一样，一次只显示一个页面  *!/*/}
+                          {/*<Redirect exact path="/" to='/dashboard'/>*/}
+                          {/*/!*路由看到'/'就直接转向到'/Dashboard'去*!/*/}
+                          {/*<Route exact path='/dashboard' component={Dashboard} />*/}
+                          {/*<Route exact path='/courses/' component={Courses}/>*/}
+                          {/*<Route exact path='/students' component={Students}/>*/}
+                          {/*<Route exact path='/lecturers' component={Lecturers}/>*/}
+                          {/*<Route exact path='/courses/:id(\d+|create)' component={Course}/>*/}
+                          {/*<Route exact path='/students/:id(\d+|create)' component={Student} />*/}
+                          {/*<Route path='*' component={NotFound}/>*/}
+                      {/*</Switch>*/}
+                  {/*</Layout>*/}
+              {/*</Router>}*/}
+
+
+
+
+              <Router>
+                  <div>
+                      <Route exact path='/login' component={Login} />
+                      <Route exact path='/dashboard' component={Dashboard} />
+                      {/*<Layout>*/}
+                        {/*<switch>*/}
+
+                          {/*/!*<Switch/> 作用就像开关一样，一次只显示一个页面  *!/*/}
+                          {/*<Redirect exact path="/" to='/dashboard'/>*/}
+                          {/*/!*路由看到'/'就直接转向到'/Dashboard'去*!/*/}
+                          {/**/}
+                          {/*<Route exact path='/courses/' component={Courses}/>*/}
+                          {/*<Route exact path='/students' component={Students}/>*/}
+                          {/*<Route exact path='/lecturers' component={Lecturers}/>*/}
+                          {/*<Route exact path='/courses/:id(\d+|create)' component={Course}/>*/}
+                          {/*<Route exact path='/students/:id(\d+|create)' component={Student} />*/}
+                          {/*<Route path='*' component={NotFound}/>*/}
+                        {/*</switch>*/}
+
+                      {/*</Layout>*/}
+                  </div>
+
+              </Router>
           </div>
         );
   }
