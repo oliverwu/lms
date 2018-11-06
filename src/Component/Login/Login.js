@@ -1,8 +1,9 @@
 import React, {Component, PureComponent} from 'react';
 import { withStyles } from '@material-ui/core/styles';
-import { Paper, Avatar, TextField, Button } from '@material-ui/core';
+import { Paper, Avatar, TextField, Button, CircularProgress } from '@material-ui/core';
 import PermIdentityIcon from '@material-ui/icons/PermIdentity';
 import LoginApi from './LoginApi';
+import classNames from 'classnames';
 import { redirect } from '../Utils/Help';
 
 const styles = theme => {
@@ -38,11 +39,26 @@ const styles = theme => {
             width: '40px',
             height: '40px',
         },
-        loginButton: {
+        buttonWrapper: {
             margin: '30px auto 20px',
+            width: '100%',
+            position: 'relative'
+        },
+        button: {
+            // margin: '30px auto 20px',
             width: '100%',
             background: '#3F9BE7',
             color: 'white'
+        },
+        loginButton: {
+            background: '#E0E0E0',
+        },
+        buttonProgress: {
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            marginTop: '-12px',
+            marginLeft: '-12px'
         }
     };
 };
@@ -53,12 +69,12 @@ class Login extends Component{
         this.state={
             userName: '',
             password: '',
+            isLoading: false,
         }
     }
 
     handleChange = (event) => {
         const { name, value} = event.target;
-        console.log({name, value});
         this.setState({
             [name]: value,
         })
@@ -66,18 +82,22 @@ class Login extends Component{
 
     handleLogin = async (event) => {
         event.preventDefault();
+        const { isLoading} = this.state;
+        this.setState({
+            isLoading: !isLoading
+        });
         const { userName, password } = this.state;
         const data = await LoginApi.getToken(userName, password);
         if (data) {
             const { access_token, expire_time } = data;
             localStorage.setItem('accessToken', access_token);
-            redirect('dashboard')
+            redirect('dashboard');
         }
     };
 
     render() {
         const { classes } = this.props;
-        const { userName, password} = this.state;
+        const { userName, password, isLoading } = this.state;
 
         return (
             <div>
@@ -110,14 +130,18 @@ class Login extends Component{
                             margin='normal'
                             onChange={this.handleChange}
                         />
-                        <Button
-                            className={classes.loginButton}
-                            variant='contained'
-                            color='primary'
-                            type='submit'
-                        >
-                            Login
-                        </Button>
+                        <div className={classes.buttonWrapper}>
+                            <Button
+                                // className={classes.button}
+                                className={classNames(classes.button, {[classes.loginButton]: isLoading})}
+                                variant='contained'
+                                color='primary'
+                                type='submit'
+                            >
+                                Login
+                            </Button>
+                            {isLoading && <CircularProgress size={24} className={classes.buttonProgress}/>}
+                        </div>
                     </form>
                 </Paper>
             </div>
