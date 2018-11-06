@@ -89,15 +89,30 @@ class Course extends PureComponent{
         console.log('delete');
     };
 
-    async componentDidMount() {
+    // async componentDidMount() {
+    //     const { id } = this.props.match.params;
+    //     if (id !== 'create') {
+    //         const course  = await CourseApi.getAllCourseById(id);
+    //         course && this.setState({
+    //             ...course
+    //         })
+    //     }
+    // }
+
+    componentDidMount() {
         const { id } = this.props.match.params;
         if (id !== 'create') {
-            const course  = await CourseApi.getAllCourseById(id);
+            this.getCourseById(id);
+        }
+    }
+
+    getCourseById = (id) => {
+        CourseApi.getCourseById(id).then(course => {
             course && this.setState({
                 ...course
             })
-        }
-    }
+        });
+    };
 
     render() {
         const { title, fee, maxStudents, description, language} = this.state;

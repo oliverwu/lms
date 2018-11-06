@@ -13,15 +13,26 @@ class Lecturers extends PureComponent{
         }
     }
 
-    async componentDidMount() {
-        const lecturers = await LecturersApi.getAllLecturers();
-        lecturers && this.setState({
-            lecturers: lecturers,
-            isLoading: false,
-        })
+    // async componentDidMount() {
+    //     const lecturers = await LecturersApi.getAllLecturers();
+    //     lecturers && this.setState({
+    //         lecturers: lecturers,
+    //         isLoading: false,
+    //     })
+    // }
+
+    componentDidMount() {
+        this.getAllLecturer();
     }
 
-
+    getAllLecturer = () => {
+        LecturersApi.getAllLecturers().then(lecturers => {
+            lecturers && this.setState({
+                lecturers: lecturers,
+                isLoading: false,
+            })
+        });
+    };
 
     render() {
         const { lecturers, isLoading } = this.state;

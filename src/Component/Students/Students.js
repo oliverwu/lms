@@ -50,34 +50,55 @@ class Students extends PureComponent{
         })
     };
 
-    async componentDidMount() {
-        const data = await StudentsApi.getStudentsByPage(1);
-        if (data.statusCode >= 200 && data.statusCode <= 300) {
-            const { students, pageNum, pageSize, totalPage } = data;
-            this.setState({
-                pageNum: pageNum,
-                pageSize: pageSize,
-                students: students,
-                totalPage: totalPage,
-                isLoading: false,
-            })
+    // async componentDidMount() {
+    //     const data = await StudentsApi.getStudentsByPage(1);
+    //     const { students, pageNum, pageSize, totalPage } = data;
+    //     this.setState({
+    //         pageNum: pageNum,
+    //         pageSize: pageSize,
+    //         students: students,
+    //         totalPage: totalPage,
+    //         isLoading: false,
+    //     })
+    // }
+
+    // async componentDidUpdate(prevProps, prevState) {
+    //     let {currentPage} = this.state;
+    //     if (prevState.currentPage !== this.state.currentPage) {
+    //         const data = await StudentsApi.getStudentsByPage(currentPage);
+    //         const { students } = data;
+    //         this.setState({
+    //             students: students,
+    //             isLoading: false
+    //         });
+    //     }
+    // }
+
+    componentDidMount() {
+        this.getStudentsByPage(1);
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+        let {currentPage} = this.state;
+        if (prevState.currentPage !== this.state.currentPage) {
+            this.getStudentsByPage(currentPage);
         }
     }
 
-    async componentDidUpdate(prevProps, prevState) {
-        let {currentPage} = this.state;
-        if (prevState.currentPage !== this.state.currentPage) {
-            const data = await StudentsApi.getStudentsByPage(currentPage);
-            if (data.statusCode >= 200 && data.statusCode <= 300) {
-                const { students } = data;
-                console.log({...students, isLoading: false});
+    getStudentsByPage = (page) => {
+        StudentsApi.getStudentsByPage(page).then(data => {
+            if (data) {
+                const { students, pageNum, pageSize, totalPage } = data;
                 this.setState({
                     students: students,
-                    isLoading: false
+                    isLoading: false,
+                    pageNum: pageNum,
+                    pageSize: pageSize,
+                    totalPage: totalPage,
                 });
             }
-        }
-    }
+        });
+    };
 
     render() {
         const {isLoading, students, pageSize, currentPage} = this.state;

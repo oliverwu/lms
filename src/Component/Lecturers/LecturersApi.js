@@ -1,5 +1,5 @@
 import {lmsURL} from "../Login/LoginApi";
-import { redirect} from "../Utils/Help";
+import { redirect, getAccessToken} from "../Utils/Help";
 
 let access_token = localStorage.getItem('accessToken');
 let BearerAccessToken = 'Bearer ' + access_token;
@@ -10,7 +10,7 @@ let LecturersApi = {
         try {
             const response = await fetch(endpoint, {
                 headers: {
-                    'Authorization': BearerAccessToken,
+                    'Authorization': getAccessToken(),
                 }
             });
             const { ok, status} = response;

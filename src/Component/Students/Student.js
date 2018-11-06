@@ -87,18 +87,34 @@ class Student extends PureComponent{
         console.log({firstName, lastName, gender, DOB, email, credit})
     };
 
-    async componentDidMount() {
+    // async componentDidMount() {
+    //     const { id } = this.props.match.params;
+    //     console.log(id !== 'create');
+    //     if (id !== 'create') {
+    //         const { student, statusCode } = await StudentsApi.getStudentById(id);
+    //         if (statusCode >= 200 && statusCode <= 300) {
+    //             this.setState({
+    //                 ...student
+    //             })
+    //         }
+    //     }
+    // }
+
+    componentDidMount() {
         const { id } = this.props.match.params;
-        console.log(id !== 'create');
         if (id !== 'create') {
-            const { student, statusCode } = await StudentsApi.getStudentById(id);
-            if (statusCode >= 200 && statusCode <= 300) {
-                this.setState({
-                    ...student
-                })
-            }
+            this.getStudentById(id);
         }
     }
+
+    getStudentById = (id) => {
+        StudentsApi.getStudentById(id).then(student => {
+            student && this.setState({
+                ...student
+            })
+        });
+    };
+
 
     render() {
         const { firstName, lastName, gender, DOB, email, credit } = this.state;

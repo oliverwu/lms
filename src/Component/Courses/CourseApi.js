@@ -1,5 +1,5 @@
 import {lmsURL} from "../Login/LoginApi";
-import { redirect } from "../Utils/Help";
+import { redirect, getAccessToken } from "../Utils/Help";
 
 let access_token = localStorage.getItem('accessToken');
 let BearerAccessToken = 'Bearer ' + access_token;
@@ -10,7 +10,7 @@ let CourseApi = {
         try {
             const response = await fetch(endpoint,{
                 headers: {
-                    'Authorization': BearerAccessToken,
+                    'Authorization': getAccessToken(),
                 }
             });
             const statusCode = response.status;
@@ -37,12 +37,12 @@ let CourseApi = {
         }
     },
 
-    getAllCourseById: async (id) => {
+    getCourseById: async (id) => {
         let endpoint = `${lmsURL}api/courses/${id}`;
         try {
             const response = await fetch(endpoint,{
                 headers: {
-                    'Authorization': BearerAccessToken,
+                    'Authorization': getAccessToken(),
                 }
             });
             const statusCode = response.status;
@@ -54,14 +54,12 @@ let CourseApi = {
                     const jsonResponse = await response.json();
                     const { title, fee, maxStudent, description, language} = jsonResponse;
                     return {
-                        course: {
-                            title: title,
-                            description: description,
-                            fee: fee,
-                            maxStudents: maxStudent,
-                            language: language,
-                        }
-                    };
+                        title: title,
+                        description: description,
+                        fee: fee,
+                        maxStudents: maxStudent,
+                        language: language,
+                    }
                 }
             }
         } catch (e) {
