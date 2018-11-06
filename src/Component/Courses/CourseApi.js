@@ -1,9 +1,8 @@
-// import axios from 'axios';
-import {lmsURL, BearerAccessToken} from "../Login/LoginApi";
+import {lmsURL} from "../Login/LoginApi";
+import { redirect } from "../Utils/Help";
 
-
-// axios.defaults.headers.common.Authorizaiotn = `Bearer ${accessToken}`;
-
+let access_token = localStorage.getItem('accessToken');
+let BearerAccessToken = 'Bearer ' + access_token;
 
 let CourseApi = {
     getAllCourse: async () => {
@@ -15,13 +14,13 @@ let CourseApi = {
                 }
             });
             const statusCode = response.status;
-            console.log(response);
-            if (response.ok) {
-                const jsonResponse = await response.json();
-                console.log(jsonResponse);
-                return {
-                    statusCode: statusCode,
-                    courses: (jsonResponse instanceof Array) && jsonResponse.map((data) => {
+            if (statusCode > 300) {
+                localStorage.removeItem('accessToken');
+                redirect('login');
+            } else {
+                if (response.ok) {
+                    const jsonResponse = await response.json();
+                    return (jsonResponse instanceof Array) && jsonResponse.map((data) => {
                         return {
                             id: data.id,
                             title: data.title,
@@ -30,11 +29,7 @@ let CourseApi = {
                             maxStudent: data.maxStudent,
                             language: data.language,
                         }
-                    })
-                };
-            } else {
-                return {
-                    statusCode: statusCode,
+                    });
                 }
             }
         } catch (e) {
@@ -51,24 +46,22 @@ let CourseApi = {
                 }
             });
             const statusCode = response.status;
-            if (response.ok) {
-                const jsonResponse = await response.json();
-                console.log(jsonResponse);
-                const { title, fee, maxStudent, description, language} = jsonResponse;
-                console.log({ title, fee, maxStudent, description, language});
-                return {
-                    statusCode: statusCode,
-                    course: {
-                        title: title,
-                        description: description,
-                        fee: fee,
-                        maxStudents: maxStudent,
-                        language: language,
-                    }
-                };
+            if (statusCode > 300) {
+                localStorage.removeItem('accessToken');
+                redirect('login');
             } else {
-                return {
-                    statusCode: statusCode,
+                if (response.ok) {
+                    const jsonResponse = await response.json();
+                    const { title, fee, maxStudent, description, language} = jsonResponse;
+                    return {
+                        course: {
+                            title: title,
+                            description: description,
+                            fee: fee,
+                            maxStudents: maxStudent,
+                            language: language,
+                        }
+                    };
                 }
             }
         } catch (e) {
@@ -78,3 +71,6 @@ let CourseApi = {
 };
 
 export default CourseApi;
+
+// import axios from 'axios';
+// axios.defaults.headers.common.Authorizaiotn = `Bearer ${accessToken}`;

@@ -81,23 +81,7 @@ class Layout extends Component {
     state = {
         open: true,
         currentWidth: '',
-        selected: 'Dashboard',
-        menu: 'DASHBOARD',
-        // currentURL: '',
     };
-
-    // handleSelected = (selected) => {
-    //     // event.stopPropagation();
-    //     this.setState({
-    //         selected:selected,
-    //     })
-    // };
-
-    // checkSelected = (option) => {
-    //     this.setState({
-    //         selected: option,
-    //     })
-    // };
 
     handleLogout = () => {
         localStorage.removeItem('accessToken');
@@ -124,61 +108,12 @@ class Layout extends Component {
 
     componentDidUpdate(prevProps, prevState) {
         const { width } = this.props;
-        // let URL = window.location.href;
         if (prevState.currentWidth !== this.props.width) {
             this.setState({
                 currentWidth: this.props.width,
             });
             this.responsiveSidePanel(width)
         }
-
-        // if(prevState.currentURL !== URL) {
-        //     this.setState({
-        //         currentURL: URL,
-        //     });
-        //     if (URL.match('dashboard')) {
-        //         this.setState({
-        //             selected: 'Dashboard',
-        //             menu: 'DASHBOARD',
-        //         })
-        //     } else if (URL.match('courses/create')) {
-        //         this.setState({
-        //             selected: 'Courses',
-        //             menu: 'NEW COURSE',
-        //         })
-        //     } else if (URL.match('courses/(\\d)')) {
-        //         this.setState({
-        //             selected: 'Courses',
-        //             menu: 'COURSE DETAILS',
-        //         })
-        //     } else if (URL.match('students/create')) {
-        //         this.setState({
-        //             selected: 'Students',
-        //             menu: 'NEW STUDENT',
-        //         })
-        //     } else if (URL.match('students/(\\d)')) {
-        //         this.setState({
-        //             selected: 'Students',
-        //             menu: 'STUDENT DETAILS',
-        //         })
-        //     } else if (URL.match('students')) {
-        //         this.setState({
-        //             selected: 'Students',
-        //             menu: 'STUDENTS',
-        //         })
-        //     } else if (URL.match('courses')) {
-        //         this.setState({
-        //             selected: 'Courses',
-        //             menu: 'COURSES',
-        //         })
-        //     } else if (URL.match('lecturers')) {
-        //         this.setState({
-        //             selected: 'Lecturers',
-        //             menu: 'LECTURERS',
-        //         })
-        //     }
-        //
-        // }
     }
 
     handleDrawerOpen = () => {
@@ -191,7 +126,7 @@ class Layout extends Component {
 
     render() {
         const { classes, children, width, theme, selected, menu } = this.props;
-        // const { selected, menu } = this.state;
+
         return (
             <div className={classes.root}>
                 <CssBaseline />

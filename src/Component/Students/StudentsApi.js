@@ -1,5 +1,9 @@
-import {BearerAccessToken, lmsURL} from "../Login/LoginApi";
+import {lmsURL} from "../Login/LoginApi";
 import moment from 'moment';
+let access_token = localStorage.getItem('accessToken');
+
+let BearerAccessToken = 'Bearer ' + access_token;
+
 
 const genderMap = [
     {
@@ -23,7 +27,6 @@ let StudentsApi = {
                 }
             });
             const statusCode = response.status;
-            console.log(response);
             if (response.ok) {
                 const jsonResponse = await response.json();
                 console.log(jsonResponse);

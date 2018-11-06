@@ -86,21 +86,16 @@ class Course extends PureComponent{
     };
 
     handleDelete = () => {
-        console.log('delete')
+        console.log('delete');
     };
 
     async componentDidMount() {
         const { id } = this.props.match.params;
-        console.log(id !== 'create');
         if (id !== 'create') {
-            const { course, statusCode } = await CourseApi.getAllCourseById(id);
-            console.log({course, statusCode});
-            if (statusCode >= 200 && statusCode <= 300) {
-                console.log(course);
-                this.setState({
-                    ...course
-                })
-            }
+            const course  = await CourseApi.getAllCourseById(id);
+            course && this.setState({
+                ...course
+            })
         }
     }
 

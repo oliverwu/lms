@@ -14,16 +14,8 @@ class Lecturers extends PureComponent{
     }
 
     async componentDidMount() {
-        const data = await LecturersApi.getAllLecturers();
-        const lecturers = data.lecturers.map(lecturer => {
-            return {
-                id: lecturer.id,
-                name: lecturer.name,
-                email: lecturer.email,
-                staffNumber: lecturer.staffNumber,
-            }
-        });
-        this.setState({
+        const lecturers = await LecturersApi.getAllLecturers();
+        lecturers && this.setState({
             lecturers: lecturers,
             isLoading: false,
         })

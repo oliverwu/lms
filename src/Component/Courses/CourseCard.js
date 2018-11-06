@@ -31,6 +31,7 @@ const styles = {
         marginLeft: '20px',
         marginRight: '20px',
         borderRadius: '5px',
+        opacity: 0.9
     },
 
     paperDescription: {
@@ -78,7 +79,7 @@ class MediaCard extends Component{
         return (
             <div className={classes.root}>
                 <Paper className={classes.paper}>
-                    <Typography component="h5" variant="h5"  gutterBottom className={classes.paperTitle}>
+                    <Typography component="h6" variant="h6"  gutterBottom className={classes.paperTitle}>
                         {title}
                     </Typography>
                     <Typography variant="subtitle1" color="textSecondary" className={classes.paperDescription}>

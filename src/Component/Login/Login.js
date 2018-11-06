@@ -1,6 +1,6 @@
 import React, {Component, PureComponent} from 'react';
 import { withStyles } from '@material-ui/core/styles';
-import { Paper, Grid, Avatar, TextField, Button } from '@material-ui/core';
+import { Paper, Avatar, TextField, Button } from '@material-ui/core';
 import PermIdentityIcon from '@material-ui/icons/PermIdentity';
 import LoginApi from './LoginApi';
 import { redirect } from '../Utils/Help';
@@ -65,16 +65,12 @@ class Login extends Component{
     };
 
     handleLogin = async (event) => {
-        const { changeLoginStatus } = this.props;
-        console.log(2);
         event.preventDefault();
-        console.log(1);
         const { userName, password } = this.state;
         const data = await LoginApi.getToken(userName, password);
         if (data) {
             const { access_token, expire_time } = data;
             localStorage.setItem('accessToken', access_token);
-            //
             redirect('dashboard')
         }
     };

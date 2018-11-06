@@ -47,16 +47,26 @@ class Courses extends React.Component{
         );
     }
 
-    async componentDidMount() {
-        let data = await CourseApi.getAllCourse();
-        const {courses, statusCode} = data;
-        if (statusCode >= 200 && statusCode <= 300) {
+    // async componentDidMount() {
+    //     let courses = await CourseApi.getAllCourse();
+    //     courses && this.setState({
+    //         isLoading: false,
+    //         courses: courses,
+    //     });
+    // }
+
+    componentDidMount() {
+        this.getAllCourse();
+    }
+
+    getAllCourse = () => {
+        CourseApi.getAllCourse().then(courses => {
             courses && this.setState({
                 isLoading: false,
-                courses: data.courses,
-            })
-        }
-    }
+                courses: courses,
+            });
+        });
+    };
 
     render() {
         const {courses, isLoading} = this.state;
@@ -69,8 +79,6 @@ class Courses extends React.Component{
                         <AddNewButton name='Add new course' />
                     </div>
                 </Link>}
-                {/*Course {this.props.match.params.id !== 'create'}*/}
-                {/*会包含路由里面的变量*/}
                 {isLoading && <PageLoader/>}
                 {!isLoading && courses.length > 0 && this.renderCourseCards(courses)}
             </Layout>
