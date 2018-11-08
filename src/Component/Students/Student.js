@@ -2,7 +2,7 @@ import React, {Component, PureComponent} from 'react';
 import { TextField, MenuItem, Grid, Button, Paper} from '@material-ui/core';
 import { withStyles} from '@material-ui/core/styles';
 import StudentsApi from './StudentsApi';
-import Layout from '../Layout/Layout';
+import MenuBar from '../Layout/MenuBar';
 
 const styles = {
     paper: {
@@ -122,7 +122,7 @@ class Student extends PureComponent{
         const { id } = this.props.match.params;
 
         return (
-            <Layout selected='Students' menu={id === 'create' ? 'CREATE NEW STUDENT' : 'STUDENT DETAILS'}>
+            <MenuBar selected='Students' menu={id === 'create' ? 'CREATE NEW STUDENT' : 'STUDENT DETAILS'}>
                 <Paper className={classes.paper}>
                     {console.log({ firstName, lastName, gender, DOB, email, credit })}
                     <form onSubmit={this.handleSubmit}>
@@ -240,7 +240,7 @@ class Student extends PureComponent{
                         </div>
                     </form>
                 </Paper>
-            </Layout>
+            </MenuBar>
         );
     }
 }

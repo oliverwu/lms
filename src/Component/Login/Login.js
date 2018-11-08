@@ -3,9 +3,9 @@ import { withStyles } from '@material-ui/core/styles';
 import { Paper, Avatar, TextField, Button, CircularProgress, IconButton } from '@material-ui/core';
 import PermIdentityIcon from '@material-ui/icons/PermIdentity';
 import LoginApi from './LoginApi';
-import classNames from 'classnames';
 import { redirect } from '../Utils/Help';
 import PriorityHighIcon from '@material-ui/icons/PriorityHigh';
+import classNames from 'classnames';
 
 const styles = theme => {
     return {
@@ -26,6 +26,9 @@ const styles = theme => {
             margin: '-70px auto 50px',
             padding: '30px',
             textAlign: 'center',
+        },
+        noErrorLoginContainer: {
+            height: '230px'
         },
         loginAvatar: {
             width: '60px',
@@ -61,19 +64,24 @@ const styles = theme => {
             marginTop: '-12px',
             marginLeft: '-12px'
         },
+        noErrorField: {
+            display: 'none',
+        },
         errorField: {
             display: 'flex',
-            background: 'red',
+            background: '#D9484A',
             alignItems: 'center',
             margin: '20px 0 0',
             padding: '20px 10px',
         },
         errorMessage: {
-            textAlign: 'left'
+            textAlign: 'left',
+
         },
         errorIcon: {
             color: 'white',
-            marginRight: '10px'
+            marginRight: '10px',
+            background: '#F6595B'
         }
     };
 };
@@ -90,6 +98,12 @@ class Login extends Component{
     }
 
     handleChange = (event) => {
+        const { error } = this.state;
+        if (error) {
+            this.setState({
+                error: !error,
+            })
+        }
         const { name, value} = event.target;
         this.setState({
             [name]: value,
@@ -98,16 +112,22 @@ class Login extends Component{
 
     handleLogin = async (event) => {
         event.preventDefault();
-        const { isLoading} = this.state;
+        const { isLoading, error} = this.state;
         this.setState({
             isLoading: !isLoading
         });
         const { userName, password } = this.state;
         const data = await LoginApi.getToken(userName, password);
+        console.log(data);
         if (data) {
             const { access_token, expire_time } = data;
             localStorage.setItem('accessToken', access_token);
             redirect('dashboard');
+        } else {
+            this.setState({
+                error: !error,
+                isLoading: false,
+            })
         }
     };
 
@@ -118,13 +138,13 @@ class Login extends Component{
         return (
             <div>
                 <div className={classes.loginTop}>Login LMS</div>
-                <Paper className={classes.loginContainer}>
+                <Paper className={classNames(classes.loginContainer, {[classes.noErrorLoginContainer]: !error})}>
                     <div>
                         <Avatar className={classes.loginAvatar} >
                             <PermIdentityIcon className={classes.loginAvatarIcon}/>
                         </Avatar>
                     </div>
-                    <Paper className={classes.errorField}>
+                    <Paper className={classNames({[classes.errorField]: error}, {[classes.noErrorField]: !error})}>
                         <IconButton className={classes.errorIcon}>
                             <PriorityHighIcon/>
                         </IconButton>
