@@ -1,23 +1,22 @@
-import React, {Component} from 'react';
+import React from 'react';
 import { Button } from '@material-ui/core';
-import { withStyles, } from '@material-ui/core/styles';
-
-const styles = theme => ({
-   button: {
-       background: '#1D8BF1',
-   }
-});
+import AddCircleIcon from '@material-ui/icons/AddCircle';
+import { Link } from 'react-router-dom';
 
 function AddNewButton(props) {
-    const {name, classes} = props;
+    const { name } = props;
+    const url = `/${name}s/create`;
 
     return (
         <div>
-            <Button variant='extendedFab' color='primary' aria-label='Add' className={classes.button}>
-                {name}
-            </Button>
+            <Link to={url} style={{textDecoration: 'none'}}>
+                <Button color='primary'>
+                    <AddCircleIcon/> Add new {name}
+                </Button>
+            </Link>
+
         </div>
     )
 }
 
-export default withStyles(styles)(AddNewButton);
+export default AddNewButton;

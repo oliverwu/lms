@@ -2,16 +2,13 @@ import React, { Component } from 'react';
 import DashboardCard from './DashboardCard';
 import {Grid} from "@material-ui/core";
 import Typography from "@material-ui/core/Typography/Typography";
-import Layout from '../Layout/Layout';
+import MenuBar from '../Layout/MenuBar';
 
 
 class Dashboard extends Component {
     render() {
         return (
-            <Layout selected='Dashboard' menu='Dashboard' >
-                {/*<Typography variant='h2' component="h2" gutterBottom>*/}
-                    {/*Dashboard*/}
-                {/*</Typography>*/}
+            <MenuBar selected='Dashboard' menu='Dashboard' >
                 <Grid container direction="row" >
                     <Grid item xs={12} lg={6}>
                         <Grid container
@@ -62,7 +59,7 @@ class Dashboard extends Component {
                         </Grid>
                     </Grid>
                 </Grid>
-            </Layout>
+            </MenuBar>
         );
     }
 }

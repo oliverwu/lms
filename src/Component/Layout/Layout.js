@@ -53,6 +53,10 @@ const styles = theme => ({
             duration: theme.transitions.duration.enteringScreen,
         }),
     },
+    // drawerList: {
+    //     height: '100%',
+    //     background: '#4E4F51',
+    // },
     drawerPaperClose: {
         overflowX: 'hidden',
         transition: theme.transitions.create('width', {
@@ -171,17 +175,19 @@ class Layout extends Component {
                         <Typography variant="h6" color="inherit" noWrap className={classes.textGrow}>
                             LMS
                         </Typography>
-                        <IconButton onClick={this.handleDrawerClose} className={classes.ChevronLeftButton}>
-                            {/*<ChevronLeftIcon />*/}
+                        <IconButton onClick={this.handleDrawerClose} >
                             <MenuIcon/>
                         </IconButton>
                     </div>
                     <Divider />
-                    <List>
+                    <List className={classes.drawerList}>
                         <Link to='/dashboard' style={{ textDecoration: 'none' }}>
-                            <ListItem button selected={selected === 'Dashboard'} >
+                            <ListItem button selected={selected === 'Dashboard'} style={{textAlign: 'center'}}>
                                 <ListItemIcon>{<Dashboard/>}</ListItemIcon>
-                                <ListItemText primary='Dashboard' />
+                                {/*<ListItemText primary='Dashboard' />*/}
+                                <Typography variant="subtitle1" style={{color: 'white', }} align='center' noWrap >
+                                    Dashboard
+                                </Typography>
                             </ListItem>
                         </Link>
                         <Link to='/courses' style={{ textDecoration: 'none' }}>

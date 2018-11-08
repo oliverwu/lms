@@ -1,10 +1,11 @@
 import React, {Component, PureComponent} from 'react';
 import { withStyles } from '@material-ui/core/styles';
-import { Paper, Avatar, TextField, Button, CircularProgress } from '@material-ui/core';
+import { Paper, Avatar, TextField, Button, CircularProgress, IconButton } from '@material-ui/core';
 import PermIdentityIcon from '@material-ui/icons/PermIdentity';
 import LoginApi from './LoginApi';
 import classNames from 'classnames';
 import { redirect } from '../Utils/Help';
+import PriorityHighIcon from '@material-ui/icons/PriorityHigh';
 
 const styles = theme => {
     return {
@@ -12,7 +13,7 @@ const styles = theme => {
             width: '100%',
             textAlign: 'center',
             height: '200px',
-            background: '#3F9BE7',
+            background: '#1D8BF1',
             fontSize: '30px',
             color: 'white',
             lineHeight: '100px'
@@ -20,8 +21,8 @@ const styles = theme => {
         loginContainer: {
             position: 'relative',
             // top: '200px',
-            width: '300px',
-            height: '220px',
+            width: '330px',
+            height: '330px',
             margin: '-70px auto 50px',
             padding: '30px',
             textAlign: 'center',
@@ -33,7 +34,7 @@ const styles = theme => {
             background: '#DD0047',
             position: 'absolute',
             top: '-30px',
-            left: '150px'
+            left: '165px'
         },
         loginAvatarIcon: {
             width: '40px',
@@ -47,7 +48,7 @@ const styles = theme => {
         button: {
             // margin: '30px auto 20px',
             width: '100%',
-            background: '#3F9BE7',
+            // background: '#3F9BE7',
             color: 'white'
         },
         loginButton: {
@@ -59,6 +60,20 @@ const styles = theme => {
             left: '50%',
             marginTop: '-12px',
             marginLeft: '-12px'
+        },
+        errorField: {
+            display: 'flex',
+            background: 'red',
+            alignItems: 'center',
+            margin: '20px 0 0',
+            padding: '20px 10px',
+        },
+        errorMessage: {
+            textAlign: 'left'
+        },
+        errorIcon: {
+            color: 'white',
+            marginRight: '10px'
         }
     };
 };
@@ -70,6 +85,7 @@ class Login extends Component{
             userName: '',
             password: '',
             isLoading: false,
+            error: false
         }
     }
 
@@ -97,7 +113,7 @@ class Login extends Component{
 
     render() {
         const { classes } = this.props;
-        const { userName, password, isLoading } = this.state;
+        const { userName, password, isLoading, error } = this.state;
 
         return (
             <div>
@@ -108,8 +124,15 @@ class Login extends Component{
                             <PermIdentityIcon className={classes.loginAvatarIcon}/>
                         </Avatar>
                     </div>
+                    <Paper className={classes.errorField}>
+                        <IconButton className={classes.errorIcon}>
+                            <PriorityHighIcon/>
+                        </IconButton>
+                        <p className={classes.errorMessage}>You could not be logged on to LMS. Make sure that your user name and password are correct, and try them again</p>
+                    </Paper>
                     <form onSubmit={this.handleLogin}>
                         <TextField
+                            error={error}
                             id='username'
                             label='User Name*'
                             name='userName'
@@ -120,6 +143,7 @@ class Login extends Component{
                             onChange={this.handleChange}
                         />
                         <TextField
+                            error={error}
                             id='password'
                             label='Password*'
                             name='password'

@@ -6,7 +6,7 @@ import { withStyles } from '@material-ui/core/styles'
 import CourseCard from "./CourseCard";
 import AddNewButton from '../Utils/AddNewButton';
 import { Link } from 'react-router-dom';
-import Layout from '../Layout/Layout';
+import MenuBar from '../Layout/MenuBar';
 
 const styles = theme => ({
     button: {
@@ -47,41 +47,44 @@ class Courses extends React.Component{
         );
     }
 
-    // async componentDidMount() {
-    //     let courses = await CourseApi.getAllCourse();
-    //     courses && this.setState({
-    //         isLoading: false,
-    //         courses: courses,
-    //     });
-    // }
-
     componentDidMount() {
-        this.getAllCourse();
+
     }
 
-    getAllCourse = () => {
-        CourseApi.getAllCourse().then(courses => {
+    async componentDidMount() {
+        let courses = await CourseApi.getAllCourse();
+        try {
             courses && this.setState({
                 isLoading: false,
                 courses: courses,
             });
-        });
-    };
+        } catch (e) {
+
+        }
+    }
+
+    // componentDidMount() {
+    //     this.getAllCourse();
+    // }
+    //
+    // getAllCourse = () => {
+    //     CourseApi.getAllCourse().then(courses => {
+    //         courses && this.setState({
+    //             isLoading: false,
+    //             courses: courses,
+    //         });
+    //     });
+    // };
 
     render() {
         const {courses, isLoading} = this.state;
         const { classes } = this.props;
 
         return (
-            <Layout selected='Courses' menu='COURSES'>
-                {!isLoading && <Link to='/courses/create' style={{textDecoration: 'none'}}>
-                    <div className={classes.button}>
-                        <AddNewButton name='Add new course' />
-                    </div>
-                </Link>}
+            <MenuBar selected='Courses' menu='Courses' name='course'>
                 {isLoading && <PageLoader/>}
                 {!isLoading && courses.length > 0 && this.renderCourseCards(courses)}
-            </Layout>
+            </MenuBar>
         );
     }
 }

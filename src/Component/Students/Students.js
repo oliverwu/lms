@@ -4,9 +4,7 @@ import StudentsTable from './StudentsTable';
 import PageLoader from '../Utils/PageLoader';
 import { withStyles } from '@material-ui/core/styles';
 import StudentsTableControl from './StudentsTableControl';
-import AddNewButton from "../Utils/AddNewButton";
-import {Link} from "react-router-dom";
-import Layout from '../Layout/Layout';
+import MenuBar from '../Layout/MenuBar';
 
 const styles = theme => ({
     button: {
@@ -105,18 +103,13 @@ class Students extends PureComponent{
         const {classes} = this.props;
 
         return (
-            <Layout selected='Students' menu='STUDENTS'>
-                {!isLoading && <Link to='/students/create' style={{textDecoration: 'none'}}>
-                    <div className={classes.button}>
-                        <AddNewButton name='Add new student' />
-                    </div>
-                </Link>}
+            <MenuBar selected='Students' menu='STUDENTS' name='student'>
                 {isLoading && <PageLoader/>}
                 {!isLoading && students.length >0 && <div>
                     <StudentsTable students = {students}/>
                     <StudentsTableControl pageSize={pageSize} page={currentPage - 1} changeCurrentPage={this.changeCurrentPage}/>
                 </div>}
-            </Layout>
+            </MenuBar>
         );
     }
 }

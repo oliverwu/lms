@@ -145,5 +145,4 @@ class CustomPaginationActionsTable extends React.Component {
 CustomPaginationActionsTable.propTypes = {
     classes: PropTypes.object.isRequired,
 };
-
 export default withStyles(styles)(CustomPaginationActionsTable);

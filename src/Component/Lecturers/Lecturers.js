@@ -3,6 +3,7 @@ import LecturersApi from './LecturersApi';
 import LecturersTable from './LecturersTable';
 import PageLoader from '../Utils/PageLoader';
 import Layout from '../Layout/Layout';
+import MenuBar from '../Layout/MenuBar';
 
 class Lecturers extends PureComponent{
     constructor(props) {
@@ -38,10 +39,10 @@ class Lecturers extends PureComponent{
         const { lecturers, isLoading } = this.state;
 
         return (
-            <Layout selected='Lecturers' menu='LECTURERS'>
+            <MenuBar menu='Lecturers' selected='Lecturers' name='lecturer'>
                 {isLoading && <PageLoader/>}
                 {!isLoading && <LecturersTable lecturers = {lecturers} />}
-            </Layout>
+            </MenuBar>
         );
     }
 }
