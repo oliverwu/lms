@@ -51,14 +51,6 @@ const styles = {
         padding: '0 5px',
     },
 
-    gridFee: {
-        paddingRight: '5px'
-    },
-
-    gridMaxStudents: {
-        paddingLeft: '5px'
-    },
-
     maxStudents: {
         textAlign: 'left',
     },

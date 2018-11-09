@@ -3,19 +3,54 @@ import { TextField, MenuItem, Grid, Button, Paper} from '@material-ui/core';
 import { withStyles} from '@material-ui/core/styles';
 import StudentsApi from './StudentsApi';
 import MenuBar from '../Layout/MenuBar';
+import { redirect, getValidationErrors } from "../Utils/Help";
+import CreateSucceedDialog from "../Utils/CreateSucceedDialog";
+import DeleteDialog from "../Utils/DeleteDialog";
+import ErrorDialog from "../Utils/ErrorDialog";
+import * as yup from "yup";
+import CourseApi from "../Courses/CourseApi";
+
+const schema = yup.object().shape({
+    firstName: yup
+        .string()
+        .max(30)
+        .label("First Name")
+        .required(),
+    lastName: yup
+        .string()
+        .max(30)
+        .label("Last Name")
+        .required(),
+    DOB: yup
+        .date()
+        .max(new Date())
+        .label("Date of Birth")
+        .required(),
+    gender: yup
+        .string()
+        .label("Gender")
+        .required(),
+    email: yup
+        .string()
+        .email()
+        .label("Email")
+        .required(),
+    credit: yup
+        .number()
+        .positive()
+        .max(500)
+        .label("Credit")
+        .required(),
+});
 
 const styles = {
     paper: {
-        width: '600px',
+        maxWidth: '600px',
         padding: '20px',
     },
 
-    gridLeft: {
-        paddingRight: '5px'
-    },
-
-    gridRight: {
-        paddingLeft: '5px'
+    textField: {
+        padding: '0 5px',
     },
 
     gender: {
@@ -59,7 +94,8 @@ class StudentDetails extends PureComponent{
             gender: '',
             DOB: 'dd/mm/yyyy',
             email: '',
-            credit: ''
+            credit: '',
+            validationErrors: '',
         }
     }
 
@@ -81,9 +117,22 @@ class StudentDetails extends PureComponent{
         })
     };
 
-    handleSubmit = (e) => {
+    handleSubmit = async (e) => {
         e.preventDefault();
         const { firstName, lastName, gender, DOB, email, credit } = this.state;
+        const userInput = { firstName, lastName, gender, DOB, email, credit };
+        try {
+            await schema.validate(userInput, {
+                abortEarly: false
+            });
+
+        } catch (error) {
+            const validationErrors = getValidationErrors(error);
+            this.setState({
+                validationErrors
+            })
+        }
+
         console.log({firstName, lastName, gender, DOB, email, credit})
     };
 
@@ -117,7 +166,7 @@ class StudentDetails extends PureComponent{
                             container
                         >
                             <Grid
-                                item xs={6} className={classes.gridLeft}
+                                item xs={12} md={6} className={classes.textField}
                             >
                                 <TextField
                                     label='First Name'
@@ -130,7 +179,7 @@ class StudentDetails extends PureComponent{
                                     onChange={this.handleChange}
                                 />
                             </Grid>
-                            <Grid item xs={6} className={classes.gridRight}>
+                            <Grid item xs={12} md={6} className={classes.textField}>
                                 <TextField
                                     id="student-lastName"
                                     label="Last Name"
@@ -149,7 +198,7 @@ class StudentDetails extends PureComponent{
                             container
                         >
                             <Grid
-                                item xs={6} className={classes.gridLeft}
+                                item xs={12} md={6} className={classes.textField}
                             >
                                 <TextField
                                     label='Date of birth'
@@ -163,7 +212,7 @@ class StudentDetails extends PureComponent{
                                     onChange={this.handleChange}
                                 />
                             </Grid>
-                            <Grid item xs={6} className={classes.gridRight}>
+                            <Grid item xs={12} md={6} className={classes.textField}>
                                 <TextField
                                     id="student-gender"
                                     select
@@ -184,26 +233,30 @@ class StudentDetails extends PureComponent{
                                 </TextField>
                             </Grid>
                         </Grid>
-                        <TextField
-                            label="Email"
-                            placeholder='Email'
-                            type='email'
-                            fullWidth
-                            // margin='normal'
-                            name='email'
-                            value={email}
-                            onChange={this.handleChange}
-                        />
-                        <TextField
-                            label='Credit'
-                            id='student-credit'
-                            placeholder='Credit'
-                            fullWidth
-                            name='credit'
-                            value={credit}
-                            margin='normal'
-                            onChange={this.handleChange}
-                        />
+                        <Grid item xs={12} className={classes.textField}>
+                            <TextField
+                                label="Email"
+                                placeholder='Email'
+                                type='email'
+                                fullWidth
+                                // margin='normal'
+                                name='email'
+                                value={email}
+                                onChange={this.handleChange}
+                            />
+                        </Grid>
+                        <Grid item xs={12} className={classes.textField}>
+                            <TextField
+                                label='Credit'
+                                id='student-credit'
+                                placeholder='Credit'
+                                fullWidth
+                                name='credit'
+                                value={credit}
+                                margin='normal'
+                                onChange={this.handleChange}
+                            />
+                        </Grid>
                         <div className={classes.buttons}>
                             <Button
                                 color='default'
