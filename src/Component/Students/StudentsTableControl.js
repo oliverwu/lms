@@ -15,7 +15,6 @@ import LastPageIcon from '@material-ui/icons/LastPage';
 const actionsStyles = theme => ({
     root: {
         flexShrink: 0,
-        // color: theme.palette.text.Primary,
         marginLeft: theme.spacing.unit * 2.5,
     },
 });
@@ -41,7 +40,7 @@ class TablePaginationActions extends React.Component {
     };
 
     render() {
-        const { classes, count, page, rowsPerPage, theme } = this.props;
+        const { classes, count, page, rowsPerPage } = this.props;
 
         return (
             <div className={classes.root}>
@@ -105,12 +104,8 @@ const styles = theme => ({
 });
 
 class CustomPaginationActionsTable extends React.Component {
-    // state = {
-    //     page: 0,
-    // };
 
     handleChangePage = (event, page) => {
-        // this.setState({ page });
         this.props.changeCurrentPage(page);
     };
 
@@ -118,7 +113,6 @@ class CustomPaginationActionsTable extends React.Component {
 
     render() {
         const { classes, pageSize, page } = this.props;
-        // const { page } = this.state;
 
         return (
             <Paper className={classes.root}>

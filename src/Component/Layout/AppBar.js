@@ -12,7 +12,6 @@ const styles = theme => {
         },
         appBar: {
             height: '60px',
-            // background: 'white',
         },
         title: {
             color: 'white',

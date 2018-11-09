@@ -1,8 +1,12 @@
 import React, {Component, PureComponent} from 'react';
-import { TextField, MenuItem, Grid, Button} from '@material-ui/core';
+import { TextField, MenuItem, Grid, Button, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions} from '@material-ui/core';
 import { withStyles} from '@material-ui/core/styles';
 import CourseApi from './CourseApi';
 import MenuBar from '../Layout/MenuBar';
+import {redirect} from "../Utils/Help";
+import CreateSucceedDialog from "../Utils/CreateSucceedDialog";
+import DeleteDialog from "../Utils/DeleteDialog";
+import ErrorDialog from "../Utils/ErrorDialog";
 
 const styles = {
     root: {
@@ -46,19 +50,23 @@ const styles = {
         width: '100px',
         margin: '10px 10px'
     },
+
 };
 
 const maxStudentsOptions = [10, 20, 30, 40, 50];
 
-class Course extends PureComponent{
+class CourseDetails extends PureComponent{
     constructor(props) {
         super(props);
         this.state = {
             title: '',
             fee: '',
-            maxStudents: 0,
+            maxStudent: 0,
             description: '',
             language: '',
+            deleteDialogStatus: false,
+            createDialogSucceedStatus: false,
+            errorDialogStatus: false,
         }
     }
 
@@ -66,7 +74,7 @@ class Course extends PureComponent{
         this.setState({
             title: '',
             fee: '',
-            maxStudents: 0,
+            maxStudent: 0,
             description: '',
             language: '',
         })
@@ -81,12 +89,62 @@ class Course extends PureComponent{
 
     handleSubmit = (e) => {
         e.preventDefault();
-        const { title, fee, maxStudents, description } = this.state;
-        console.log({title, fee, maxStudents, description})
+        const { title, fee, maxStudent, description, language } = this.state;
+        console.log({title, fee, maxStudent, description});
+        const { id } = this.props.match.params;
+        if (id === 'create') {
+            const newCourse = {title, fee, maxStudent, description, language};
+            CourseApi.createNewCourse(newCourse).then(statusCode => {
+                if (statusCode === 200) {
+                    this.setState({
+                        createDialogSucceedStatus: true,
+                    })
+                } else if (statusCode > 300) {
+                    this.setState({
+                        errorDialogStatus: true,
+                    })
+                }
+            });
+        } else {
+            const newCourse = {id, title, fee, maxStudent, description, language};
+            console.log(newCourse);
+            CourseApi.updateCourse(newCourse).then(statusCode => {
+                if (statusCode === 204) {
+                    this.setState({
+                        createDialogSucceedStatus: true,
+                    })
+                } else if (statusCode > 300) {
+                    this.setState({
+                        errorDialogStatus: true,
+                    })
+                }
+            })
+        }
     };
 
     handleDelete = () => {
-        console.log('delete');
+        const { id } = this.props.match.params;
+        if (id !== 'create') {
+            CourseApi.deleteCourse(id).then(data => redirect('courses'));
+        }
+    };
+
+    handleDeleteDialogOpen = () => {
+        this.setState({
+            deleteDialogStatus: true,
+        })
+    };
+
+    handleDeleteDialogClose = () => {
+        this.setState({
+            deleteDialogStatus: false,
+        })
+    };
+
+    handleErrorDialogClose = () => {
+        this.setState({
+            errorDialogStatus: false,
+        })
     };
 
     // async componentDidMount() {
@@ -115,7 +173,7 @@ class Course extends PureComponent{
     };
 
     render() {
-        const { title, fee, maxStudents, description, language} = this.state;
+        const { title, fee, maxStudent, description, language, deleteDialogStatus, createDialogSucceedStatus, errorDialogStatus} = this.state;
         const { classes } = this.props;
         const { id } = this.props.match.params;
 
@@ -158,8 +216,8 @@ class Course extends PureComponent{
                                 fullWidth
                                 // margin='normal'
                                 className={classes.maxStudents}
-                                value={maxStudents}
-                                name='maxStudents'
+                                value={maxStudent}
+                                name='maxStudent'
                                 onChange={this.handleChange}
                                 // SelectProps={{
                                 //     MenuProps: {
@@ -207,7 +265,7 @@ class Course extends PureComponent{
                                 color='secondary'
                                 variant='extendedFab'
                                 className={id === 'create' ? classes.noButtonDelete : classes.buttonDelete}
-                                onClick={this.handleDelete}
+                                onClick={this.handleDeleteDialogOpen}
                             >Delete</Button>
                             <Button
                                 type="submit"
@@ -218,9 +276,24 @@ class Course extends PureComponent{
                         </div>
                     </div>
                 </form>
+                <DeleteDialog
+                    deleteDialogStatus={deleteDialogStatus}
+                    handleDeleteDialogClose={this.handleDeleteDialogClose}
+                    content='course'
+                    handleDelete={this.handleDelete}
+                />
+                <CreateSucceedDialog
+                    url='courses'
+                    createDialogSucceedStatus={createDialogSucceedStatus}
+                />
+                <ErrorDialog
+                    errorDialogStatus={errorDialogStatus}
+                    handleErrorDialogClose={this.handleErrorDialogClose}
+                    content='course'
+                />
             </MenuBar>
         );
     }
 }
 
-export default withStyles(styles)(Course);
+export default withStyles(styles)(CourseDetails);

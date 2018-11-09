@@ -4,9 +4,8 @@ import PageLoader from '../Utils/PageLoader';
 import { Grid } from "@material-ui/core";
 import { withStyles } from '@material-ui/core/styles'
 import CourseCard from "./CourseCard";
-import AddNewButton from '../Utils/AddNewButton';
-import { Link } from 'react-router-dom';
 import MenuBar from '../Layout/MenuBar';
+import DeleteDialog from "../Utils/DeleteDialog";
 
 const styles = theme => ({
     button: {
@@ -23,6 +22,7 @@ class Courses extends React.Component{
             courses: [],
         }
     }
+
 
     renderCourseCards(courses) {
         return (
@@ -45,10 +45,6 @@ class Courses extends React.Component{
                 </Grid>
             </div>
         );
-    }
-
-    componentDidMount() {
-
     }
 
     async componentDidMount() {
@@ -77,8 +73,7 @@ class Courses extends React.Component{
     // };
 
     render() {
-        const {courses, isLoading} = this.state;
-        const { classes } = this.props;
+        const {courses, isLoading,} = this.state;
 
         return (
             <MenuBar selected='Courses' menu='Courses' name='course'>
@@ -91,6 +86,3 @@ class Courses extends React.Component{
 
 
 export default withStyles(styles())(Courses);
-
-// 123-456-789
-// \d{3}-\d{3}-\d{3}

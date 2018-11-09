@@ -2,11 +2,6 @@ import {lmsURL} from "../Login/LoginApi";
 import moment from 'moment';
 import { redirect, getAccessToken } from "../Utils/Help";
 
-let access_token = localStorage.getItem('accessToken');
-
-let BearerAccessToken = 'Bearer ' + access_token;
-
-
 const genderMap = [
     {
         abbr: 'M',
@@ -73,7 +68,7 @@ let StudentsApi = {
             } else {
                 if (response.ok) {
                     const jsonResponse = await response.json();
-                    const { fullName, dateOfBirth, gender, email, credit} = jsonResponse;
+                    const { id, fullName, dateOfBirth, gender, email, credit} = jsonResponse;
                     const firstName = fullName.split(' ')[0];
                     const lastName= fullName.split(' ')[1];
                     const newGender = genderMap.filter((item) => {
@@ -81,6 +76,7 @@ let StudentsApi = {
                     })[0].name;
                     const formatDOB =moment(dateOfBirth).format("YYYY-MM-DD");
                     return {
+                        id: id,
                         firstName: firstName,
                         lastName: lastName,
                         gender: newGender,

@@ -19,5 +19,5 @@ class PageLoader extends React.Component{
     }
 }
 
-// export default PageLoader;
+
 export default withStyles(styles)(PageLoader);

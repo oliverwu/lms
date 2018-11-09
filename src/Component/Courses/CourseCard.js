@@ -5,6 +5,9 @@ import { Paper, MenuItem, Menu, IconButton } from '@material-ui/core';
 import Typography from '@material-ui/core/Typography';
 import { Link } from 'react-router-dom';
 import AddIcon from '@material-ui/icons/Add';
+import DeleteDialog from "../Utils/DeleteDialog";
+import CourseApi from "./CourseApi";
+import {redirect} from "../Utils/Help";
 
 const styles = {
     root: {
@@ -46,11 +49,6 @@ const styles = {
         marginBottom: '10px',
         background: '#1D8BF1',
         color: 'white'
-        // position: 'absolute',
-        // bottom:'10px',
-        // width: '250'
-        // width: '100px',
-        // margin: '0 75px',
     },
 };
 
@@ -59,6 +57,7 @@ class MediaCard extends Component{
         super(props);
         this.state = {
             anchorEl: null,
+            deleteDialogStatus: false,
         }
     }
 
@@ -71,8 +70,33 @@ class MediaCard extends Component{
         this.setState({ anchorEl: null });
     };
 
+    handleDelete = () => {
+        const { id } = this.props;
+        CourseApi.deleteCourse(id).then(data => {
+            this.setState({
+                deleteDialogStatus: false,
+            });
+            window.location.reload();
+        });
+
+    };
+
+    handleDeleteDialogOpen = () => {
+        this.setState({
+            deleteDialogStatus: true,
+        })
+    };
+
+    handleDeleteDialogClose = () => {
+        this.setState({
+            deleteDialogStatus: false,
+        })
+    };
+
+
+
     render() {
-        const { anchorEl } = this.state;
+        const { anchorEl, deleteDialogStatus } = this.state;
         const { classes, title, description, id } = this.props;
         const open = Boolean(anchorEl);
 
@@ -102,13 +126,19 @@ class MediaCard extends Component{
                                 }
                             }}
                         >
-                            <MenuItem key='delete' >Delete</MenuItem>
+                            <MenuItem key='delete' onClick={this.handleDeleteDialogOpen}>Delete</MenuItem>
                             <Link to={`courses/${id}`} style={{textDecoration: 'none', width: '100%'}}>
                                 <MenuItem key='details' >Details</MenuItem>
                             </Link>
                         </Menu>
                     </div>
                 </Paper>
+                <DeleteDialog
+                    deleteDialogStatus={deleteDialogStatus}
+                    handleDeleteDialogClose={this.handleDeleteDialogClose}
+                    content='course'
+                    handleDelete={this.handleDelete}
+                />
             </div>
         );
     }

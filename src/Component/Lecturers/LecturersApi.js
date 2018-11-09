@@ -21,7 +21,6 @@ let LecturersApi = {
             } else {
                 if (ok) {
                     const jsonResponse = await response.json();
-                    console.log(jsonResponse);
                     return jsonResponse.map((item) => {
                         return {
                             id: item.id,
@@ -36,7 +35,39 @@ let LecturersApi = {
         } catch (e) {
             console.log(e)
         }
+    },
 
+    getLecturerById: async (id) => {
+        let endpoint = `${lmsURL}api/lecturers/${id}`;
+        try {
+            const response = await fetch(endpoint, {
+                headers: {
+                    'Authorization': getAccessToken(),
+                }
+            });
+            const { ok, status} = response;
+            if ( status > 300) {
+                localStorage.removeItem('accessToken');
+                redirect('login');
+            } else {
+                if (ok) {
+                    const jsonResponse = await response.json();
+                    const { id, name, staffNumber, email, bibliography } = jsonResponse;
+                    const firstName = name.split(' ')[0];
+                    const lastName= name.split(' ')[1];
+                    return {
+                        id: id,
+                        firstName: firstName,
+                        lastName: lastName,
+                        staffNumber: staffNumber,
+                        email: email,
+                        bibliography: bibliography,
+                    }
+                }
+            }
+        } catch (e) {
+            console.log(e)
+        }
     }
 };
 

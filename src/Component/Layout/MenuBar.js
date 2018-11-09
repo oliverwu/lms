@@ -1,17 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import Drawer from '@material-ui/core/Drawer';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import List from '@material-ui/core/List';
-import Typography from '@material-ui/core/Typography';
+import { Drawer, CssBaseline, List, Typography, Hidden, Divider, ListItem, ListItemIcon, ListItemText }  from '@material-ui/core';
 import IconButton from '@material-ui/core/IconButton';
-import Hidden from '@material-ui/core/Hidden';
-import Divider from '@material-ui/core/Divider';
 import MenuIcon from '@material-ui/icons/Menu';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
 import {Link} from "react-router-dom";
 import LocalLibraryIcon from '@material-ui/icons/LocalLibrary';
 import ClassIcon from '@material-ui/icons/Class';
@@ -24,7 +16,7 @@ const drawerWidth = '240px';
 const styles = theme => ({
     root: {
         display: 'flex',
-
+        width: '100%'
     },
     drawerContainer: {
         [theme.breakpoints.up('sm')]: {
@@ -39,7 +31,6 @@ const styles = theme => ({
         justifyContent: 'left',
         padding: '0 20px',
         background: 'white',
-        // boxShadow: '0px 10px 47px -9px rgba(0,0,0,0.75)'
     },
     menuButton: {
         marginRight: 20,
@@ -59,7 +50,6 @@ const styles = theme => ({
         height: '60px',
         position: 'relative',
         background: 'white'
-        // boxShadow: '0px 10px 47px -9px rgba(0,0,0,0.75)'
     },
     drawerPaper: {
         backgroundColor: '#F9F9F9',
@@ -69,9 +59,13 @@ const styles = theme => ({
 
     content: {
         flexGrow: 1,
+        width: '100%',
+        overflow: 'auto'
     },
     contentContainer: {
         padding: '10px 30px',
+        width: '100%',
+        overflow: 'auto'
     }
 });
 
@@ -131,21 +125,18 @@ class MenuBar extends React.Component {
             <div className={classes.root}>
                 <CssBaseline />
                 <nav className={classes.drawerContainer}>
-                    {/* The implementation can be swap with js to avoid SEO duplication of links. */}
                     <Hidden smUp implementation="css">
                         <Drawer
-                            // container={this.props.container}
                             variant="temporary"
-                            // anchor={theme.direction === 'rtl' ? 'right' : 'left'}
                             open={this.state.mobileOpen}
                             onClose={this.handleDrawerToggle}
                             className={classes.drawer}
                             classes={{
                                 paper: classes.drawerPaper,
                             }}
-                            // ModalProps={{
-                            //   keepMounted: true, // Better open performance on mobile.
-                            // }}
+                            ModalProps={{
+                              keepMounted: true,
+                            }}
                         >
                             {drawer}
                         </Drawer>

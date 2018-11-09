@@ -20,7 +20,6 @@ const styles = theme => {
         },
         loginContainer: {
             position: 'relative',
-            // top: '200px',
             width: '330px',
             height: '330px',
             margin: '-70px auto 50px',
@@ -120,7 +119,7 @@ class Login extends Component{
         const data = await LoginApi.getToken(userName, password);
         console.log(data);
         if (data) {
-            const { access_token, expire_time } = data;
+            const { access_token } = data;
             localStorage.setItem('accessToken', access_token);
             redirect('dashboard');
         } else {
@@ -168,7 +167,6 @@ class Login extends Component{
                             label='Password*'
                             name='password'
                             value={password}
-                            // placeholder='ppp'
                             type='password'
                             fullWidth
                             margin='normal'
@@ -176,7 +174,6 @@ class Login extends Component{
                         />
                         <div className={classes.buttonWrapper}>
                             <Button
-                                // className={classes.button}
                                 className={classNames(classes.button, {[classes.loginButton]: isLoading})}
                                 variant='contained'
                                 color='primary'

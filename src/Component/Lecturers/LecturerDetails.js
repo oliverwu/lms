@@ -1,7 +1,7 @@
-import React, {Component, PureComponent} from 'react';
-import { TextField, MenuItem, Grid, Button, Paper} from '@material-ui/core';
+import React, { PureComponent } from 'react';
+import {TextField, Grid, Button, Paper} from '@material-ui/core';
 import { withStyles} from '@material-ui/core/styles';
-import StudentsApi from './StudentsApi';
+import LecturersApi from './LecturersApi';
 import MenuBar from '../Layout/MenuBar';
 
 const styles = {
@@ -16,10 +16,6 @@ const styles = {
 
     gridRight: {
         paddingLeft: '5px'
-    },
-
-    gender: {
-        textAlign: 'left',
     },
 
     buttons: {
@@ -49,28 +45,26 @@ const styles = {
     },
 };
 
-
-class Student extends PureComponent{
-    constructor(props) {
-        super(props);
+class CourseDetails extends PureComponent{
+    constructor() {
+        super();
         this.state = {
+            id: '',
             firstName: '',
-            lastName: "",
-            gender: '',
-            DOB: 'dd/mm/yyyy',
+            lastName: '',
+            staffNumber: '',
             email: '',
-            credit: ''
+            bibliography: ''
         }
     }
 
     handleReset = () => {
         this.setState({
             firstName: '',
-            lastName: "",
-            gender: '',
-            DOB: 'dd/mm/yyyy',
+            lastName: '',
+            staffNumber: '',
             email: '',
-            credit: ''
+            bibliography: ''
         })
     };
 
@@ -83,48 +77,39 @@ class Student extends PureComponent{
 
     handleSubmit = (e) => {
         e.preventDefault();
-        const { firstName, lastName, gender, DOB, email, credit } = this.state;
-        console.log({firstName, lastName, gender, DOB, email, credit})
+        const { id, firstName, lastName, staffNumber, email, bibliography } = this.state;
+        console.log({id, firstName, lastName, staffNumber, email, bibliography})
     };
 
-    // async componentDidMount() {
-    //     const { id } = this.props.match.params;
-    //     console.log(id !== 'create');
-    //     if (id !== 'create') {
-    //         const { student, statusCode } = await StudentsApi.getStudentById(id);
-    //         if (statusCode >= 200 && statusCode <= 300) {
-    //             this.setState({
-    //                 ...student
-    //             })
-    //         }
-    //     }
-    // }
+    handleDelete = () => {
+        console.log('delete');
+    };
+
 
     componentDidMount() {
         const { id } = this.props.match.params;
         if (id !== 'create') {
-            this.getStudentById(id);
+            this.getLecturerById(id);
         }
     }
 
-    getStudentById = (id) => {
-        StudentsApi.getStudentById(id).then(student => {
-            student && this.setState({
-                ...student
+    getLecturerById = (id) => {
+        LecturersApi.getLecturerById(id).then(lecturer => {
+            lecturer && this.setState({
+                ...lecturer
             })
         });
     };
 
-
     render() {
-        const { firstName, lastName, gender, DOB, email, credit } = this.state;
+        const { firstName, lastName, staffNumber, email, bibliography } = this.state;
         const { classes } = this.props;
         const { id } = this.props.match.params;
 
         return (
-            <MenuBar selected='Students' menu={id === 'create' ? 'CREATE NEW STUDENT' : 'STUDENT DETAILS'}>
+            <MenuBar selected='Lecturers' menu={id === 'create' ? 'CREATE NEW LECTURER' : 'LECTURER DETAILS'}>
                 <Paper className={classes.paper}>
-                    {console.log({ firstName, lastName, gender, DOB, email, credit })}
+                    {console.log({ id, firstName, lastName, staffNumber, email, bibliography })}
                     <form onSubmit={this.handleSubmit}>
                         <Grid
                             container
@@ -158,45 +143,15 @@ class Student extends PureComponent{
                                 </TextField>
                             </Grid>
                         </Grid>
-                        <Grid
-                            container
-                        >
-                            <Grid
-                                item xs={6} className={classes.gridLeft}
-                            >
-                                <TextField
-                                    label='Date of birth'
-                                    id='student-DOB'
-                                    type='date'
-                                    // placeholder='Date of birth'
-                                    fullWidth
-                                    name='DOB'
-                                    value={DOB}
-                                    // margin='normal'
-                                    onChange={this.handleChange}
-                                />
-                            </Grid>
-                            <Grid item xs={6} className={classes.gridRight}>
-                                <TextField
-                                    id="student-gender"
-                                    select
-                                    label="Gender"
-                                    fullWidth
-                                    // margin='normal'
-                                    className={classes.gender}
-                                    value={gender}
-                                    name='gender'
-                                    onChange={this.handleChange}
-                                    helperText="Please select the gender"
-                                >
-                                    {['Male', 'Female'].map(option => (
-                                        <MenuItem key={option} value={option}>
-                                            {option}
-                                        </MenuItem>
-                                    ))}
-                                </TextField>
-                            </Grid>
-                        </Grid>
+                        <TextField
+                            label="Staff Number"
+                            placeholder='Staff Number'
+                            fullWidth
+                            // margin='normal'
+                            name='staffNumber'
+                            value={staffNumber}
+                            onChange={this.handleChange}
+                        />
                         <TextField
                             label="Email"
                             placeholder='Email'
@@ -208,12 +163,11 @@ class Student extends PureComponent{
                             onChange={this.handleChange}
                         />
                         <TextField
-                            label='Credit'
-                            id='student-credit'
-                            placeholder='Credit'
+                            label='Bibliography'
+                            placeholder='Bibliography'
                             fullWidth
-                            name='credit'
-                            value={credit}
+                            name='bibliography'
+                            value={bibliography}
                             margin='normal'
                             onChange={this.handleChange}
                         />
@@ -229,6 +183,7 @@ class Student extends PureComponent{
                                     color='secondary'
                                     variant='extendedFab'
                                     className={id === 'create' ? classes.noButtonDelete : classes.buttonDelete}
+                                    onClick={this.handleDelete}
                                 >Delete</Button>
                                 <Button
                                     type="submit"
@@ -245,4 +200,4 @@ class Student extends PureComponent{
     }
 }
 
-export default withStyles(styles)(Student);
+export default withStyles(styles)(CourseDetails);

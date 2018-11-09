@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import DashboardCard from './DashboardCard';
 import {Grid} from "@material-ui/core";
-import Typography from "@material-ui/core/Typography/Typography";
 import MenuBar from '../Layout/MenuBar';
 
 
@@ -37,8 +36,8 @@ class Dashboard extends Component {
                                 description={'Best lecturers in IT world'}
                                 button1={'Add new lecture'}
                                 button2={'All lectures'}
-                                linkUrl1={'/lectures/create'}
-                                linkUrl2={'/lectures'}
+                                linkUrl1={'/lecturers/create'}
+                                linkUrl2={'/lecturers'}
                             />
                         </Grid>
                     </Grid>

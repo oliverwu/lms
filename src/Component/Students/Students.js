@@ -103,7 +103,7 @@ class Students extends PureComponent{
         const {classes} = this.props;
 
         return (
-            <MenuBar selected='Students' menu='STUDENTS' name='student'>
+            <MenuBar selected='Students' menu='Students' name='student'>
                 {isLoading && <PageLoader/>}
                 {!isLoading && students.length >0 && <div>
                     <StudentsTable students = {students}/>

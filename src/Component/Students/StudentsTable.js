@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import StudentApi from './StudentsApi';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
@@ -10,7 +9,6 @@ import TableRow from '@material-ui/core/TableRow';
 import {Paper, Button } from '@material-ui/core';
 import Moment from 'moment';
 import { Link } from 'react-router-dom';
-import DetailsIcon from '@material-ui/icons/Details'
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 
 const styles = theme => ({
@@ -24,7 +22,6 @@ const styles = theme => ({
     },
     table: {
         minWidth: 500,
-        // textAlign: 'right',
     },
     detailsButton: {
         paddingRight: 0,
@@ -75,11 +72,8 @@ class StudentsTable extends Component {
                                     <TableCell numeric>
                                         <Link to={`students/${student.id}`} style={{textDecoration: 'none'}}>
                                             <Button className={classes.detailsButton}><MoreVertIcon/></Button>
-                                            {/*<TableCell numeric>{'Details'}</TableCell>*/}
                                         </Link>
                                     </TableCell>
-
-
                                 </TableRow>
                             );
                         })}

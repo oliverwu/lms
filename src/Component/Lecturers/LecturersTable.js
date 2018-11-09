@@ -38,18 +38,25 @@ const LecturersTableCell = withStyles(theme => ({
 const styles = theme => ({
     root: {
         width: '100%',
+        // minWidth: '100px',
         marginTop: theme.spacing.unit * 3,
-        overflowX: 'auto',
+        // overflowX: 'auto',
+        // overflowY: 'auto',
         textAlign: 'center',
+
         // minHeight: '500px',
         marginBottom: 0,
     },
     table: {
-        minWidth: 500,
+        // width: '90%'
+        // minWidth: '300px',
         // textAlign: 'right',
     },
     detailsButton: {
         paddingRight: 0,
+    },
+    tableWrapper: {
+        overflowX: 'auto',
     }
 });
 
@@ -136,48 +143,51 @@ class LecturersTable extends Component {
         const pageSize = 10;
         return (
             <Paper className={classes.root}>
-                <Table className={classes.table}>
-                    <TableHead>
-                        <TableRow>
-                            <LecturersTableCell numeric={true}>Name</LecturersTableCell>
-                            <LecturersTableCell numeric>Email</LecturersTableCell>
-                            <LecturersTableCell numeric>Staff Number</LecturersTableCell>
-                            <LecturersTableCell numeric>Details</LecturersTableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {lecturers.slice(page*10, page*10 + 10).map(lecturer => {
-                            return (
-                                <TableRow key={lecturer.id}>
-                                    <TableCell component="th" scope="row" numeric={true}>
-                                        {lecturer.name}
-                                    </TableCell>
-                                    <TableCell numeric>{lecturer.email}</TableCell>
-                                    <TableCell numeric>{lecturer.staffNumber}</TableCell>
-                                    <TableCell numeric>
-                                        <Link to={`lecturers/${lecturer.id}`} style={{textDecoration: 'none'}}>
-                                            <Button className={classes.detailsButton}><MoreVertIcon/></Button>
-                                            {/*<TableCell numeric>{'Details'}</TableCell>*/}
-                                        </Link>
-                                    </TableCell>
-                                </TableRow>
-                            );
-                        })}
-                    </TableBody>
-                    <TableFooter>
-                        <TableRow>
-                            <TablePagination
-                                // colSpan={3}
-                                count={lecturers.length}
-                                rowsPerPage={pageSize}
-                                rowsPerPageOptions={[pageSize]}
-                                page={page}
-                                onChangePage={this.handleChangePage}
-                                ActionsComponent={TablePaginationActionsWrapped}
-                            />
-                        </TableRow>
-                    </TableFooter>
-                </Table>
+                <div className={classes.tableWrapper}>
+                    <Table className={classes.table}>
+                        <TableHead>
+                            <TableRow>
+                                <LecturersTableCell numeric={true}>Name</LecturersTableCell>
+                                <LecturersTableCell numeric>Email</LecturersTableCell>
+                                <LecturersTableCell numeric>Staff Number</LecturersTableCell>
+                                <LecturersTableCell numeric>Details</LecturersTableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {lecturers.slice(page*10, page*10 + 10).map(lecturer => {
+                                return (
+                                    <TableRow key={lecturer.id}>
+                                        <TableCell component="th" scope="row" numeric={true}>
+                                            {lecturer.name}
+                                        </TableCell>
+                                        <TableCell numeric>{lecturer.email}</TableCell>
+                                        <TableCell numeric>{lecturer.staffNumber}</TableCell>
+                                        <TableCell numeric>
+                                            <Link to={`lecturers/${lecturer.id}`} style={{textDecoration: 'none'}}>
+                                                <Button className={classes.detailsButton}><MoreVertIcon/></Button>
+                                                {/*<TableCell numeric>{'Details'}</TableCell>*/}
+                                            </Link>
+                                        </TableCell>
+                                    </TableRow>
+                                );
+                            })}
+                        </TableBody>
+                        <TableFooter>
+                            <TableRow>
+                                <TablePagination
+                                    // colSpan={3}
+                                    count={lecturers.length}
+                                    rowsPerPage={pageSize}
+                                    rowsPerPageOptions={[pageSize]}
+                                    page={page}
+                                    onChangePage={this.handleChangePage}
+                                    ActionsComponent={TablePaginationActionsWrapped}
+                                />
+                            </TableRow>
+                        </TableFooter>
+                    </Table>
+                </div>
+
             </Paper>
         );
     }

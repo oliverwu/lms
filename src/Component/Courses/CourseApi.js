@@ -52,14 +52,88 @@ let CourseApi = {
             } else {
                 if (response.ok) {
                     const jsonResponse = await response.json();
-                    const { title, fee, maxStudent, description, language} = jsonResponse;
+                    console.log(jsonResponse.maxStudent);
+                    const { id, title, fee, maxStudent, description, language} = jsonResponse;
                     return {
+                        id: id,
                         title: title,
                         description: description,
                         fee: fee,
-                        maxStudents: maxStudent,
+                        maxStudent: maxStudent,
                         language: language,
                     }
+                }
+            }
+        } catch (e) {
+            console.log(e);
+        }
+    },
+
+    createNewCourse: async (course) => {
+        let endpoint = `${lmsURL}api/courses`;
+        try {
+            const response = await fetch(endpoint,{
+                method: 'POST',
+                headers: {
+                    'Authorization': getAccessToken(),
+                    "Content-type": "application/json",
+                },
+                body:  JSON.stringify(course)
+            });
+            const statusCode = response.status;
+            if (statusCode === 401) {
+                localStorage.removeItem('accessToken');
+                redirect('login');
+            } else {
+                return statusCode
+            }
+        } catch (e) {
+            console.log(e);
+        }
+    },
+
+    updateCourse: async (course) => {
+        let endpoint = `${lmsURL}api/courses`;
+        try {
+            const response = await fetch(endpoint,{
+                method: 'PUT',
+                headers: {
+                    'Authorization': getAccessToken(),
+                    "Content-type": "application/json",
+                },
+                body:  JSON.stringify(course)
+            });
+            console.log(response);
+            const statusCode = response.status;
+            if (statusCode === 401) {
+                localStorage.removeItem('accessToken');
+                redirect('login');
+            } else {
+                return statusCode
+            }
+        } catch (e) {
+            console.log(e);
+        }
+    },
+
+
+    deleteCourse: async (id) => {
+        let endpoint = `${lmsURL}api/courses/${id}`;
+        try {
+            const response = await fetch(endpoint,{
+                method: 'DELETE',
+                headers: {
+                    'Authorization': getAccessToken(),
+                },
+            });
+            const statusCode = response.status;
+            if (statusCode === 401) {
+                localStorage.removeItem('accessToken');
+                redirect('login');
+            } else {
+                if (response.ok) {
+                    const jsonResponse = await response.json();
+                    return jsonResponse;
                 }
             }
         } catch (e) {
@@ -69,6 +143,3 @@ let CourseApi = {
 };
 
 export default CourseApi;
-
-// import axios from 'axios';
-// axios.defaults.headers.common.Authorizaiotn = `Bearer ${accessToken}`;
