@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import {TextField, Grid, Button, Paper} from '@material-ui/core';
+import {TextField, Grid, Button, Paper, FormHelperText} from '@material-ui/core';
 import { withStyles} from '@material-ui/core/styles';
 import LecturersApi from './LecturersApi';
 import MenuBar from '../Layout/MenuBar';
@@ -10,34 +10,30 @@ import ErrorDialog from "../Utils/ErrorDialog";
 import * as yup from "yup";
 
 const schema = yup.object().shape({
-    title: yup
+    firstName: yup
         .string()
-        .max(50)
-        .label("Title")
+        .max(30)
+        .label("First Name")
         .required(),
-    language: yup
+    lastName: yup
         .string()
-        .max(50)
-        .label("Language")
+        .max(30)
+        .label("Last Name")
         .required(),
-    fee: yup
+    staffNumber: yup
         .number()
-        .positive()
-        .min(10)
-        .max(1000)
-        .label("Fee")
+        .max(65536)
+        .label("Staff Number")
         .required(),
-    maxStudent: yup
-        .number()
-        .positive()
-        .min(10)
-        .max(50)
-        .label("Max students")
+    email: yup
+        .string()
+        .email()
+        .label("Email")
         .required(),
-    description: yup
+    bibliography: yup
         .string()
         .max(250)
-        .label("Description")
+        .label("Bibliography")
         .required(),
 });
 
@@ -88,7 +84,8 @@ class CourseDetails extends PureComponent{
             lastName: '',
             staffNumber: '',
             email: '',
-            bibliography: ''
+            bibliography: '',
+            validationErrors: ''
         }
     }
 
@@ -109,10 +106,25 @@ class CourseDetails extends PureComponent{
         })
     };
 
-    handleSubmit = (e) => {
+    handleSubmit = async (e) => {
         e.preventDefault();
-        const { id, firstName, lastName, staffNumber, email, bibliography } = this.state;
-        console.log({id, firstName, lastName, staffNumber, email, bibliography})
+        const { firstName, lastName, staffNumber, email, bibliography } = this.state;
+        const userInput = { firstName, lastName, staffNumber, email, bibliography };
+        try {
+            await schema.validate(userInput, {
+                abortEarly: false
+            });
+
+        } catch (error) {
+            const validationErrors = getValidationErrors(error);
+            console.log(validationErrors);
+            this.setState({
+                validationErrors
+            })
+        }
+
+
+        console.log({ firstName, lastName, staffNumber, email, bibliography})
     };
 
     handleDelete = () => {
@@ -136,7 +148,7 @@ class CourseDetails extends PureComponent{
     };
 
     render() {
-        const { firstName, lastName, staffNumber, email, bibliography } = this.state;
+        const { firstName, lastName, staffNumber, email, bibliography, validationErrors } = this.state;
         const { classes } = this.props;
         const { id } = this.props.match.params;
 
@@ -161,6 +173,7 @@ class CourseDetails extends PureComponent{
                                     margin='normal'
                                     onChange={this.handleChange}
                                 />
+                                {validationErrors.firstName && <FormHelperText error>{validationErrors.firstName}</FormHelperText>}
                             </Grid>
                             <Grid item xs={12} md={6} className={classes.textField}>
                                 <TextField
@@ -175,6 +188,7 @@ class CourseDetails extends PureComponent{
                                     onChange={this.handleChange}
                                 >
                                 </TextField>
+                                {validationErrors.lastName && <FormHelperText error>{validationErrors.lastName}</FormHelperText>}
                             </Grid>
                         </Grid>
                         <Grid item xs={12} className={classes.textField}>
@@ -187,6 +201,7 @@ class CourseDetails extends PureComponent{
                                 value={staffNumber}
                                 onChange={this.handleChange}
                             />
+                            {validationErrors.staffNumber && <FormHelperText error>{validationErrors.staffNumber}</FormHelperText>}
                         </Grid >
                         <Grid item xs={12} className={classes.textField}>
                             <TextField
@@ -199,6 +214,7 @@ class CourseDetails extends PureComponent{
                                 value={email}
                                 onChange={this.handleChange}
                             />
+                            {validationErrors.email && <FormHelperText error>{validationErrors.email}</FormHelperText>}
                         </Grid >
                         <Grid item xs={12} className={classes.textField}>
                             <TextField
@@ -210,6 +226,7 @@ class CourseDetails extends PureComponent{
                                 margin='normal'
                                 onChange={this.handleChange}
                             />
+                            {validationErrors.bibliography && <FormHelperText error>{validationErrors.bibliography}</FormHelperText>}
                         </Grid >
                         <div className={classes.buttons}>
                             <Button
