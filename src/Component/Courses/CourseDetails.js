@@ -47,6 +47,10 @@ const styles = {
         maxWidth: '600px',
     },
 
+    textField: {
+        padding: '0 5px',
+    },
+
     gridFee: {
         paddingRight: '5px'
     },
@@ -222,30 +226,16 @@ class CourseDetails extends PureComponent{
         })
     };
 
-    // async componentDidMount() {
-    //     const { id } = this.props.match.params;
-    //     if (id !== 'create') {
-    //         const course  = await CourseApi.getAllCourseById(id);
-    //         course && this.setState({
-    //             ...course
-    //         })
-    //     }
-    // }
-
-    componentDidMount() {
+    async componentDidMount() {
         const { id } = this.props.match.params;
         if (id !== 'create') {
-            this.getCourseById(id);
-        }
-    }
-
-    getCourseById = (id) => {
-        CourseApi.getCourseById(id).then(course => {
+            const course  = await CourseApi.getAllCourseById(id);
             course && this.setState({
                 ...course
             })
-        });
-    };
+        }
+    }
+
 
     render() {
         const { title, fee, maxStudent, description, language, deleteDialogStatus, createDialogSucceedStatus, errorDialogStatus, validationErrors} = this.state;
@@ -255,23 +245,23 @@ class CourseDetails extends PureComponent{
         return (
             <MenuBar selected='Courses' menu={id === 'create' ? 'CREATE NEW COURSE' : 'COURSE DETAILS'}>
                 <form className={classes.root} onSubmit={this.handleSubmit}>
-                    <TextField
-                        label='Title'
-                        id='course-title'
-                        placeholder='Title'
-                        fullWidth
-                        name='title'
-                        value={title}
-                        margin='normal'
-                        onChange={this.handleChange}
-                    />
-                    {validationErrors.title && <FormHelperText error>{validationErrors.title}</FormHelperText>}
                     <Grid
                         container
                     >
-                        <Grid
-                            item xs={12} md={6} className={classes.gridFee}
-                        >
+                        <Grid item xs={12} className={classes.textField}>
+                            <TextField
+                                label='Title'
+                                id='course-title'
+                                placeholder='Title'
+                                fullWidth
+                                name='title'
+                                value={title}
+                                margin='normal'
+                                onChange={this.handleChange}
+                            />
+                            {validationErrors.title && <FormHelperText error>{validationErrors.title}</FormHelperText>}
+                        </Grid>
+                        <Grid item xs={12} md={6} className={classes.textField}>
                             <TextField
                                 label='Fee($)'
                                 id='course-fee'
@@ -280,19 +270,18 @@ class CourseDetails extends PureComponent{
                                 fullWidth
                                 name='fee'
                                 value={fee}
-                                // margin='normal'
+                                margin='normal'
                                 onChange={this.handleChange}
                             />
                             {validationErrors.fee && <FormHelperText error>{validationErrors.fee.slice(0, 27)}</FormHelperText>}
                         </Grid>
-                        <Grid item xs={12} md={6} className={classes.gridMaxStudents}>
+                        <Grid item xs={12} md={6} className={classes.textField}>
                             <TextField
                                 id="max-student"
                                 select
                                 label="Max Student"
                                 fullWidth
-                                // margin='normal'
-                                className={classes.maxStudents}
+                                margin='normal'
                                 value={maxStudent}
                                 name='maxStudent'
                                 onChange={this.handleChange}
@@ -311,28 +300,32 @@ class CourseDetails extends PureComponent{
                             </TextField>
                             {validationErrors.maxStudent && <FormHelperText error>{validationErrors.maxStudent}</FormHelperText>}
                         </Grid>
+                        <Grid item xs={12} className={classes.textField}>
+                            <TextField
+                                label="Description"
+                                placeholder='Description for the course'
+                                fullWidth
+                                margin='normal'
+                                name='description'
+                                value={description}
+                                onChange={this.handleChange}
+                            />
+                            {validationErrors.description && <FormHelperText error>{validationErrors.description}</FormHelperText>}
+                        </Grid>
+                        <Grid item xs={12} className={classes.textField}>
+                            <TextField
+                                label='Language'
+                                id='course-language'
+                                placeholder='Language'
+                                fullWidth
+                                name='language'
+                                value={language}
+                                margin='normal'
+                                onChange={this.handleChange}
+                            />
+                            {validationErrors.language && <FormHelperText error>{validationErrors.language}</FormHelperText>}
+                        </Grid>
                     </Grid>
-                    <TextField
-                        label="Description"
-                        placeholder='Description for the course'
-                        fullWidth
-                        margin='normal'
-                        name='description'
-                        value={description}
-                        onChange={this.handleChange}
-                    />
-                    {validationErrors.description && <FormHelperText error>{validationErrors.description}</FormHelperText>}
-                    <TextField
-                        label='Language'
-                        id='course-language'
-                        placeholder='Language'
-                        fullWidth
-                        name='language'
-                        value={language}
-                        margin='normal'
-                        onChange={this.handleChange}
-                    />
-                    {validationErrors.language && <FormHelperText error>{validationErrors.language}</FormHelperText>}
                     <div className={classes.buttons}>
                         <Button
                             color='default'
