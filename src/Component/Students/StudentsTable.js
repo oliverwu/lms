@@ -21,7 +21,7 @@ const styles = theme => ({
         marginBottom: 0,
     },
     table: {
-        minWidth: 500,
+        minWidth: 750,
     },
     detailsButton: {
         paddingRight: 0,
@@ -50,26 +50,26 @@ class StudentsTable extends Component {
                 <Table className={classes.table}>
                     <TableHead>
                         <TableRow>
-                            <StudentsTableCell numeric={true}>Name</StudentsTableCell>
-                            <StudentsTableCell numeric>Email</StudentsTableCell>
-                            <StudentsTableCell numeric>Gender</StudentsTableCell>
-                            <StudentsTableCell numeric>Date of birth</StudentsTableCell>
-                            <StudentsTableCell numeric>Credit</StudentsTableCell>
-                            <StudentsTableCell numeric>Details</StudentsTableCell>
+                            <StudentsTableCell padding='dense' numeric={true}>Name</StudentsTableCell>
+                            <StudentsTableCell padding='dense' numeric>Email</StudentsTableCell>
+                            <StudentsTableCell padding='dense' numeric>Gender</StudentsTableCell>
+                            <StudentsTableCell padding='dense' numeric>Date of birth</StudentsTableCell>
+                            <StudentsTableCell padding='dense' numeric>Credit</StudentsTableCell>
+                            <StudentsTableCell padding='dense' numeric>Details</StudentsTableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
                         {students.map(student => {
                             return (
                                 <TableRow key={student.id}>
-                                    <TableCell component="th" scope="row" numeric={true}>
+                                    <TableCell padding='dense' component="th" scope="row" numeric={true}>
                                         {student.name}
                                     </TableCell>
-                                    <TableCell numeric>{student.email}</TableCell>
-                                    <TableCell numeric>{student.gender}</TableCell>
-                                    <TableCell numeric>{Moment(student.DOB).format("MMM DD YYYY")}</TableCell>
-                                    <TableCell numeric>{student.credit}</TableCell>
-                                    <TableCell numeric>
+                                    <TableCell padding='dense' numeric>{student.email}</TableCell>
+                                    <TableCell padding='dense' numeric>{student.gender}</TableCell>
+                                    <TableCell padding='dense' numeric>{Moment(student.DOB).format("MMM DD YYYY")}</TableCell>
+                                    <TableCell padding='dense' numeric>{student.credit}</TableCell>
+                                    <TableCell padding='dense' numeric>
                                         <Link to={`students/${student.id}`} style={{textDecoration: 'none'}}>
                                             <Button className={classes.detailsButton}><MoreVertIcon/></Button>
                                         </Link>
