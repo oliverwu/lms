@@ -76,8 +76,8 @@ const styles = {
 };
 
 class CourseDetails extends PureComponent{
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.state = {
             id: '',
             firstName: '',
@@ -85,7 +85,10 @@ class CourseDetails extends PureComponent{
             staffNumber: '',
             email: '',
             bibliography: '',
-            validationErrors: ''
+            validationErrors: '',
+            createDialogSucceedStatus: false,
+            deleteDialogStatus: false,
+            errorDialogStatus: false,
         }
     }
 
@@ -114,6 +117,25 @@ class CourseDetails extends PureComponent{
             await schema.validate(userInput, {
                 abortEarly: false
             });
+            const { id } = this.props.match.params;
+            const name = `${firstName} ${lastName}`;
+            if (id === 'create') {
+                const newLecturer = { name, staffNumber, email, bibliography };
+                const statusCode = await LecturersApi.createNewLecturer(newLecturer);
+                if (statusCode === 200) {
+                    this.setState({
+                        createDialogSucceedStatus: true
+                    })
+                }
+            } else {
+                const newLecturer = { id, name, staffNumber, email, bibliography };
+                const statusCode = await LecturersApi.updateLecturer(newLecturer);
+                if (statusCode === 204) {
+                    this.setState({
+                        createDialogSucceedStatus: true
+                    })
+                }
+            }
 
         } catch (error) {
             const validationErrors = getValidationErrors(error);
@@ -127,10 +149,31 @@ class CourseDetails extends PureComponent{
         console.log({ firstName, lastName, staffNumber, email, bibliography})
     };
 
-    handleDelete = () => {
-        console.log('delete');
+    handleDelete = async () => {
+        const { id } = this.props.match.params;
+        const statusCode = await LecturersApi.deleteLecturer(id);
+        if (statusCode === 204) {
+            redirect('lecturers')
+        }
     };
 
+    handleDeleteDialogClose = () => {
+        this.setState({
+            deleteDialogStatus: false,
+        })
+    };
+
+    handleDeleteDialogOpen = () => {
+        this.setState({
+            deleteDialogStatus: true,
+        })
+    };
+
+    handleErrorDialogClose = () => {
+        this.setState({
+            errorDialogStatus: false,
+        })
+    };
 
     componentDidMount() {
         const { id } = this.props.match.params;
@@ -148,7 +191,7 @@ class CourseDetails extends PureComponent{
     };
 
     render() {
-        const { firstName, lastName, staffNumber, email, bibliography, validationErrors } = this.state;
+        const { firstName, lastName, staffNumber, email, bibliography, validationErrors, createDialogSucceedStatus, deleteDialogStatus, errorDialogStatus } = this.state;
         const { classes } = this.props;
         const { id } = this.props.match.params;
 
@@ -240,7 +283,7 @@ class CourseDetails extends PureComponent{
                                     color='secondary'
                                     variant='extendedFab'
                                     className={id === 'create' ? classes.noButtonDelete : classes.buttonDelete}
-                                    onClick={this.handleDelete}
+                                    onClick={this.handleDeleteDialogOpen}
                                 >Delete</Button>
                                 <Button
                                     type="submit"
@@ -251,6 +294,21 @@ class CourseDetails extends PureComponent{
                             </div>
                         </div>
                     </form>
+                    <CreateSucceedDialog
+                        url='lecturers'
+                        createDialogSucceedStatus={createDialogSucceedStatus}
+                    />
+                    <DeleteDialog
+                        handleDelete={this.handleDelete}
+                        handleDeleteDialogClose={this.handleDeleteDialogClose}
+                        deleteDialogStatus={deleteDialogStatus}
+                        content='lecturer'
+                    />
+                    <ErrorDialog
+                        content='lecturer'
+                        errorDialogStatus={errorDialogStatus}
+                        handleErrorDialogClose={this.handleErrorDialogClose}
+                    />
                 </Paper>
             </MenuBar>
         );

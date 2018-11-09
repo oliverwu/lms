@@ -68,7 +68,77 @@ let LecturersApi = {
         } catch (e) {
             console.log(e)
         }
-    }
+    },
+
+    createNewLecturer: async (lecturer) => {
+        let endpoint = `${lmsURL}api/lecturers`;
+        try {
+            const response = await fetch(endpoint,{
+                method: 'POST',
+                headers: {
+                    'Authorization': getAccessToken(),
+                    "Content-type": "application/json",
+                },
+                body:  JSON.stringify(lecturer)
+            });
+            const statusCode = response.status;
+            console.log(response);
+            if (statusCode === 401) {
+                localStorage.removeItem('accessToken');
+                redirect('login');
+            } else {
+                return statusCode
+            }
+        } catch (e) {
+            console.log(e);
+        }
+    },
+
+    updateLecturer: async (lecturer) => {
+        let endpoint = `${lmsURL}api/lecturers`;
+        try {
+            const response = await fetch(endpoint,{
+                method: 'PUT',
+                headers: {
+                    'Authorization': getAccessToken(),
+                    "Content-type": "application/json",
+                },
+                body:  JSON.stringify(lecturer)
+            });
+            console.log(response);
+            const statusCode = response.status;
+            if (statusCode === 401) {
+                localStorage.removeItem('accessToken');
+                redirect('login');
+            } else {
+                return statusCode
+            }
+        } catch (e) {
+            console.log(e);
+        }
+    },
+
+    deleteLecturer: async (id) => {
+        let endpoint = `${lmsURL}api/lecturers/${id}`;
+        try {
+            const response = await fetch(endpoint,{
+                method: 'DELETE',
+                headers: {
+                    'Authorization': getAccessToken(),
+                },
+            });
+            const statusCode = response.status;
+            console.log(response);
+            if (statusCode === 401) {
+                localStorage.removeItem('accessToken');
+                redirect('login');
+            } else {
+                return statusCode;
+            }
+        } catch (e) {
+            console.log(e);
+        }
+    },
 };
 
 export default LecturersApi;
