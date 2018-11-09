@@ -1,5 +1,5 @@
 import React, {Component, PureComponent} from 'react';
-import { TextField, MenuItem, Grid, Button, Paper} from '@material-ui/core';
+import {TextField, MenuItem, Grid, Button, Paper, FormHelperText} from '@material-ui/core';
 import { withStyles} from '@material-ui/core/styles';
 import StudentsApi from './StudentsApi';
 import MenuBar from '../Layout/MenuBar';
@@ -128,6 +128,7 @@ class StudentDetails extends PureComponent{
 
         } catch (error) {
             const validationErrors = getValidationErrors(error);
+            console.log(validationErrors);
             this.setState({
                 validationErrors
             })
@@ -153,7 +154,7 @@ class StudentDetails extends PureComponent{
 
 
     render() {
-        const { firstName, lastName, gender, DOB, email, credit } = this.state;
+        const { firstName, lastName, gender, DOB, email, credit, validationErrors } = this.state;
         const { classes } = this.props;
         const { id } = this.props.match.params;
 
@@ -178,6 +179,7 @@ class StudentDetails extends PureComponent{
                                     margin='normal'
                                     onChange={this.handleChange}
                                 />
+                                {validationErrors.firstName && <FormHelperText error>{validationErrors.firstName}</FormHelperText>}
                             </Grid>
                             <Grid item xs={12} md={6} className={classes.textField}>
                                 <TextField
@@ -192,6 +194,7 @@ class StudentDetails extends PureComponent{
                                     onChange={this.handleChange}
                                 >
                                 </TextField>
+                                {validationErrors.lastName && <FormHelperText error>{validationErrors.lastName}</FormHelperText>}
                             </Grid>
                         </Grid>
                         <Grid
@@ -211,6 +214,7 @@ class StudentDetails extends PureComponent{
                                     // margin='normal'
                                     onChange={this.handleChange}
                                 />
+                                {validationErrors.DOB && <FormHelperText error>{validationErrors.DOB}</FormHelperText>}
                             </Grid>
                             <Grid item xs={12} md={6} className={classes.textField}>
                                 <TextField
@@ -231,6 +235,7 @@ class StudentDetails extends PureComponent{
                                         </MenuItem>
                                     ))}
                                 </TextField>
+                                {validationErrors.gender && <FormHelperText error>{validationErrors.gender}</FormHelperText>}
                             </Grid>
                         </Grid>
                         <Grid item xs={12} className={classes.textField}>
@@ -244,6 +249,7 @@ class StudentDetails extends PureComponent{
                                 value={email}
                                 onChange={this.handleChange}
                             />
+                            {validationErrors.email && <FormHelperText error>{validationErrors.email}</FormHelperText>}
                         </Grid>
                         <Grid item xs={12} className={classes.textField}>
                             <TextField
@@ -256,6 +262,7 @@ class StudentDetails extends PureComponent{
                                 margin='normal'
                                 onChange={this.handleChange}
                             />
+                            {validationErrors.credit && <FormHelperText error>{validationErrors.credit}</FormHelperText>}
                         </Grid>
                         <div className={classes.buttons}>
                             <Button
