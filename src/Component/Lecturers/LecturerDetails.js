@@ -3,19 +3,53 @@ import {TextField, Grid, Button, Paper} from '@material-ui/core';
 import { withStyles} from '@material-ui/core/styles';
 import LecturersApi from './LecturersApi';
 import MenuBar from '../Layout/MenuBar';
+import { redirect, getValidationErrors } from "../Utils/Help";
+import CreateSucceedDialog from "../Utils/CreateSucceedDialog";
+import DeleteDialog from "../Utils/DeleteDialog";
+import ErrorDialog from "../Utils/ErrorDialog";
+import * as yup from "yup";
+
+const schema = yup.object().shape({
+    title: yup
+        .string()
+        .max(50)
+        .label("Title")
+        .required(),
+    language: yup
+        .string()
+        .max(50)
+        .label("Language")
+        .required(),
+    fee: yup
+        .number()
+        .positive()
+        .min(10)
+        .max(1000)
+        .label("Fee")
+        .required(),
+    maxStudent: yup
+        .number()
+        .positive()
+        .min(10)
+        .max(50)
+        .label("Max students")
+        .required(),
+    description: yup
+        .string()
+        .max(250)
+        .label("Description")
+        .required(),
+});
+
 
 const styles = {
     paper: {
-        width: '600px',
+        maxWidth: '600px',
         padding: '20px',
     },
 
-    gridLeft: {
-        paddingRight: '5px'
-    },
-
-    gridRight: {
-        paddingLeft: '5px'
+    textField: {
+        padding: '0 5px',
     },
 
     buttons: {
@@ -115,7 +149,7 @@ class CourseDetails extends PureComponent{
                             container
                         >
                             <Grid
-                                item xs={6} className={classes.gridLeft}
+                                item xs={12} md={6} className={classes.textField}
                             >
                                 <TextField
                                     label='First Name'
@@ -128,7 +162,7 @@ class CourseDetails extends PureComponent{
                                     onChange={this.handleChange}
                                 />
                             </Grid>
-                            <Grid item xs={6} className={classes.gridRight}>
+                            <Grid item xs={12} md={6} className={classes.textField}>
                                 <TextField
                                     id="student-lastName"
                                     label="Last Name"
@@ -143,34 +177,40 @@ class CourseDetails extends PureComponent{
                                 </TextField>
                             </Grid>
                         </Grid>
-                        <TextField
-                            label="Staff Number"
-                            placeholder='Staff Number'
-                            fullWidth
-                            // margin='normal'
-                            name='staffNumber'
-                            value={staffNumber}
-                            onChange={this.handleChange}
-                        />
-                        <TextField
-                            label="Email"
-                            placeholder='Email'
-                            type='email'
-                            fullWidth
-                            // margin='normal'
-                            name='email'
-                            value={email}
-                            onChange={this.handleChange}
-                        />
-                        <TextField
-                            label='Bibliography'
-                            placeholder='Bibliography'
-                            fullWidth
-                            name='bibliography'
-                            value={bibliography}
-                            margin='normal'
-                            onChange={this.handleChange}
-                        />
+                        <Grid item xs={12} className={classes.textField}>
+                            <TextField
+                                label="Staff Number"
+                                placeholder='Staff Number'
+                                fullWidth
+                                // margin='normal'
+                                name='staffNumber'
+                                value={staffNumber}
+                                onChange={this.handleChange}
+                            />
+                        </Grid >
+                        <Grid item xs={12} className={classes.textField}>
+                            <TextField
+                                label="Email"
+                                placeholder='Email'
+                                type='email'
+                                fullWidth
+                                // margin='normal'
+                                name='email'
+                                value={email}
+                                onChange={this.handleChange}
+                            />
+                        </Grid >
+                        <Grid item xs={12} className={classes.textField}>
+                            <TextField
+                                label='Bibliography'
+                                placeholder='Bibliography'
+                                fullWidth
+                                name='bibliography'
+                                value={bibliography}
+                                margin='normal'
+                                onChange={this.handleChange}
+                            />
+                        </Grid >
                         <div className={classes.buttons}>
                             <Button
                                 color='default'
