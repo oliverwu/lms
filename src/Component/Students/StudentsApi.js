@@ -90,6 +90,56 @@ let StudentsApi = {
             console.log(e);
         }
     },
+
+    createNewStudent: async (student) => {
+        console.log(student);
+        let endpoint = `${lmsURL}api/students`;
+        try {
+            const response = await fetch(endpoint,{
+                method: 'POST',
+                headers: {
+                    'Authorization': getAccessToken(),
+                    "Content-type": "application/json",
+                },
+                body:  JSON.stringify(student)
+            });
+            const statusCode = response.status;
+            console.log(response)
+            if (statusCode === 401) {
+                localStorage.removeItem('accessToken');
+                redirect('login');
+            } else {
+                return statusCode
+            }
+        } catch (e) {
+            console.log(e);
+        }
+    },
+
+    updateStudent: async (student) => {
+        let endpoint = `${lmsURL}api/students`;
+        try {
+            const response = await fetch(endpoint,{
+                method: 'PUT',
+                headers: {
+                    'Authorization': getAccessToken(),
+                    "Content-type": "application/json",
+                },
+                body:  JSON.stringify(student)
+            });
+            console.log(response);
+            const statusCode = response.status;
+            if (statusCode === 401) {
+                localStorage.removeItem('accessToken');
+                redirect('login');
+            } else {
+                return statusCode
+            }
+        } catch (e) {
+            console.log(e);
+        }
+    },
+
 };
 
 export default StudentsApi;

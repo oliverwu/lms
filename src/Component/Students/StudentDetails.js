@@ -84,6 +84,16 @@ const styles = {
     },
 };
 
+const genderMap = [
+    {
+        abbr: 'M',
+        name: 'Male'
+    },
+    {
+        abbr: 'F',
+        name: 'Female'
+    }
+];
 
 class StudentDetails extends PureComponent{
     constructor(props) {
@@ -121,17 +131,29 @@ class StudentDetails extends PureComponent{
         e.preventDefault();
         const { firstName, lastName, gender, DOB, email, credit } = this.state;
         const userInput = { firstName, lastName, gender, DOB, email, credit };
+
         try {
             await schema.validate(userInput, {
                 abortEarly: false
             });
-
+            const { id } = this.props.match.params;
+            const newGender = genderMap.filter(item => {
+                return gender === item.name;
+            })[0].abbr;
+            if ( id === 'create') {
+                const newStudent = {firstName, lastName, gender:newGender, DOB, email, credit};
+                const statusCode = await StudentsApi.createNewStudent(newStudent);
+            } else {
+                const newStudent = {id, firstName, lastName, gender:newGender, DOB, email, credit};
+                const statusCode = await StudentsApi.updateStudent(newStudent);
+            }
         } catch (error) {
             const validationErrors = getValidationErrors(error);
             console.log(validationErrors);
             this.setState({
                 validationErrors
             })
+
         }
 
         console.log({firstName, lastName, gender, DOB, email, credit})

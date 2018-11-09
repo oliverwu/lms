@@ -221,7 +221,7 @@ class CourseDetails extends PureComponent{
     async componentDidMount() {
         const { id } = this.props.match.params;
         if (id !== 'create') {
-            const course  = await CourseApi.getAllCourseById(id);
+            const course  = await CourseApi.getCourseById(id);
             course && this.setState({
                 ...course
             })
