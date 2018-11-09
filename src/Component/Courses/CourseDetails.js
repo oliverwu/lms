@@ -1,16 +1,50 @@
 import React, {Component, PureComponent} from 'react';
-import { TextField, MenuItem, Grid, Button, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions} from '@material-ui/core';
+import { TextField, MenuItem, Grid, Button, FormHelperText } from '@material-ui/core';
 import { withStyles} from '@material-ui/core/styles';
 import CourseApi from './CourseApi';
 import MenuBar from '../Layout/MenuBar';
-import {redirect} from "../Utils/Help";
+import { redirect, getValidationErrors } from "../Utils/Help";
 import CreateSucceedDialog from "../Utils/CreateSucceedDialog";
 import DeleteDialog from "../Utils/DeleteDialog";
 import ErrorDialog from "../Utils/ErrorDialog";
+import * as yup from "yup";
+
+const schema = yup.object().shape({
+    title: yup
+        .string()
+        .max(50)
+        .label("Title")
+        .required(),
+    language: yup
+        .string()
+        .max(50)
+        .label("Language")
+        .required(),
+    fee: yup
+        .number()
+        .positive()
+        .min(10)
+        .max(1000)
+        .label("Fee")
+        .required(),
+    maxStudent: yup
+        .number()
+        .positive()
+        .min(10)
+        .max(50)
+        .label("Max students")
+        .required(),
+    description: yup
+        .string()
+        .max(250)
+        .label("Description")
+        .required(),
+});
+
 
 const styles = {
     root: {
-        width: '600px',
+        maxWidth: '600px',
     },
 
     gridFee: {
@@ -67,6 +101,7 @@ class CourseDetails extends PureComponent{
             deleteDialogStatus: false,
             createDialogSucceedStatus: false,
             errorDialogStatus: false,
+            validationErrors: ''
         }
     }
 
@@ -87,14 +122,19 @@ class CourseDetails extends PureComponent{
         })
     };
 
-    handleSubmit = (e) => {
+    handleSubmit = async (e) => {
         e.preventDefault();
         const { title, fee, maxStudent, description, language } = this.state;
-        console.log({title, fee, maxStudent, description});
-        const { id } = this.props.match.params;
-        if (id === 'create') {
-            const newCourse = {title, fee, maxStudent, description, language};
-            CourseApi.createNewCourse(newCourse).then(statusCode => {
+
+        const userInput = { title, fee, maxStudent, description, language };
+        try {
+            await schema.validate(userInput, {
+                abortEarly: false
+            });
+            const { id } = this.props.match.params;
+            if (id === 'create') {
+                const newCourse = {title, fee, maxStudent, description, language};
+                const statusCode = await CourseApi.createNewCourse(newCourse);
                 if (statusCode === 200) {
                     this.setState({
                         createDialogSucceedStatus: true,
@@ -104,11 +144,9 @@ class CourseDetails extends PureComponent{
                         errorDialogStatus: true,
                     })
                 }
-            });
-        } else {
-            const newCourse = {id, title, fee, maxStudent, description, language};
-            console.log(newCourse);
-            CourseApi.updateCourse(newCourse).then(statusCode => {
+            } else {
+                const newCourse = {id, title, fee, maxStudent, description, language};
+                const statusCode = await CourseApi.updateCourse(newCourse);
                 if (statusCode === 204) {
                     this.setState({
                         createDialogSucceedStatus: true,
@@ -118,8 +156,45 @@ class CourseDetails extends PureComponent{
                         errorDialogStatus: true,
                     })
                 }
+            }
+        } catch (error) {
+            const validationErrors = getValidationErrors(error);
+            this.setState({
+                validationErrors
             })
         }
+
+
+    //     console.log({title, fee, maxStudent, description});
+    //     const { id } = this.props.match.params;
+    //     if (id === 'create') {
+    //         const newCourse = {title, fee, maxStudent, description, language};
+    //         CourseApi.createNewCourse(newCourse).then(statusCode => {
+    //             if (statusCode === 200) {
+    //                 this.setState({
+    //                     createDialogSucceedStatus: true,
+    //                 })
+    //             } else if (statusCode > 300) {
+    //                 this.setState({
+    //                     errorDialogStatus: true,
+    //                 })
+    //             }
+    //         });
+    //     } else {
+    //         const newCourse = {id, title, fee, maxStudent, description, language};
+    //         console.log(newCourse);
+    //         CourseApi.updateCourse(newCourse).then(statusCode => {
+    //             if (statusCode === 204) {
+    //                 this.setState({
+    //                     createDialogSucceedStatus: true,
+    //                 })
+    //             } else if (statusCode > 300) {
+    //                 this.setState({
+    //                     errorDialogStatus: true,
+    //                 })
+    //             }
+    //         })
+    //     }
     };
 
     handleDelete = () => {
@@ -173,7 +248,7 @@ class CourseDetails extends PureComponent{
     };
 
     render() {
-        const { title, fee, maxStudent, description, language, deleteDialogStatus, createDialogSucceedStatus, errorDialogStatus} = this.state;
+        const { title, fee, maxStudent, description, language, deleteDialogStatus, createDialogSucceedStatus, errorDialogStatus, validationErrors} = this.state;
         const { classes } = this.props;
         const { id } = this.props.match.params;
 
@@ -190,16 +265,17 @@ class CourseDetails extends PureComponent{
                         margin='normal'
                         onChange={this.handleChange}
                     />
+                    {validationErrors.title && <FormHelperText error>{validationErrors.title}</FormHelperText>}
                     <Grid
                         container
                     >
                         <Grid
-                            item xs={6} className={classes.gridFee}
+                            item xs={12} md={6} className={classes.gridFee}
                         >
                             <TextField
                                 label='Fee($)'
                                 id='course-fee'
-                                type='number'
+                                // type='number'
                                 placeholder='Fee($)'
                                 fullWidth
                                 name='fee'
@@ -207,8 +283,9 @@ class CourseDetails extends PureComponent{
                                 // margin='normal'
                                 onChange={this.handleChange}
                             />
+                            {validationErrors.fee && <FormHelperText error>{validationErrors.fee.slice(0, 27)}</FormHelperText>}
                         </Grid>
-                        <Grid item xs={6} className={classes.gridMaxStudents}>
+                        <Grid item xs={12} md={6} className={classes.gridMaxStudents}>
                             <TextField
                                 id="max-student"
                                 select
@@ -232,6 +309,7 @@ class CourseDetails extends PureComponent{
                                     </MenuItem>
                                 ))}
                             </TextField>
+                            {validationErrors.maxStudent && <FormHelperText error>{validationErrors.maxStudent}</FormHelperText>}
                         </Grid>
                     </Grid>
                     <TextField
@@ -243,6 +321,7 @@ class CourseDetails extends PureComponent{
                         value={description}
                         onChange={this.handleChange}
                     />
+                    {validationErrors.description && <FormHelperText error>{validationErrors.description}</FormHelperText>}
                     <TextField
                         label='Language'
                         id='course-language'
@@ -253,6 +332,7 @@ class CourseDetails extends PureComponent{
                         margin='normal'
                         onChange={this.handleChange}
                     />
+                    {validationErrors.language && <FormHelperText error>{validationErrors.language}</FormHelperText>}
                     <div className={classes.buttons}>
                         <Button
                             color='default'

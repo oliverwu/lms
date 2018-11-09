@@ -83,19 +83,18 @@ class Students extends PureComponent{
         }
     }
 
-    getStudentsByPage = (page) => {
-        StudentsApi.getStudentsByPage(page).then(data => {
-            if (data) {
-                const { students, pageNum, pageSize, totalPage } = data;
-                this.setState({
-                    students: students,
-                    isLoading: false,
-                    pageNum: pageNum,
-                    pageSize: pageSize,
-                    totalPage: totalPage,
-                });
-            }
-        });
+    getStudentsByPage = async (page) => {
+        const data = await StudentsApi.getStudentsByPage(page);
+        if (data) {
+            const { students, pageNum, pageSize, totalPage } = data;
+            this.setState({
+                students: students,
+                isLoading: false,
+                pageNum: pageNum,
+                pageSize: pageSize,
+                totalPage: totalPage,
+            });
+        }
     };
 
     render() {

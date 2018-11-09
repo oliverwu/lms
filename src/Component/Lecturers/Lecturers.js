@@ -2,7 +2,6 @@ import React, { Component, PureComponent } from 'react';
 import LecturersApi from './LecturersApi';
 import LecturersTable from './LecturersTable';
 import PageLoader from '../Utils/PageLoader';
-import Layout from '../Layout/Layout';
 import MenuBar from '../Layout/MenuBar';
 
 class Lecturers extends PureComponent{
@@ -14,26 +13,13 @@ class Lecturers extends PureComponent{
         }
     }
 
-    // async componentDidMount() {
-    //     const lecturers = await LecturersApi.getAllLecturers();
-    //     lecturers && this.setState({
-    //         lecturers: lecturers,
-    //         isLoading: false,
-    //     })
-    // }
-
-    componentDidMount() {
-        this.getAllLecturer();
+    async componentDidMount() {
+        const lecturers = await LecturersApi.getAllLecturers();
+        lecturers && this.setState({
+            lecturers: lecturers,
+            isLoading: false,
+        })
     }
-
-    getAllLecturer = () => {
-        LecturersApi.getAllLecturers().then(lecturers => {
-            lecturers && this.setState({
-                lecturers: lecturers,
-                isLoading: false,
-            })
-        });
-    };
 
     render() {
         const { lecturers, isLoading } = this.state;
