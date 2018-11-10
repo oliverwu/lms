@@ -99,17 +99,13 @@ class TableControl extends Component {
     }
 
     handleChangePage = (event, page) => {
-        this.setState({
-            page:page,
-        })
+        this.props.changeCurrentPage(page);
     };
 
 
     render() {
-        const { classes, length } = this.props;
-        const { page } = this.state;
+        const { classes, count, page, pageSize } = this.props;
 
-        const pageSize = 10;
         return (
             <Paper className={classes.root}>
                 <Table className={classes.table}>
@@ -117,7 +113,7 @@ class TableControl extends Component {
                         <TableRow>
                             <TablePagination
                                 // colSpan={3}
-                                count={length}
+                                count={count}
                                 rowsPerPage={pageSize}
                                 rowsPerPageOptions={[pageSize]}
                                 page={page}
