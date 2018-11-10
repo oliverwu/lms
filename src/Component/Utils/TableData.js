@@ -50,12 +50,6 @@ class TableData extends Component {
         }
     }
 
-    changeCurrentPage = (page) => {
-        this.setState({
-            page:page,
-        })
-    };
-
     handleDetailsMenuClose = () => {
         this.setState({
             detailsMenuAnchorEl: null

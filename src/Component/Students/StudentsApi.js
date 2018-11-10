@@ -35,12 +35,13 @@ let StudentsApi = {
                         pageSize: jsonResponse.pageSize,
                         totalPage: jsonResponse.totalPage,
                         students: jsonResponse.students.map((student) => {
+                            const DOB = moment(student.dateOfBirth).format("YYYY-MM-DD");
                             return {
                                 id: student.id,
                                 name: student.fullName,
                                 email: student.email,
                                 gender: student.gender,
-                                DOB: student.dateOfBirth,
+                                DOB: DOB,
                                 credit: student.credit,
                             }
                         }),
@@ -140,6 +141,28 @@ let StudentsApi = {
         }
     },
 
+    deleteStudent: async (id) => {
+        console.log(id);
+        // let endpoint = `${lmsURL}api/students/${id}`;
+        // try {
+        //     const response = await fetch(endpoint,{
+        //         method: 'DELETE',
+        //         headers: {
+        //             'Authorization': getAccessToken(),
+        //         },
+        //     });
+        //     const statusCode = response.status;
+        //     console.log(response);
+        //     if (statusCode === 401) {
+        //         localStorage.removeItem('accessToken');
+        //         redirect('login');
+        //     } else {
+        //         return statusCode;
+        //     }
+        // } catch (e) {
+        //     console.log(e);
+        // }
+    },
 };
 
 export default StudentsApi;

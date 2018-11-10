@@ -118,7 +118,7 @@ class CourseDetails extends PureComponent{
                 abortEarly: false
             });
             const { id } = this.props.match.params;
-            const name = `${firstName} ${lastName}`;
+            const name = `${firstName.trim()} ${lastName.trim()}`;
             if (id === 'create') {
                 const newLecturer = { name, staffNumber, email, bibliography };
                 const statusCode = await LecturersApi.createNewLecturer(newLecturer);
@@ -175,20 +175,15 @@ class CourseDetails extends PureComponent{
         })
     };
 
-    componentDidMount() {
+    async componentDidMount() {
         const { id } = this.props.match.params;
         if (id !== 'create') {
-            this.getLecturerById(id);
-        }
-    }
-
-    getLecturerById = (id) => {
-        LecturersApi.getLecturerById(id).then(lecturer => {
+            const lecturer = await LecturersApi.getLecturerById(id);
             lecturer && this.setState({
                 ...lecturer
             })
-        });
-    };
+        }
+    }
 
     render() {
         const { firstName, lastName, staffNumber, email, bibliography, validationErrors, createDialogSucceedStatus, deleteDialogStatus, errorDialogStatus } = this.state;

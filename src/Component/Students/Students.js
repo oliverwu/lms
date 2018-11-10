@@ -1,24 +1,9 @@
 import React, {Component, PureComponent} from 'react';
 import StudentsApi from './StudentsApi';
-import StudentsTable from './StudentsTable';
 import PageLoader from '../Utils/PageLoader';
-import { withStyles } from '@material-ui/core/styles';
-import StudentsTableControl from './StudentsTableControl';
 import MenuBar from '../Layout/MenuBar';
-
-const styles = theme => ({
-    button: {
-        float: 'right',
-        marginRight: '10px',
-        marginBottom: '25px'
-    },
-
-    tableContainer: {
-        marginTop: '25px',
-    }
-
-
-});
+import TableData from "../Utils/TableData";
+import TableControl from "../Utils/TableControl";
 
 class Students extends PureComponent{
     constructor(props) {
@@ -28,58 +13,27 @@ class Students extends PureComponent{
             pageSize: 10,
             totalPage: 1,
             students: [],
-            currentPage: 1,
+            // currentPage: 1,
             isLoading: true,
         }
     }
 
-    // async componentDidMount() {
-    //     const data = await StudentsApi.getStudentsPageSize();
-    //     this.setState({
-    //         pageSize: data.pageSize,
-    //     })
-    // }
-
     changeCurrentPage = (page) => {
-        let newCurrentPage = page + 1;
+        let pageNum = page + 1;
         this.setState({
-            currentPage: newCurrentPage,
+            pageNum: pageNum,
             isLoading: true,
         })
     };
 
-    // async componentDidMount() {
-    //     const data = await StudentsApi.getStudentsByPage(1);
-    //     const { students, pageNum, pageSize, totalPage } = data;
-    //     this.setState({
-    //         pageNum: pageNum,
-    //         pageSize: pageSize,
-    //         students: students,
-    //         totalPage: totalPage,
-    //         isLoading: false,
-    //     })
-    // }
-
-    // async componentDidUpdate(prevProps, prevState) {
-    //     let {currentPage} = this.state;
-    //     if (prevState.currentPage !== this.state.currentPage) {
-    //         const data = await StudentsApi.getStudentsByPage(currentPage);
-    //         const { students } = data;
-    //         this.setState({
-    //             students: students,
-    //             isLoading: false
-    //         });
-    //     }
-    // }
-
-    componentDidMount() {
-        this.getStudentsByPage(1);
+    async componentDidMount() {
+        await this.getStudentsByPage(1);
     }
 
-    componentDidUpdate(prevProps, prevState) {
-        let {currentPage} = this.state;
-        if (prevState.currentPage !== this.state.currentPage) {
-            this.getStudentsByPage(currentPage);
+    async componentDidUpdate(prevProps, prevState) {
+        let {pageNum} = this.state;
+        if (prevState.pageNum !== this.state.pageNum) {
+            await this.getStudentsByPage(pageNum);
         }
     }
 
@@ -98,19 +52,32 @@ class Students extends PureComponent{
     };
 
     render() {
-        const {isLoading, students, pageSize, currentPage} = this.state;
-        const {classes} = this.props;
+        const {isLoading, students, pageSize, pageNum} = this.state;
+        const count = 201;
 
         return (
             <MenuBar selected='Students' menu='Students' name='student'>
                 {isLoading && <PageLoader/>}
-                {!isLoading && students.length >0 && <div>
-                    <StudentsTable students = {students}/>
-                    <StudentsTableControl pageSize={pageSize} page={currentPage - 1} changeCurrentPage={this.changeCurrentPage}/>
+                {!isLoading && students.length > 0 && <div>
+                    <TableData
+                        tableParams={students}
+                        tableHeadArray={['Name', 'Email', 'Gender', 'Date of Birth', 'Credit', 'Details']}
+                        tableBodyArray={['name', 'email', 'gender', 'DOB', 'credit']}
+                        tableName='student'
+                        page={0}
+                        pageSize={pageSize}
+                        tableApiDeleteMethod={StudentsApi.deleteStudent}
+                    />
+                    <TableControl
+                        count={count}
+                        page={pageNum - 1}
+                        pageSize={pageSize}
+                        changeCurrentPage={this.changeCurrentPage}
+                    />
                 </div>}
             </MenuBar>
         );
     }
 }
 
-export default withStyles(styles)(Students);
+export default Students;
