@@ -3,10 +3,13 @@ import React, {Component} from "react";
 
 class DeleteDialog extends Component {
 
-
+    handleDeleteButtonClick = () => {
+        this.props.id && this.props.handleDelete(this.props.id);
+        !this.props.id && this.props.handleDelete()
+    };
 
     render() {
-        const {deleteDialogStatus, handleDeleteDialogClose, content, handleDelete } = this.props;
+        const {deleteDialogStatus, handleDeleteDialogClose, content, } = this.props;
 
         return (
             <Dialog
@@ -21,7 +24,7 @@ class DeleteDialog extends Component {
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleDelete} color="secondary" variant='contained'>
+                    <Button onClick={this.handleDeleteButtonClick} color="secondary" variant='contained'>
                         Yes
                     </Button>
                     <Button onClick={handleDeleteDialogClose} color="primary">

@@ -1,13 +1,12 @@
-import React from 'react';
+import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
-import TableFooter from '@material-ui/core/TableFooter';
-import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
-import IconButton from '@material-ui/core/IconButton';
-import FirstPageIcon from '@material-ui/icons/FirstPage';
+import {Paper, TableFooter } from '@material-ui/core';
+import TablePagination from "@material-ui/core/TablePagination/TablePagination";
+import IconButton from "@material-ui/core/IconButton/IconButton";
+import FirstPageIcon from "@material-ui/icons/FirstPage";
 import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 import LastPageIcon from '@material-ui/icons/LastPage';
@@ -15,11 +14,20 @@ import LastPageIcon from '@material-ui/icons/LastPage';
 const actionsStyles = theme => ({
     root: {
         flexShrink: 0,
+        // color: theme.palette.text.Primary,
         marginLeft: theme.spacing.unit * 2.5,
     },
 });
 
+const styles = theme => ({
+    root: {
+        width: '100%',
+        marginTop: 0,
+    },
+});
+
 class TablePaginationActions extends React.Component {
+
     handleFirstPageButtonClick = event => {
         this.props.onChangePage(event, 0);
     };
@@ -77,37 +85,31 @@ class TablePaginationActions extends React.Component {
     }
 }
 
-TablePaginationActions.propTypes = {
-    classes: PropTypes.object.isRequired,
-    count: PropTypes.number.isRequired,
-    onChangePage: PropTypes.func.isRequired,
-    page: PropTypes.number.isRequired,
-    rowsPerPage: PropTypes.number.isRequired,
-    theme: PropTypes.object.isRequired,
-};
-
 const TablePaginationActionsWrapped = withStyles(actionsStyles, { withTheme: true })(
     TablePaginationActions,
 );
 
-const styles = theme => ({
-    root: {
-        width: '100%',
-        marginTop: 0,
-    },
-});
 
-class CustomPaginationActionsTable extends React.Component {
+class TableControl extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            page: 0,
+        }
+    }
 
     handleChangePage = (event, page) => {
-        this.props.changeCurrentPage(page);
+        this.setState({
+            page:page,
+        })
     };
 
 
-
     render() {
-        const { classes, pageSize, page } = this.props;
+        const { classes, length } = this.props;
+        const { page } = this.state;
 
+        const pageSize = 10;
         return (
             <Paper className={classes.root}>
                 <Table className={classes.table}>
@@ -115,7 +117,7 @@ class CustomPaginationActionsTable extends React.Component {
                         <TableRow>
                             <TablePagination
                                 // colSpan={3}
-                                count={201}
+                                count={length}
                                 rowsPerPage={pageSize}
                                 rowsPerPageOptions={[pageSize]}
                                 page={page}
@@ -130,7 +132,8 @@ class CustomPaginationActionsTable extends React.Component {
     }
 }
 
-CustomPaginationActionsTable.propTypes = {
+TableControl.propTypes = {
     classes: PropTypes.object.isRequired,
 };
-export default withStyles(styles)(CustomPaginationActionsTable);
+
+export default withStyles(styles)(TableControl);

@@ -222,10 +222,11 @@ class LecturersTable extends Component {
                                             </Menu>
                                             {console.log(deleteDialogStatus)}
                                             <DeleteDialog
+                                                id={lecturer.id}
                                                 deleteDialogStatus={deleteDialogStatus}
                                                 handleDeleteDialogClose={this.handleDeleteDialogClose}
                                                 content='lecturer'
-                                                handleDelete={this.handleDelete.bind(this, lecturer.id)}
+                                                handleDelete={this.handleDelete}
                                             />
                                         </TableCell>
                                     </TableRow>
