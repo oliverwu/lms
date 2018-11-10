@@ -33,6 +33,7 @@ class LecturersTable extends Component {
                     page={page}
                     pageSize={pageSize}
                     tableApiDeleteMethod={LecturersApi.deleteLecturer}
+                    minWidth='550px'
                 />
                 <TableControl
                     count={lecturers.length}

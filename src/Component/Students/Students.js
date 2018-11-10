@@ -76,6 +76,7 @@ class Students extends PureComponent{
                         page={0}
                         pageSize={pageSize}
                         tableApiDeleteMethod={StudentsApi.deleteStudent}
+                        minWidth='800px'
                     />
                     <TableControl
                         count={count}

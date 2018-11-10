@@ -11,7 +11,7 @@ import { Link } from 'react-router-dom';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import DeleteDialog from "../Utils/DeleteDialog";
 
-const LecturersTableCell = withStyles(theme => ({
+const CustomTableCell = withStyles(theme => ({
     head: {
         backgroundColor: '#1D8BF1',
         color: theme.palette.common.white,
@@ -31,7 +31,7 @@ const styles = theme => ({
         marginBottom: 0,
     },
     table: {
-        minWidth: '600px'
+        // minWidth: '600px',
     },
     detailsButton: {
         paddingRight: 0,
@@ -85,17 +85,17 @@ class TableData extends Component {
 
 
     render() {
-        const { classes, tableParams, tableHeadArray, tableBodyArray, tableName, page, pageSize } = this.props;
+        const { classes, tableParams, tableHeadArray, tableBodyArray, tableName, page, pageSize, minWidth } = this.props;
         const { detailsMenuAnchorEl, deleteDialogStatus, currentId } = this.state;
         const detailsMenuOpen = Boolean(detailsMenuAnchorEl);
 
         return (
             <Paper className={classes.root}>
-                <Table className={classes.table}>
+                <Table className={classes.table} style={{minWidth: minWidth}}>
                     <TableHead>
                         <TableRow>
                             {tableHeadArray.map((item) => {
-                                return <LecturersTableCell numeric key={item}>{item}</LecturersTableCell>
+                                return <CustomTableCell padding='dense' numeric key={item}>{item}</CustomTableCell>
                             })}
                         </TableRow>
                     </TableHead>
@@ -105,7 +105,7 @@ class TableData extends Component {
                             return (
                                 <TableRow key={tableParam.id}>
                                     {tableBodyArray.map(item => {
-                                        return <TableCell numeric key={item}>{tableParam[item]}</TableCell>
+                                        return <TableCell padding='dense' numeric key={item}>{tableParam[item]}</TableCell>
                                     })}
                                     <TableCell numeric>
                                         <Button className={classes.detailsButton} id={tableParam.id} onClick={this.handleDetailsMenuOpen}>
