@@ -14,10 +14,6 @@ const styles = theme => {
 };
 
 class ErrorDialog extends Component{
-    constructor(props) {
-        super(props);
-
-    }
 
     render() {
         const { classes, errorDialogStatus, handleErrorDialogClose, content } = this.props;

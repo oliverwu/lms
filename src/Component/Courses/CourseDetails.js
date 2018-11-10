@@ -49,9 +49,6 @@ const styles = {
 
     textField: {
         padding: '0 5px',
-    },
-
-    maxStudents: {
         textAlign: 'left',
     },
 
@@ -159,38 +156,6 @@ class CourseDetails extends PureComponent{
                 validationErrors
             })
         }
-
-
-    //     console.log({title, fee, maxStudent, description});
-    //     const { id } = this.props.match.params;
-    //     if (id === 'create') {
-    //         const newCourse = {title, fee, maxStudent, description, language};
-    //         CourseApi.createNewCourse(newCourse).then(statusCode => {
-    //             if (statusCode === 200) {
-    //                 this.setState({
-    //                     createDialogSucceedStatus: true,
-    //                 })
-    //             } else if (statusCode > 300) {
-    //                 this.setState({
-    //                     errorDialogStatus: true,
-    //                 })
-    //             }
-    //         });
-    //     } else {
-    //         const newCourse = {id, title, fee, maxStudent, description, language};
-    //         console.log(newCourse);
-    //         CourseApi.updateCourse(newCourse).then(statusCode => {
-    //             if (statusCode === 204) {
-    //                 this.setState({
-    //                     createDialogSucceedStatus: true,
-    //                 })
-    //             } else if (statusCode > 300) {
-    //                 this.setState({
-    //                     errorDialogStatus: true,
-    //                 })
-    //             }
-    //         })
-    //     }
     };
 
     handleDelete = () => {

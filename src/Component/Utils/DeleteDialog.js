@@ -9,7 +9,7 @@ class DeleteDialog extends Component {
     };
 
     render() {
-        const {deleteDialogStatus, handleDeleteDialogClose, content, } = this.props;
+        const { deleteDialogStatus, handleDeleteDialogClose, content } = this.props;
 
         return (
             <Dialog

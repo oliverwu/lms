@@ -143,25 +143,25 @@ let StudentsApi = {
 
     deleteStudent: async (id) => {
         console.log(id);
-        // let endpoint = `${lmsURL}api/students/${id}`;
-        // try {
-        //     const response = await fetch(endpoint,{
-        //         method: 'DELETE',
-        //         headers: {
-        //             'Authorization': getAccessToken(),
-        //         },
-        //     });
-        //     const statusCode = response.status;
-        //     console.log(response);
-        //     if (statusCode === 401) {
-        //         localStorage.removeItem('accessToken');
-        //         redirect('login');
-        //     } else {
-        //         return statusCode;
-        //     }
-        // } catch (e) {
-        //     console.log(e);
-        // }
+        let endpoint = `${lmsURL}api/students/${id}`;
+        try {
+            const response = await fetch(endpoint,{
+                method: 'DELETE',
+                headers: {
+                    'Authorization': getAccessToken(),
+                },
+            });
+            const statusCode = response.status;
+            console.log(response);
+            if (statusCode === 401) {
+                localStorage.removeItem('accessToken');
+                redirect('login');
+            } else {
+                return statusCode;
+            }
+        } catch (e) {
+            console.log(e);
+        }
     },
 };
 

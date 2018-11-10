@@ -46,6 +46,7 @@ const styles = {
 
     textField: {
         padding: '0 5px',
+        textAlign:'left'
     },
 
     buttons: {
