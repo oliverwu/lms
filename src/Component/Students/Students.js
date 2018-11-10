@@ -13,8 +13,8 @@ class Students extends PureComponent{
             pageSize: 10,
             totalPage: 1,
             students: [],
-            // currentPage: 1,
             isLoading: true,
+            count: 0,
         }
     }
 
@@ -23,6 +23,15 @@ class Students extends PureComponent{
         this.setState({
             pageNum: pageNum,
             isLoading: true,
+        })
+    };
+
+    countTotalStudents = async (totalPage, pageSize) => {
+        const dataInLastPage = await StudentsApi.getStudentsByPage(totalPage);
+        const studentsInLastPageCount = dataInLastPage.students.length;
+        const count = (totalPage - 1)*pageSize + studentsInLastPageCount;
+        this.setState({
+            count,
         })
     };
 
@@ -42,18 +51,18 @@ class Students extends PureComponent{
         if (data) {
             const { students, pageNum, pageSize, totalPage } = data;
             this.setState({
-                students: students,
+                students,
                 isLoading: false,
-                pageNum: pageNum,
-                pageSize: pageSize,
-                totalPage: totalPage,
+                pageNum,
+                pageSize,
+                totalPage,
             });
+            await this.countTotalStudents(totalPage, pageSize);
         }
     };
 
     render() {
-        const {isLoading, students, pageSize, pageNum} = this.state;
-        const count = 201;
+        const {isLoading, students, pageSize, pageNum, count} = this.state;
 
         return (
             <MenuBar selected='Students' menu='Students' name='student'>
