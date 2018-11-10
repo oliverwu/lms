@@ -6,7 +6,7 @@ import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
-import {Paper, Button, TableFooter } from '@material-ui/core';
+import {Paper, Button, TableFooter, MenuItem, Menu} from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import TablePagination from "@material-ui/core/TablePagination/TablePagination";
@@ -15,6 +15,8 @@ import FirstPageIcon from "@material-ui/icons/FirstPage";
 import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 import LastPageIcon from '@material-ui/icons/LastPage';
+import DeleteDialog from "../Utils/DeleteDialog";
+import LecturersApi from "./LecturersApi";
 
 const actionsStyles = theme => ({
     root: {
@@ -48,7 +50,7 @@ const styles = theme => ({
         marginBottom: 0,
     },
     table: {
-        // width: '90%'
+        minWidth: '600px'
         // minWidth: '300px',
         // textAlign: 'right',
     },
@@ -61,6 +63,7 @@ const styles = theme => ({
 });
 
 class TablePaginationActions extends React.Component {
+
     handleFirstPageButtonClick = event => {
         this.props.onChangePage(event, 0);
     };
@@ -128,18 +131,54 @@ class LecturersTable extends Component {
         super(props);
         this.state = {
             page: 0,
+            deleteDialogStatus: false,
+            detailsMenuAnchorEl: null,
         }
     }
 
     handleChangePage = (event, page) => {
         this.setState({
-            page:page
+            page:page,
         })
     };
 
+    handleDetailsMenuClose = () => {
+        this.setState({
+            detailsMenuAnchorEl: null
+        })
+    };
+
+    handleDetailsMenuOpen = (e) => {
+        this.setState({
+            detailsMenuAnchorEl: e.currentTarget,
+        })
+    };
+
+    handleDeleteDialogClose = () => {
+        this.setState({
+            deleteDialogStatus: false
+        })
+    };
+
+    handleDeleteDialogOpen = () => {
+        this.setState({
+            deleteDialogStatus: true
+        })
+    };
+
+    handleDelete = async (id) => {
+        const statusCode = await LecturersApi.deleteLecturer(id);
+        if (statusCode === 204) {
+            window.location.reload();
+        }
+    };
+
+
     render() {
         const { classes, lecturers } = this.props;
-        const { page } = this.state;
+        const { page, detailsMenuAnchorEl, deleteDialogStatus } = this.state;
+        const detailsMenuOpen = Boolean(detailsMenuAnchorEl);
+
         const pageSize = 10;
         return (
             <Paper className={classes.root}>
@@ -163,10 +202,31 @@ class LecturersTable extends Component {
                                         <TableCell numeric>{lecturer.email}</TableCell>
                                         <TableCell numeric>{lecturer.staffNumber}</TableCell>
                                         <TableCell numeric>
-                                            <Link to={`lecturers/${lecturer.id}`} style={{textDecoration: 'none'}}>
-                                                <Button className={classes.detailsButton}><MoreVertIcon/></Button>
-                                                {/*<TableCell numeric>{'Details'}</TableCell>*/}
-                                            </Link>
+                                            <Button className={classes.detailsButton} onClick={this.handleDetailsMenuOpen}>
+                                                <MoreVertIcon/>
+                                            </Button>
+                                            <Menu
+                                                open={detailsMenuOpen}
+                                                anchorEl={detailsMenuAnchorEl}
+                                                onClose={this.handleDetailsMenuClose}
+                                                PaperProps={{
+                                                    style: {
+                                                        width: 200,
+                                                    }
+                                                }}
+                                            >
+                                                <MenuItem key='delete' onClick={this.handleDeleteDialogOpen}>Delete</MenuItem>
+                                                <Link to={`lecturers/${lecturer.id}`} style={{textDecoration: 'none', width: '100%'}}>
+                                                    <MenuItem key='details' >Details</MenuItem>
+                                                </Link>
+                                            </Menu>
+                                            {console.log(deleteDialogStatus)}
+                                            <DeleteDialog
+                                                deleteDialogStatus={deleteDialogStatus}
+                                                handleDeleteDialogClose={this.handleDeleteDialogClose}
+                                                content='lecturer'
+                                                handleDelete={this.handleDelete.bind(this, lecturer.id)}
+                                            />
                                         </TableCell>
                                     </TableRow>
                                 );
@@ -186,6 +246,7 @@ class LecturersTable extends Component {
                             </TableRow>
                         </TableFooter>
                     </Table>
+
                 </div>
 
             </Paper>
