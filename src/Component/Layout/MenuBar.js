@@ -30,7 +30,7 @@ const styles = theme => ({
         alignItems: 'center',
         justifyContent: 'left',
         padding: '0 20px',
-        background: 'white',
+        // background: 'white',
     },
     menuButton: {
         marginRight: 20,
@@ -49,14 +49,17 @@ const styles = theme => ({
         padding: '0 8px',
         height: '60px',
         position: 'relative',
-        background: 'white'
+        // background: 'white'
     },
     drawerPaper: {
-        backgroundColor: '#F9F9F9',
+        // backgroundColor: '#F9F9F9',
         top: '60px',
         width: drawerWidth,
     },
-
+    drawerPaperTemporary: {
+        // backgroundColor: '#F9F9F9',
+        width: drawerWidth,
+    },
     content: {
         flexGrow: 1,
         width: '100%',
@@ -85,7 +88,7 @@ class MenuBar extends React.Component {
             <div>
                 <div className={classes.panelTitle}>
                     <Typography variant="h6" noWrap>
-                        Services
+                        Applications
                     </Typography>
                 </div>
                 <Divider />
@@ -156,7 +159,7 @@ class MenuBar extends React.Component {
                 <div className={classes.content}>
                     <div className={classes.titleBar}>
                         <IconButton
-                            color="inherit"
+                            // color="inherit"
                             aria-label="Open drawer"
                             onClick={this.handleDrawerToggle}
                             className={classes.menuButton}

@@ -20,7 +20,7 @@ const styles = {
         display: 'flex',
         flexDirection: 'column',
         marginTop: '20px',
-        background: 'white',
+        // background: 'white',
         borderRadius: '5px',
         height: '180px'
     },

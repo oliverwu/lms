@@ -15,7 +15,7 @@ class Lecturers extends PureComponent{
 
     async componentDidMount() {
         const lecturers = await LecturersApi.getAllLecturers();
-        lecturers && this.setState({
+        lecturers && await this.setState({
             lecturers: lecturers,
             isLoading: false,
         })

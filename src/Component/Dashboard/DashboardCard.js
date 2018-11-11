@@ -14,7 +14,7 @@ const styles = {
         height: 250,
         margin: '25px 5px',
         textAlign: 'left',
-        background: 'white',
+        // background: 'white',
     },
 
     cardContent: {

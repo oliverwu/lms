@@ -1,9 +1,22 @@
 import React, {Component} from 'react';
 import { withStyles} from '@material-ui/core/styles';
-import {AppBar, IconButton, Menu, MenuItem, Toolbar, Typography} from '@material-ui/core';
+import {AppBar, IconButton, Menu, MenuItem, Toolbar, Typography, Popover, Paper, Grid, Button} from '@material-ui/core';
 import PersonIcon from '@material-ui/icons/Person';
+import InvertColorsIcon from '@material-ui/icons/InvertColors';
+import ViewModuleIcon from '@material-ui/icons/ViewModule';
 import { redirect } from "../Utils/Help";
 
+import LocalLibraryIcon from '@material-ui/icons/LocalLibrary';
+import ClassIcon from '@material-ui/icons/Class';
+import PeopleIcon from '@material-ui/icons/People';
+
+function getPopoverStyle() {
+    const top = 5;
+
+    return {
+        top: `${top}px`,
+    };
+}
 
 const styles = theme => {
     return {
@@ -12,6 +25,8 @@ const styles = theme => {
         },
         appBar: {
             height: '60px',
+            position: 'relative',
+            zIndex: 1250,
         },
         title: {
             color: 'white',
@@ -20,9 +35,30 @@ const styles = theme => {
         grow: {
             flexGrow: 1,
         },
-        accountIcon: {
-            color: 'white'
+        accountMenuIcon: {
+            color: 'white',
+        },
+        toggleThemeIcon: {
+            color: 'white',
+        },
+        ViewModuleIcon: {
+            color: 'white',
+        },
+        viewModulePaper: {
+            width: 500,
+            height: 200,
+            padding: '20px',
+            textAlign: 'center'
+        },
+        viewModuleElement: {
+            '&:hover': {
+                background: 'lightGreen'
+            }
+        },
+        viewModuleElementIconButton: {
+
         }
+
     }
 };
 
@@ -30,19 +66,37 @@ class LMSAppBar extends Component{
     constructor(props) {
         super(props);
         this.state = {
-            anchorEl: null,
+            accountMenuAnchorEl: null,
+            viewModuleAnchorEl: null,
+            viewModuleChecked: false
         }
     }
 
-    handleClick = (event) => {
+    handleClickAccountIcon = (event) => {
         this.setState({
-            anchorEl: event.currentTarget,
+            accountMenuAnchorEl: event.currentTarget,
         })
     };
 
-    handleClose = () => {
+    handleClickViewModuleIcon = (event) => {
+        console.log(event.currentTarget);
         this.setState({
-            anchorEl: null,
+            viewModuleAnchorEl: event.currentTarget,
+        })
+    };
+    handleClickToggleThemeIcon = () => {
+        this.props.handleToggleTheme();
+    };
+
+    handleAccountMenuClose = () => {
+        this.setState({
+            accountMenuAnchorEl: null,
+        })
+    };
+
+    handleViewModuleClose = () => {
+        this.setState({
+            viewModuleAnchorEl: null,
         })
     };
 
@@ -53,8 +107,9 @@ class LMSAppBar extends Component{
 
     render() {
         const { classes } = this.props;
-        const { anchorEl} = this.state;
-        const open = Boolean(anchorEl);
+        const { accountMenuAnchorEl, viewModuleAnchorEl } = this.state;
+        const accountMenuOpen = Boolean(accountMenuAnchorEl);
+        const viewModuleOpen = Boolean(viewModuleAnchorEl);
 
         return (
             <div className={classes.root}>
@@ -66,15 +121,61 @@ class LMSAppBar extends Component{
                         <div className={classes.grow}/>
                         <div>
                             <IconButton
-                                className={classes.accountIcon}
-                                onClick={this.handleClick}
+                                className={classes.ViewModuleIcon}
+                                onClick={this.handleClickViewModuleIcon}
+                            >
+                                <ViewModuleIcon/>
+                            </IconButton>
+                            <Popover
+                                style={getPopoverStyle()}
+                                open={viewModuleOpen}
+                                anchorEl={viewModuleAnchorEl}
+                                onClose={this.handleViewModuleClose}
+                                anchorOrigin={{
+                                    vertical: 'bottom',
+                                    horizontal: 'right',
+                                }}
+                                transformOrigin={{
+                                    vertical: 'top',
+                                    horizontal: 'right',
+                                }}
+                            >
+                                <Paper className={classes.viewModulePaper}>
+                                    <Grid container spacing={16} justify="center"
+                                          alignItems="center">
+                                        <Grid item xs={4} className={classes.viewModuleElement}>
+                                            <Button className={classes.viewModuleElementIconButton}>
+                                                <LocalLibraryIcon/>
+                                                <Typography>Course</Typography>
+                                            </Button>
+                                        </Grid>
+                                        <Grid item xs={4}>
+                                            <LocalLibraryIcon/> Course
+                                        </Grid>
+                                        <Grid item xs={4}>
+                                            <LocalLibraryIcon/> Course
+                                        </Grid>
+                                    </Grid>
+                                </Paper>
+                            </Popover>
+                        </div>
+                        <IconButton
+                            className={classes.toggleThemeIcon}
+                            onClick={this.handleClickToggleThemeIcon}
+                        >
+                            <InvertColorsIcon/>
+                        </IconButton>
+                        <div>
+                            <IconButton
+                                className={classes.accountMenuIcon}
+                                onClick={this.handleClickAccountIcon}
                             >
                                 <PersonIcon/>
                             </IconButton>
                             <Menu
-                                open={open}
-                                anchorEl={anchorEl}
-                                onClose={this.handleClose}
+                                open={accountMenuOpen}
+                                anchorEl={accountMenuAnchorEl}
+                                onClose={this.handleAccountMenuClose}
                                 PaperProps={{
                                     style: {
                                         width: 200,
