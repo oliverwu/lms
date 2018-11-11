@@ -29,16 +29,13 @@ class Courses extends React.Component{
             <div>
                 <Grid container
                       direction="row"
+                      justify="flex-start"
+                      alignItems="center"
                 >
                     {courses.map((course) => {
                         return (
-                            <Grid item xs={12} md={4} lg={3} key={course.id}>
-                                <Grid container
-                                      direction="row"
-                                      justify="center"
-                                      alignItems="center">
-                                    <CourseCard title = {course.title} description = {course.description} id={course.id}/>
-                                </Grid>
+                            <Grid item key={course.id}>
+                                <CourseCard title = {course.title} description = {course.description} id={course.id}/>
                             </Grid>
                         )
                     })}

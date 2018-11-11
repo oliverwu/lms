@@ -8,33 +8,50 @@ import AddIcon from '@material-ui/icons/Add';
 import DeleteDialog from "../Utils/DeleteDialog";
 import CourseApi from "./CourseApi";
 import {redirect} from "../Utils/Help";
+import LocalLibraryIcon from '@material-ui/icons/LocalLibrary';
 
 const styles = {
-    root: {
-        width: '100%',
-        height: '200px',
-        margin: '25px 10px',
-    },
 
     paper: {
         display: 'flex',
         flexDirection: 'column',
-        marginTop: '20px',
+        margin: '30px 15px',
         // background: 'white',
         borderRadius: '5px',
-        height: '180px'
+        width: '300px',
+        height: '200px'
     },
 
     paperTitle: {
-        backgroundColor: '#1D8BF1',
+        background: 'rgba(0,0,0,0)',
+        // width: '90px',
+        height: '90px',
         color: 'white',
         padding: '15px 15px',
         textAlign:'left',
-        marginTop: '-20px',
+        marginTop: '-25px',
         marginLeft: '20px',
         marginRight: '20px',
+        marginBottom: '10px',
         borderRadius: '5px',
-        opacity: 0.9
+        display: 'flex',
+        justifyContent: 'flex-start',
+        alignItems: 'center',
+    },
+
+    icon: {
+        width: '60px',
+        height: '60px',
+        padding: '10px',
+        color: 'white',
+        marginRight: '20px',
+        background: '#C94251',
+        boxShadow: '0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23)',
+    },
+
+    paperTitleText: {
+        color: 'black',
+        marginTop: '10px',
     },
 
     paperDescription: {
@@ -101,11 +118,15 @@ class MediaCard extends Component{
         const open = Boolean(anchorEl);
 
         return (
-            <div className={classes.root}>
+            <div>
                 <Paper className={classes.paper}>
-                    <Typography component="h6" variant="h6"  gutterBottom className={classes.paperTitle}>
-                        {title}
-                    </Typography>
+                    <div className={classes.paperTitle}>
+                        <LocalLibraryIcon className={classes.icon}/>
+                        <Typography component="h6" variant="h6" color='inherit' className={classes.paperTitleText}>
+                            {title}
+                        </Typography>
+                    </div>
+
                     <Typography variant="subtitle1" color="textSecondary" className={classes.paperDescription}>
                         {description}
                     </Typography>

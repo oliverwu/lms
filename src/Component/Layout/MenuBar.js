@@ -63,12 +63,12 @@ const styles = theme => ({
     content: {
         flexGrow: 1,
         width: '100%',
-        overflow: 'auto',
+        overflowX: 'auto',
     },
     contentContainer: {
         padding: '10px 30px',
         width: '100%',
-        overflow: 'auto'
+        overflowX: 'auto'
     }
 });
 
