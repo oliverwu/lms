@@ -39,9 +39,8 @@ const schema = yup.object().shape({
 
 
 const styles = {
-    paper: {
+    root: {
         maxWidth: '600px',
-        padding: '20px',
     },
 
     textField: {
@@ -193,119 +192,116 @@ class CourseDetails extends PureComponent{
 
         return (
             <MenuBar selected='Lecturers' menu={id === 'create' ? 'CREATE NEW LECTURER' : 'LECTURER DETAILS'}>
-                <Paper className={classes.paper}>
-                    {console.log({ id, firstName, lastName, staffNumber, email, bibliography })}
-                    <form onSubmit={this.handleSubmit}>
+                <form onSubmit={this.handleSubmit} className={classes.root}>
+                    <Grid
+                        container
+                    >
                         <Grid
-                            container
+                            item xs={12} md={6} className={classes.textField}
                         >
-                            <Grid
-                                item xs={12} md={6} className={classes.textField}
-                            >
-                                <TextField
-                                    label='First Name'
-                                    id='student-firstName'
-                                    placeholder='First Name'
-                                    fullWidth
-                                    name='firstName'
-                                    value={firstName}
-                                    margin='normal'
-                                    onChange={this.handleChange}
-                                />
-                                {validationErrors.firstName && <FormHelperText error>{validationErrors.firstName}</FormHelperText>}
-                            </Grid>
-                            <Grid item xs={12} md={6} className={classes.textField}>
-                                <TextField
-                                    id="student-lastName"
-                                    label="Last Name"
-                                    fullWidth
-                                    placeholder='Last Name'
-                                    margin='normal'
-                                    // className={classes.maxStudents}
-                                    value={lastName}
-                                    name='lastName'
-                                    onChange={this.handleChange}
-                                >
-                                </TextField>
-                                {validationErrors.lastName && <FormHelperText error>{validationErrors.lastName}</FormHelperText>}
-                            </Grid>
-                        </Grid>
-                        <Grid item xs={12} className={classes.textField}>
                             <TextField
-                                label="Staff Number"
-                                placeholder='Staff Number'
+                                label='First Name'
+                                id='student-firstName'
+                                placeholder='First Name'
                                 fullWidth
-                                // margin='normal'
-                                name='staffNumber'
-                                value={staffNumber}
-                                onChange={this.handleChange}
-                            />
-                            {validationErrors.staffNumber && <FormHelperText error>{validationErrors.staffNumber}</FormHelperText>}
-                        </Grid >
-                        <Grid item xs={12} className={classes.textField}>
-                            <TextField
-                                label="Email"
-                                placeholder='Email'
-                                type='email'
-                                fullWidth
-                                // margin='normal'
-                                name='email'
-                                value={email}
-                                onChange={this.handleChange}
-                            />
-                            {validationErrors.email && <FormHelperText error>{validationErrors.email}</FormHelperText>}
-                        </Grid >
-                        <Grid item xs={12} className={classes.textField}>
-                            <TextField
-                                label='Bibliography'
-                                placeholder='Bibliography'
-                                fullWidth
-                                name='bibliography'
-                                value={bibliography}
+                                name='firstName'
+                                value={firstName}
                                 margin='normal'
                                 onChange={this.handleChange}
                             />
-                            {validationErrors.bibliography && <FormHelperText error>{validationErrors.bibliography}</FormHelperText>}
-                        </Grid >
-                        <div className={classes.buttons}>
+                            {validationErrors.firstName && <FormHelperText error>{validationErrors.firstName}</FormHelperText>}
+                        </Grid>
+                        <Grid item xs={12} md={6} className={classes.textField}>
+                            <TextField
+                                id="student-lastName"
+                                label="Last Name"
+                                fullWidth
+                                placeholder='Last Name'
+                                margin='normal'
+                                // className={classes.maxStudents}
+                                value={lastName}
+                                name='lastName'
+                                onChange={this.handleChange}
+                            >
+                            </TextField>
+                            {validationErrors.lastName && <FormHelperText error>{validationErrors.lastName}</FormHelperText>}
+                        </Grid>
+                    </Grid>
+                    <Grid item xs={12} className={classes.textField}>
+                        <TextField
+                            label="Staff Number"
+                            placeholder='Staff Number'
+                            fullWidth
+                            // margin='normal'
+                            name='staffNumber'
+                            value={staffNumber}
+                            onChange={this.handleChange}
+                        />
+                        {validationErrors.staffNumber && <FormHelperText error>{validationErrors.staffNumber}</FormHelperText>}
+                    </Grid >
+                    <Grid item xs={12} className={classes.textField}>
+                        <TextField
+                            label="Email"
+                            placeholder='Email'
+                            type='email'
+                            fullWidth
+                            // margin='normal'
+                            name='email'
+                            value={email}
+                            onChange={this.handleChange}
+                        />
+                        {validationErrors.email && <FormHelperText error>{validationErrors.email}</FormHelperText>}
+                    </Grid >
+                    <Grid item xs={12} className={classes.textField}>
+                        <TextField
+                            label='Bibliography'
+                            placeholder='Bibliography'
+                            fullWidth
+                            name='bibliography'
+                            value={bibliography}
+                            margin='normal'
+                            onChange={this.handleChange}
+                        />
+                        {validationErrors.bibliography && <FormHelperText error>{validationErrors.bibliography}</FormHelperText>}
+                    </Grid >
+                    <div className={classes.buttons}>
+                        <Button
+                            color='default'
+                            variant='text'
+                            className={classes.buttonRest}
+                            onClick={this.handleReset}
+                        >reset</Button>
+                        <div>
                             <Button
-                                color='default'
-                                variant='text'
-                                className={classes.buttonRest}
-                                onClick={this.handleReset}
-                            >reset</Button>
-                            <div>
-                                <Button
-                                    color='secondary'
-                                    variant='extendedFab'
-                                    className={id === 'create' ? classes.noButtonDelete : classes.buttonDelete}
-                                    onClick={this.handleDeleteDialogOpen}
-                                >Delete</Button>
-                                <Button
-                                    type="submit"
-                                    color='primary'
-                                    variant='extendedFab'
-                                    className={classes.buttonSubmit}
-                                >{id !== 'create' ? 'Save' : 'Create'}</Button>
-                            </div>
+                                color='secondary'
+                                variant='extendedFab'
+                                className={id === 'create' ? classes.noButtonDelete : classes.buttonDelete}
+                                onClick={this.handleDeleteDialogOpen}
+                            >Delete</Button>
+                            <Button
+                                type="submit"
+                                color='primary'
+                                variant='extendedFab'
+                                className={classes.buttonSubmit}
+                            >{id !== 'create' ? 'Save' : 'Create'}</Button>
                         </div>
-                    </form>
-                    <CreateSucceedDialog
-                        url='lecturers'
-                        createDialogSucceedStatus={createDialogSucceedStatus}
-                    />
-                    <DeleteDialog
-                        handleDelete={this.handleDelete}
-                        handleDeleteDialogClose={this.handleDeleteDialogClose}
-                        deleteDialogStatus={deleteDialogStatus}
-                        content='lecturer'
-                    />
-                    <ErrorDialog
-                        content='lecturer'
-                        errorDialogStatus={errorDialogStatus}
-                        handleErrorDialogClose={this.handleErrorDialogClose}
-                    />
-                </Paper>
+                    </div>
+                </form>
+                <CreateSucceedDialog
+                    url='lecturers'
+                    createDialogSucceedStatus={createDialogSucceedStatus}
+                />
+                <DeleteDialog
+                    handleDelete={this.handleDelete}
+                    handleDeleteDialogClose={this.handleDeleteDialogClose}
+                    deleteDialogStatus={deleteDialogStatus}
+                    content='lecturer'
+                />
+                <ErrorDialog
+                    content='lecturer'
+                    errorDialogStatus={errorDialogStatus}
+                    handleErrorDialogClose={this.handleErrorDialogClose}
+                />
             </MenuBar>
         );
     }

@@ -14,9 +14,6 @@ import {createMuiTheme} from '@material-ui/core';
 import AppBar from "./Component/Layout/AppBar";
 import LecturerDetails from "./Component/Lecturers/LecturerDetails";
 
-
-
-
 class App extends Component {
     constructor(props) {
         super(props);
@@ -64,7 +61,7 @@ class App extends Component {
                     <AppBar handleToggleTheme={this.handleToggleTheme}/>
                     <Router>
                         <Switch>
-                            <Redirect exact path="/" to='/dashboard'/>
+                            <Redirect exact path="/" to='/login'/>
                             <Route exact path='/login' component={Login} />
                             <Route exact path='/dashboard' component={Dashboard} />
                             <Route exact path='/courses/' component={Courses}/>

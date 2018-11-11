@@ -53,7 +53,7 @@ const styles = theme => ({
     },
     drawerPaper: {
         // backgroundColor: '#F9F9F9',
-        top: '60px',
+        // top: '60px',
         width: drawerWidth,
     },
     drawerPaperTemporary: {
@@ -63,7 +63,7 @@ const styles = theme => ({
     content: {
         flexGrow: 1,
         width: '100%',
-        overflow: 'auto'
+        overflow: 'auto',
     },
     contentContainer: {
         padding: '10px 30px',
@@ -87,9 +87,9 @@ class MenuBar extends React.Component {
         const drawer = (
             <div>
                 <div className={classes.panelTitle}>
-                    <Typography variant="h6" noWrap>
-                        Applications
-                    </Typography>
+                    {/*<Typography variant="h6" noWrap>*/}
+                        {/*Applications*/}
+                    {/*</Typography>*/}
                 </div>
                 <Divider />
                 <List >

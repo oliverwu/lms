@@ -1,5 +1,6 @@
 export function redirect(path) {
     window.location.href = `http://localhost:3000/#/${path}`
+    // window.location.href = `https://www.oliver-website.com/#/${path}`
 }
 
 export function getAccessToken() {

@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import { withStyles} from '@material-ui/core/styles';
-import {AppBar, IconButton, Menu, MenuItem, Toolbar, Typography, Popover, Paper, Grid, Button} from '@material-ui/core';
+import {AppBar, IconButton, Menu, MenuItem, Toolbar, Typography, Popover, Paper, Grid, Button, List, ListItemText, ListItemIcon, ListItem} from '@material-ui/core';
 import PersonIcon from '@material-ui/icons/Person';
 import InvertColorsIcon from '@material-ui/icons/InvertColors';
 import ViewModuleIcon from '@material-ui/icons/ViewModule';
@@ -45,18 +45,28 @@ const styles = theme => {
             color: 'white',
         },
         viewModulePaper: {
-            width: 500,
-            height: 200,
+            minWidth: '240px',
+            // minWidth: 240,
+            // maxWidth: 600,
+            minHeight: '90px',
             padding: '20px',
-            textAlign: 'center'
         },
         viewModuleElement: {
-            '&:hover': {
-                background: 'lightGreen'
-            }
+            width: '200px',
         },
-        viewModuleElementIconButton: {
-
+        viewModuleElementButton: {
+            '&:hover': {
+                background: '#286681'
+            },
+            minWidth: '200px',
+            height: '50px',
+            borderRadius: 0,
+        },
+        viewModuleElementButtonIcon: {
+            marginRight: '10px',
+        },
+        viewModuleElementButtonText: {
+            padding: '0',
         }
 
     }
@@ -140,23 +150,29 @@ class LMSAppBar extends Component{
                                     horizontal: 'right',
                                 }}
                             >
-                                <Paper className={classes.viewModulePaper}>
-                                    <Grid container spacing={16} justify="center"
+                                <List className={classes.viewModulePaper}>
+                                    <Grid container spacing={8} justify="center"
                                           alignItems="center">
-                                        <Grid item xs={4} className={classes.viewModuleElement}>
-                                            <Button className={classes.viewModuleElementIconButton}>
-                                                <LocalLibraryIcon/>
-                                                <Typography>Course</Typography>
-                                            </Button>
+                                        <Grid item xs={12} sm={4} className={classes.viewModuleElement}>
+                                            <ListItem className={classes.viewModuleElementButton} >
+                                                <LocalLibraryIcon className={classes.viewModuleElementButtonIcon}/>
+                                                <ListItemText className={classes.viewModuleElementButtonText}>Course</ListItemText>
+                                            </ListItem>
                                         </Grid>
-                                        <Grid item xs={4}>
-                                            <LocalLibraryIcon/> Course
+                                        <Grid item xs={12} sm={4} className={classes.viewModuleElement}>
+                                            <ListItem variant='text' className={classes.viewModuleElementButton}>
+                                                <ClassIcon className={classes.viewModuleElementButtonIcon}/>
+                                                <ListItemText className={classes.viewModuleElementButtonText}>Lecturers</ListItemText>
+                                            </ListItem>
                                         </Grid>
-                                        <Grid item xs={4}>
-                                            <LocalLibraryIcon/> Course
+                                        <Grid item xs={12} sm={4} className={classes.viewModuleElement}>
+                                            <ListItem className={classes.viewModuleElementButton}>
+                                                <PeopleIcon className={classes.viewModuleElementButtonIcon}/>
+                                                <ListItemText className={classes.viewModuleElementButtonText}>Students</ListItemText>
+                                            </ListItem>
                                         </Grid>
                                     </Grid>
-                                </Paper>
+                                </List>
                             </Popover>
                         </div>
                         <IconButton

@@ -27,9 +27,6 @@ const styles = {
 };
 
 class DashboardCard extends Component{
-    constructor(props) {
-        super(props);
-    }
 
     render() {
         const { classes, title, description, button1, button2, linkUrl1, linkUrl2 } = this.props;
@@ -65,7 +62,6 @@ class DashboardCard extends Component{
                             {button2}
                         </Button>
                     </Link>
-
                 </CardActions>
             </Card>
         );
