@@ -1,4 +1,5 @@
-import React, { Component, PureComponent } from 'react';
+import React, { PureComponent, Fragment } from 'react';
+import AppBar from '../Layout/AppBar';
 import LecturersApi from './LecturersApi';
 import LecturersTable from './LecturersTable';
 import PageLoader from '../Utils/PageLoader';
@@ -25,10 +26,14 @@ class Lecturers extends PureComponent{
         const { lecturers, isLoading } = this.state;
 
         return (
-            <MenuBar menu='Lecturers' selected='Lecturers' name='lecturer'>
-                {isLoading && <PageLoader/>}
-                {!isLoading && <LecturersTable lecturers = {lecturers} />}
-            </MenuBar>
+            <Fragment>
+                <AppBar/>
+                <MenuBar menu='Lecturers' selected='Lecturers' name='lecturer'>
+                    {isLoading && <PageLoader/>}
+                    {!isLoading && <LecturersTable lecturers = {lecturers} />}
+                </MenuBar>
+            </Fragment>
+
         );
     }
 }

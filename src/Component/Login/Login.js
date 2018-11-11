@@ -1,4 +1,4 @@
-import React, {Component, PureComponent} from 'react';
+import React, { PureComponent} from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import { Paper, Avatar, TextField, Button, CircularProgress, IconButton } from '@material-ui/core';
 import PermIdentityIcon from '@material-ui/icons/PermIdentity';
@@ -85,7 +85,7 @@ const styles = theme => {
     };
 };
 
-class Login extends Component{
+class Login extends PureComponent{
     constructor(props) {
         super(props);
         this.state={
@@ -117,7 +117,6 @@ class Login extends Component{
         });
         const { userName, password } = this.state;
         const data = await LoginApi.getToken(userName, password);
-        console.log(data);
         if (data) {
             const { access_token } = data;
             localStorage.setItem('accessToken', access_token);

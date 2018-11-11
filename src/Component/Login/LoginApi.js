@@ -29,7 +29,6 @@ let LoginApi = {
             });
             if (response.ok) {
                 const jsonResponse = await response.json();
-                console.log(jsonResponse);
                 const { access_token, expires_in } = jsonResponse;
                 return {
                     access_token: access_token,

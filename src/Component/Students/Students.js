@@ -1,4 +1,5 @@
-import React, {Component, PureComponent} from 'react';
+import React, { PureComponent, Fragment } from 'react';
+import AppBar from '../Layout/AppBar';
 import StudentsApi from './StudentsApi';
 import PageLoader from '../Utils/PageLoader';
 import MenuBar from '../Layout/MenuBar';
@@ -6,8 +7,8 @@ import TableData from "../Utils/TableData";
 import TableControl from "../Utils/TableControl";
 
 class Students extends PureComponent{
-    constructor(props) {
-        super(props);
+    constructor() {
+        super();
         this.state ={
             pageNum: 1,
             pageSize: 10,
@@ -65,27 +66,31 @@ class Students extends PureComponent{
         const {isLoading, students, pageSize, pageNum, count} = this.state;
 
         return (
-            <MenuBar selected='Students' menu='Students' name='student'>
-                {isLoading && <PageLoader/>}
-                {!isLoading && students.length > 0 && <div>
-                    <TableData
-                        tableParams={students}
-                        tableHeadArray={['Name', 'Email', 'Gender', 'Date of Birth', 'Credit', 'Details']}
-                        tableBodyArray={['name', 'email', 'gender', 'DOB', 'credit']}
-                        tableName='student'
-                        page={0}
-                        pageSize={pageSize}
-                        tableApiDeleteMethod={StudentsApi.deleteStudent}
-                        minWidth='800px'
-                    />
-                    <TableControl
-                        count={count}
-                        page={pageNum - 1}
-                        pageSize={pageSize}
-                        changeCurrentPage={this.changeCurrentPage}
-                    />
-                </div>}
-            </MenuBar>
+            <Fragment>
+                <AppBar/>
+                <MenuBar selected='Students' menu='Students' name='student'>
+                    {isLoading && <PageLoader/>}
+                    {!isLoading && students.length > 0 && <div>
+                        <TableData
+                            tableParams={students}
+                            tableHeadArray={['Name', 'Email', 'Gender', 'Date of Birth', 'Credit', 'Details']}
+                            tableBodyArray={['name', 'email', 'gender', 'DOB', 'credit']}
+                            tableName='student'
+                            page={0}
+                            pageSize={pageSize}
+                            tableApiDeleteMethod={StudentsApi.deleteStudent}
+                            minWidth='800px'
+                        />
+                        <TableControl
+                            count={count}
+                            page={pageNum - 1}
+                            pageSize={pageSize}
+                            changeCurrentPage={this.changeCurrentPage}
+                        />
+                    </div>}
+                </MenuBar>
+            </Fragment>
+
         );
     }
 }

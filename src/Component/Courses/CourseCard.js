@@ -4,10 +4,9 @@ import { withStyles } from '@material-ui/core/styles';
 import { Paper, MenuItem, Menu, IconButton } from '@material-ui/core';
 import Typography from '@material-ui/core/Typography';
 import { Link } from 'react-router-dom';
-import AddIcon from '@material-ui/icons/Add';
+import MoreVertIcon from '@material-ui/icons/MoreVert';
 import DeleteDialog from "../Utils/DeleteDialog";
 import CourseApi from "./CourseApi";
-import {redirect} from "../Utils/Help";
 import LocalLibraryIcon from '@material-ui/icons/LocalLibrary';
 
 const styles = {
@@ -16,17 +15,22 @@ const styles = {
         display: 'flex',
         flexDirection: 'column',
         margin: '30px 15px',
-        // background: 'white',
+        background: '#F4F3F3',
         borderRadius: '5px',
         width: '300px',
-        height: '200px'
+        height: '200px',
+        color: 'black',
+        '&:hover': {
+            background: '#17977A',
+            color: 'white',
+            cursor: 'grab',
+        },
     },
 
     paperTitle: {
         background: 'rgba(0,0,0,0)',
         // width: '90px',
         height: '90px',
-        color: 'white',
         padding: '15px 15px',
         textAlign:'left',
         marginTop: '-25px',
@@ -50,7 +54,7 @@ const styles = {
     },
 
     paperTitleText: {
-        color: 'black',
+        // color: 'black',
         marginTop: '10px',
     },
 
@@ -64,8 +68,6 @@ const styles = {
         float: 'right',
         marginRight: '20px',
         marginBottom: '10px',
-        background: '#1D8BF1',
-        color: 'white'
     },
 };
 
@@ -127,15 +129,16 @@ class MediaCard extends Component{
                         </Typography>
                     </div>
 
-                    <Typography variant="subtitle1" color="textSecondary" className={classes.paperDescription}>
+                    <Typography variant="subtitle1" color="inherit" className={classes.paperDescription}>
                         {description}
                     </Typography>
                     <div >
                         <IconButton
                             className={classes.detailsButton}
                             onClick={this.handleClick}
+                            color='inherit'
                         >
-                            <AddIcon />
+                            <MoreVertIcon />
                         </IconButton>
                         <Menu
                             open={open}

@@ -1,8 +1,6 @@
 import {lmsURL} from "../Login/LoginApi";
 import { redirect, getAccessToken} from "../Utils/Help";
 
-let access_token = localStorage.getItem('accessToken');
-let BearerAccessToken = 'Bearer ' + access_token;
 
 let LecturersApi = {
     getAllLecturers: async () => {
@@ -14,7 +12,6 @@ let LecturersApi = {
                 }
             });
             const { ok, status} = response;
-            console.log(status);
             if ( status > 300) {
                 localStorage.removeItem('accessToken');
                 redirect('login');
@@ -82,7 +79,6 @@ let LecturersApi = {
                 body:  JSON.stringify(lecturer)
             });
             const statusCode = response.status;
-            console.log(response);
             if (statusCode === 401) {
                 localStorage.removeItem('accessToken');
                 redirect('login');
@@ -105,7 +101,6 @@ let LecturersApi = {
                 },
                 body:  JSON.stringify(lecturer)
             });
-            console.log(response);
             const statusCode = response.status;
             if (statusCode === 401) {
                 localStorage.removeItem('accessToken');
@@ -128,7 +123,6 @@ let LecturersApi = {
                 },
             });
             const statusCode = response.status;
-            console.log(response);
             if (statusCode === 401) {
                 localStorage.removeItem('accessToken');
                 redirect('login');

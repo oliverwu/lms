@@ -1,11 +1,10 @@
 import React, {Component} from 'react';
 import { withStyles} from '@material-ui/core/styles';
-import {AppBar, IconButton, Menu, MenuItem, Toolbar, Typography, Popover, Paper, Grid, Button, List, ListItemText, ListItemIcon, ListItem} from '@material-ui/core';
+import {AppBar, IconButton, Menu, MenuItem, Toolbar, Typography, Popover,  Grid, List, ListItemText,  ListItem} from '@material-ui/core';
 import PersonIcon from '@material-ui/icons/Person';
-import InvertColorsIcon from '@material-ui/icons/InvertColors';
 import ViewModuleIcon from '@material-ui/icons/ViewModule';
 import { redirect } from "../Utils/Help";
-
+import { Link } from 'react-router-dom';
 import LocalLibraryIcon from '@material-ui/icons/LocalLibrary';
 import ClassIcon from '@material-ui/icons/Class';
 import PeopleIcon from '@material-ui/icons/People';
@@ -25,7 +24,8 @@ const styles = theme => {
         },
         appBar: {
             height: '60px',
-            position: 'relative',
+            position: 'fixed',
+            top: 0,
             zIndex: 1250,
         },
         title: {
@@ -89,13 +89,9 @@ class LMSAppBar extends Component{
     };
 
     handleClickViewModuleIcon = (event) => {
-        console.log(event.currentTarget);
         this.setState({
             viewModuleAnchorEl: event.currentTarget,
         })
-    };
-    handleClickToggleThemeIcon = () => {
-        this.props.handleToggleTheme();
     };
 
     handleAccountMenuClose = () => {
@@ -153,34 +149,35 @@ class LMSAppBar extends Component{
                                 <List className={classes.viewModulePaper}>
                                     <Grid container spacing={8} justify="center"
                                           alignItems="center">
-                                        <Grid item xs={12} sm={4} className={classes.viewModuleElement}>
-                                            <ListItem className={classes.viewModuleElementButton} >
-                                                <LocalLibraryIcon className={classes.viewModuleElementButtonIcon}/>
-                                                <ListItemText className={classes.viewModuleElementButtonText}>Course</ListItemText>
-                                            </ListItem>
-                                        </Grid>
-                                        <Grid item xs={12} sm={4} className={classes.viewModuleElement}>
-                                            <ListItem variant='text' className={classes.viewModuleElementButton}>
-                                                <ClassIcon className={classes.viewModuleElementButtonIcon}/>
-                                                <ListItemText className={classes.viewModuleElementButtonText}>Lecturers</ListItemText>
-                                            </ListItem>
-                                        </Grid>
-                                        <Grid item xs={12} sm={4} className={classes.viewModuleElement}>
-                                            <ListItem className={classes.viewModuleElementButton}>
-                                                <PeopleIcon className={classes.viewModuleElementButtonIcon}/>
-                                                <ListItemText className={classes.viewModuleElementButtonText}>Students</ListItemText>
-                                            </ListItem>
-                                        </Grid>
+                                        <Link to={'/courses'} style={{ textDecoration: 'none' }}>
+                                            <Grid item xs={12} sm={4} className={classes.viewModuleElement}>
+                                                <ListItem className={classes.viewModuleElementButton} >
+                                                    <LocalLibraryIcon className={classes.viewModuleElementButtonIcon}/>
+                                                    <ListItemText className={classes.viewModuleElementButtonText}>Course</ListItemText>
+                                                </ListItem>
+                                            </Grid>
+                                        </Link>
+                                        <Link to='/lecturers' style={{ textDecoration: 'none' }}>
+                                            <Grid item xs={12} sm={4} className={classes.viewModuleElement}>
+                                                <ListItem variant='text' className={classes.viewModuleElementButton}>
+                                                    <ClassIcon className={classes.viewModuleElementButtonIcon}/>
+                                                    <ListItemText className={classes.viewModuleElementButtonText}>Lecturers</ListItemText>
+                                                </ListItem>
+                                            </Grid>
+                                        </Link>
+                                        <Link to='/students' style={{ textDecoration: 'none' }}>
+                                            <Grid item xs={12} sm={4} className={classes.viewModuleElement}>
+                                                <ListItem className={classes.viewModuleElementButton}>
+                                                    <PeopleIcon className={classes.viewModuleElementButtonIcon}/>
+                                                    <ListItemText className={classes.viewModuleElementButtonText}>Students</ListItemText>
+                                                </ListItem>
+                                            </Grid>
+                                        </Link>
+
                                     </Grid>
                                 </List>
                             </Popover>
                         </div>
-                        <IconButton
-                            className={classes.toggleThemeIcon}
-                            onClick={this.handleClickToggleThemeIcon}
-                        >
-                            <InvertColorsIcon/>
-                        </IconButton>
                         <div>
                             <IconButton
                                 className={classes.accountMenuIcon}

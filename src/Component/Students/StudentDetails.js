@@ -1,5 +1,6 @@
-import React, {Component, PureComponent} from 'react';
-import {TextField, MenuItem, Grid, Button, Paper, FormHelperText} from '@material-ui/core';
+import React, { PureComponent, Fragment } from 'react';
+import AppBar from '../Layout/AppBar';
+import {TextField, MenuItem, Grid, Button,  FormHelperText} from '@material-ui/core';
 import { withStyles} from '@material-ui/core/styles';
 import StudentsApi from './StudentsApi';
 import MenuBar from '../Layout/MenuBar';
@@ -95,8 +96,8 @@ const genderMap = [
 ];
 
 class StudentDetails extends PureComponent{
-    constructor(props) {
-        super(props);
+    constructor() {
+        super();
         this.state = {
             firstName: '',
             lastName: "",
@@ -196,7 +197,7 @@ class StudentDetails extends PureComponent{
 
     handleDelete = async () => {
         const { id } = this.props.match.params;
-        const statusCode = StudentsApi.deleteStudent(id);
+        const statusCode = await StudentsApi.deleteStudent(id);
         redirect('students');
     };
 
@@ -222,148 +223,152 @@ class StudentDetails extends PureComponent{
         const { id } = this.props.match.params;
 
         return (
-            <MenuBar selected='Students' menu={id === 'create' ? 'CREATE NEW STUDENT' : 'STUDENT DETAILS'}>
-                <form onSubmit={this.handleSubmit} className={classes.root}>
-                    <Grid
-                        container
-                    >
+            <Fragment>
+                <AppBar/>
+                <MenuBar selected='Students' menu={id === 'create' ? 'CREATE NEW STUDENT' : 'STUDENT DETAILS'}>
+                    <form onSubmit={this.handleSubmit} className={classes.root}>
                         <Grid
-                            item xs={12} md={6} className={classes.textField}
+                            container
                         >
+                            <Grid
+                                item xs={12} md={6} className={classes.textField}
+                            >
+                                <TextField
+                                    label='First Name'
+                                    id='student-firstName'
+                                    placeholder='First Name'
+                                    fullWidth
+                                    name='firstName'
+                                    value={firstName}
+                                    margin='normal'
+                                    onChange={this.handleChange}
+                                />
+                                {validationErrors.firstName && <FormHelperText error>{validationErrors.firstName}</FormHelperText>}
+                            </Grid>
+                            <Grid item xs={12} md={6} className={classes.textField}>
+                                <TextField
+                                    id="student-lastName"
+                                    label="Last Name"
+                                    fullWidth
+                                    placeholder='Last Name'
+                                    margin='normal'
+                                    // className={classes.maxStudents}
+                                    value={lastName}
+                                    name='lastName'
+                                    onChange={this.handleChange}
+                                >
+                                </TextField>
+                                {validationErrors.lastName && <FormHelperText error>{validationErrors.lastName}</FormHelperText>}
+                            </Grid>
+                        </Grid>
+                        <Grid
+                            container
+                        >
+                            <Grid
+                                item xs={12} md={6} className={classes.textField}
+                            >
+                                <TextField
+                                    label='Date of birth'
+                                    id='student-DOB'
+                                    type='date'
+                                    // placeholder='Date of birth'
+                                    fullWidth
+                                    name='DOB'
+                                    value={DOB}
+                                    // margin='normal'
+                                    onChange={this.handleChange}
+                                />
+                                {validationErrors.DOB && <FormHelperText error>{validationErrors.DOB}</FormHelperText>}
+                            </Grid>
+                            <Grid item xs={12} md={6} className={classes.textField}>
+                                <TextField
+                                    id="student-gender"
+                                    select
+                                    label="Gender"
+                                    fullWidth
+                                    // margin='normal'
+                                    className={classes.gender}
+                                    value={gender}
+                                    name='gender'
+                                    onChange={this.handleChange}
+                                    helperText="Please select the gender"
+                                >
+                                    {['Male', 'Female'].map(option => (
+                                        <MenuItem key={option} value={option}>
+                                            {option}
+                                        </MenuItem>
+                                    ))}
+                                </TextField>
+                                {validationErrors.gender && <FormHelperText error>{validationErrors.gender}</FormHelperText>}
+                            </Grid>
+                        </Grid>
+                        <Grid item xs={12} className={classes.textField}>
                             <TextField
-                                label='First Name'
-                                id='student-firstName'
-                                placeholder='First Name'
+                                label="Email"
+                                placeholder='Email'
+                                type='email'
                                 fullWidth
-                                name='firstName'
-                                value={firstName}
+                                // margin='normal'
+                                name='email'
+                                value={email}
+                                onChange={this.handleChange}
+                            />
+                            {validationErrors.email && <FormHelperText error>{validationErrors.email}</FormHelperText>}
+                        </Grid>
+                        <Grid item xs={12} className={classes.textField}>
+                            <TextField
+                                label='Credit'
+                                id='student-credit'
+                                placeholder='Credit'
+                                fullWidth
+                                name='credit'
+                                value={credit}
                                 margin='normal'
                                 onChange={this.handleChange}
                             />
-                            {validationErrors.firstName && <FormHelperText error>{validationErrors.firstName}</FormHelperText>}
+                            {validationErrors.credit && <FormHelperText error>{validationErrors.credit}</FormHelperText>}
                         </Grid>
-                        <Grid item xs={12} md={6} className={classes.textField}>
-                            <TextField
-                                id="student-lastName"
-                                label="Last Name"
-                                fullWidth
-                                placeholder='Last Name'
-                                margin='normal'
-                                // className={classes.maxStudents}
-                                value={lastName}
-                                name='lastName'
-                                onChange={this.handleChange}
-                            >
-                            </TextField>
-                            {validationErrors.lastName && <FormHelperText error>{validationErrors.lastName}</FormHelperText>}
-                        </Grid>
-                    </Grid>
-                    <Grid
-                        container
-                    >
-                        <Grid
-                            item xs={12} md={6} className={classes.textField}
-                        >
-                            <TextField
-                                label='Date of birth'
-                                id='student-DOB'
-                                type='date'
-                                // placeholder='Date of birth'
-                                fullWidth
-                                name='DOB'
-                                value={DOB}
-                                // margin='normal'
-                                onChange={this.handleChange}
-                            />
-                            {validationErrors.DOB && <FormHelperText error>{validationErrors.DOB}</FormHelperText>}
-                        </Grid>
-                        <Grid item xs={12} md={6} className={classes.textField}>
-                            <TextField
-                                id="student-gender"
-                                select
-                                label="Gender"
-                                fullWidth
-                                // margin='normal'
-                                className={classes.gender}
-                                value={gender}
-                                name='gender'
-                                onChange={this.handleChange}
-                                helperText="Please select the gender"
-                            >
-                                {['Male', 'Female'].map(option => (
-                                    <MenuItem key={option} value={option}>
-                                        {option}
-                                    </MenuItem>
-                                ))}
-                            </TextField>
-                            {validationErrors.gender && <FormHelperText error>{validationErrors.gender}</FormHelperText>}
-                        </Grid>
-                    </Grid>
-                    <Grid item xs={12} className={classes.textField}>
-                        <TextField
-                            label="Email"
-                            placeholder='Email'
-                            type='email'
-                            fullWidth
-                            // margin='normal'
-                            name='email'
-                            value={email}
-                            onChange={this.handleChange}
-                        />
-                        {validationErrors.email && <FormHelperText error>{validationErrors.email}</FormHelperText>}
-                    </Grid>
-                    <Grid item xs={12} className={classes.textField}>
-                        <TextField
-                            label='Credit'
-                            id='student-credit'
-                            placeholder='Credit'
-                            fullWidth
-                            name='credit'
-                            value={credit}
-                            margin='normal'
-                            onChange={this.handleChange}
-                        />
-                        {validationErrors.credit && <FormHelperText error>{validationErrors.credit}</FormHelperText>}
-                    </Grid>
-                    <div className={classes.buttons}>
-                        <Button
-                            color='default'
-                            variant='text'
-                            className={classes.buttonRest}
-                            onClick={this.handleReset}
-                        >reset</Button>
-                        <div>
+                        <div className={classes.buttons}>
                             <Button
-                                color='secondary'
-                                variant='extendedFab'
-                                className={id === 'create' ? classes.noButtonDelete : classes.buttonDelete}
-                                onClick={this.handleDeleteDialogOpen}
-                            >Delete</Button>
-                            <Button
-                                type="submit"
-                                color='primary'
-                                variant='extendedFab'
-                                className={classes.buttonSubmit}
-                            >{id !== 'create' ? 'Save' : 'Create'}</Button>
+                                color='default'
+                                variant='text'
+                                className={classes.buttonRest}
+                                onClick={this.handleReset}
+                            >reset</Button>
+                            <div>
+                                <Button
+                                    color='secondary'
+                                    variant='extendedFab'
+                                    className={id === 'create' ? classes.noButtonDelete : classes.buttonDelete}
+                                    onClick={this.handleDeleteDialogOpen}
+                                >Delete</Button>
+                                <Button
+                                    type="submit"
+                                    color='primary'
+                                    variant='extendedFab'
+                                    className={classes.buttonSubmit}
+                                >{id !== 'create' ? 'Save' : 'Create'}</Button>
+                            </div>
                         </div>
-                    </div>
-                </form>
-                <CreateSucceedDialog
-                    url='students'
-                    createDialogSucceedStatus={createDialogSucceedStatus}
-                />
-                <ErrorDialog
-                    content='student'
-                    errorDialogStatus={errorDialogStatus}
-                    handleErrorDialogClose={this.handleErrorDialogClose} content
-                />
-                <DeleteDialog
-                    deleteDialogStatus={deleteDialogStatus}
-                    handleDeleteDialogClose={this.handleDeleteDialogClose}
-                    content='student'
-                    handleDelete={this.handleDelete}
-                />
-            </MenuBar>
+                    </form>
+                    <CreateSucceedDialog
+                        url='students'
+                        createDialogSucceedStatus={createDialogSucceedStatus}
+                    />
+                    <ErrorDialog
+                        content='student'
+                        errorDialogStatus={errorDialogStatus}
+                        handleErrorDialogClose={this.handleErrorDialogClose}
+                    />
+                    <DeleteDialog
+                        deleteDialogStatus={deleteDialogStatus}
+                        handleDeleteDialogClose={this.handleDeleteDialogClose}
+                        content='student'
+                        handleDelete={this.handleDelete}
+                    />
+                </MenuBar>
+            </Fragment>
+
         );
     }
 }

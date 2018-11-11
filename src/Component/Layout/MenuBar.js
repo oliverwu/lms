@@ -30,7 +30,6 @@ const styles = theme => ({
         alignItems: 'center',
         justifyContent: 'left',
         padding: '0 20px',
-        // background: 'white',
     },
     menuButton: {
         marginRight: 20,
@@ -49,18 +48,17 @@ const styles = theme => ({
         padding: '0 8px',
         height: '60px',
         position: 'relative',
-        // background: 'white'
     },
     drawerPaper: {
-        // backgroundColor: '#F9F9F9',
-        // top: '60px',
+        top: '60px',
         width: drawerWidth,
     },
     drawerPaperTemporary: {
-        // backgroundColor: '#F9F9F9',
         width: drawerWidth,
     },
     content: {
+        position: 'relative',
+        top: '60px',
         flexGrow: 1,
         width: '100%',
         overflowX: 'auto',
@@ -82,14 +80,14 @@ class MenuBar extends React.Component {
     };
 
     render() {
-        const { classes, theme, children, selected, menu, name } = this.props;
+        const { classes, children, selected, menu, name } = this.props;
 
         const drawer = (
             <div>
                 <div className={classes.panelTitle}>
-                    {/*<Typography variant="h6" noWrap>*/}
-                        {/*Applications*/}
-                    {/*</Typography>*/}
+                    <Typography variant="h6" noWrap>
+                        Applications
+                    </Typography>
                 </div>
                 <Divider />
                 <List >

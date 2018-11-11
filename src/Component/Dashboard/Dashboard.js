@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import DashboardCard from './DashboardCard';
+import React, { PureComponent, Fragment } from 'react';
+import AppBar from '../Layout/AppBar';
 import { withStyles } from '@material-ui/core/styles';
 import classnames from 'classnames';
 import {Card, Grid} from "@material-ui/core";
@@ -64,71 +64,75 @@ const styles = theme => {
     }
 };
 
-class Dashboard extends Component {
+class Dashboard extends PureComponent {
 
 
     render() {
         const { classes } = this.props;
 
         return (
-            <MenuBar selected='Dashboard' menu='Dashboard' >
-                <Grid container
-                      direction="row"
-                      justify="flex-start"
-                      alignItems="center">
-                    <Grid item className={classes.card}>
-                        <Link to={'/courses'} style={{ textDecoration: 'none' }}>
-                            <Card className={classes.paper}>
-                                <CardContent className={classes.iconWrapper}>
-                                    <LocalLibraryIcon className={classes.icon}/>
-                                </CardContent>
-                                <CardContent className={classes.cardContent}>
-                                    <Typography gutterBottom variant="h5" component="h5" color='inherit'>
-                                        Courses
-                                    </Typography>
-                                    <Typography variant='subtitle1' color='inherit'>
-                                        All kinds of courses needed for IT industry
-                                    </Typography>
-                                </CardContent>
-                            </Card>
-                        </Link>
+            <Fragment>
+                <AppBar/>
+                <MenuBar selected='Dashboard' menu='Dashboard' >
+                    <Grid container
+                          direction="row"
+                          justify="flex-start"
+                          alignItems="center">
+                        <Grid item className={classes.card}>
+                            <Link to={'/courses'} style={{ textDecoration: 'none' }}>
+                                <Card className={classes.paper}>
+                                    <CardContent className={classes.iconWrapper}>
+                                        <LocalLibraryIcon className={classes.icon}/>
+                                    </CardContent>
+                                    <CardContent className={classes.cardContent}>
+                                        <Typography gutterBottom variant="h5" component="h5" color='inherit'>
+                                            Courses
+                                        </Typography>
+                                        <Typography variant='subtitle1' color='inherit'>
+                                            All kinds of courses needed for IT industry
+                                        </Typography>
+                                    </CardContent>
+                                </Card>
+                            </Link>
+                        </Grid>
+                        <Grid item>
+                            <Link to={'/lecturers'} style={{ textDecoration: 'none' }}>
+                                <Card className={classes.paper}>
+                                    <CardContent className={classes.iconWrapper}>
+                                        <ClassIcon className={classnames({[classes.icon]: true, [classes.iconLecturers]: true})}/>
+                                    </CardContent>
+                                    <CardContent className={classes.cardContent}>
+                                        <Typography gutterBottom variant="h5" component="h5" color='inherit'>
+                                            Lecturers
+                                        </Typography>
+                                        <Typography variant='subtitle1' color='inherit'>
+                                            Best lecturers in IT world
+                                        </Typography>
+                                    </CardContent>
+                                </Card>
+                            </Link>
+                        </Grid>
+                        <Grid item >
+                            <Link to={'/students'} style={{ textDecoration: 'none' }}>
+                                <Card className={classes.paper}>
+                                    <CardContent className={classes.iconWrapper}>
+                                        <PeopleIcon className={classnames({[classes.icon]: true, [classes.iconStudents]: true})}/>
+                                    </CardContent>
+                                    <CardContent className={classes.cardContent}>
+                                        <Typography gutterBottom variant="h5" component="h5" color='inherit'>
+                                            Students
+                                        </Typography>
+                                        <Typography variant='subtitle1' color='inherit'>
+                                            Hard-working and smart students
+                                        </Typography>
+                                    </CardContent>
+                                </Card>
+                            </Link>
+                        </Grid>
                     </Grid>
-                    <Grid item>
-                        <Link to={'/lecturers'} style={{ textDecoration: 'none' }}>
-                            <Card className={classes.paper}>
-                                <CardContent className={classes.iconWrapper}>
-                                    <ClassIcon className={classnames({[classes.icon]: true, [classes.iconLecturers]: true})}/>
-                                </CardContent>
-                                <CardContent className={classes.cardContent}>
-                                    <Typography gutterBottom variant="h5" component="h5" color='inherit'>
-                                        Lecturers
-                                    </Typography>
-                                    <Typography variant='subtitle1' color='inherit'>
-                                        Best lecturers in IT world
-                                    </Typography>
-                                </CardContent>
-                            </Card>
-                        </Link>
-                    </Grid>
-                    <Grid item >
-                        <Link to={'/students'} style={{ textDecoration: 'none' }}>
-                            <Card className={classes.paper}>
-                                <CardContent className={classes.iconWrapper}>
-                                    <PeopleIcon className={classnames({[classes.icon]: true, [classes.iconStudents]: true})}/>
-                                </CardContent>
-                                <CardContent className={classes.cardContent}>
-                                    <Typography gutterBottom variant="h5" component="h5" color='inherit'>
-                                        Students
-                                    </Typography>
-                                    <Typography variant='subtitle1' color='inherit'>
-                                        Hard-working and smart students
-                                    </Typography>
-                                </CardContent>
-                            </Card>
-                        </Link>
-                    </Grid>
-                </Grid>
-            </MenuBar>
+                </MenuBar>
+            </Fragment>
+
         );
     }
 }

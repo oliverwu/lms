@@ -1,8 +1,6 @@
 import {lmsURL} from "../Login/LoginApi";
 import { redirect, getAccessToken } from "../Utils/Help";
 
-let access_token = localStorage.getItem('accessToken');
-let BearerAccessToken = 'Bearer ' + access_token;
 
 let CourseApi = {
     getAllCourse: async () => {

@@ -17,31 +17,16 @@ import LecturerDetails from "./Component/Lecturers/LecturerDetails";
 class App extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-            themeColorBool: 'light',
-        }
     }
 
 
-    handleToggleTheme = () => {
-        const {themeColorBool} = this.state;
-        this.setState({
-            themeColorBool: !themeColorBool,
-        })
-    };
-
-
-
     render() {
-        const { themeColorBool } = this.state;
-        const themeColor = themeColorBool ? 'light' : 'dark';
 
         const theme = createMuiTheme({
             typography: {
                 useNextVariants: true,
             },
             palette: {
-                type: themeColor,
                 primary: {
                     main: '#1D8BF1',
                 },
@@ -58,7 +43,7 @@ class App extends Component {
         return (
             <MuiThemeProvider theme={theme}>
                 <div className="App">
-                    <AppBar handleToggleTheme={this.handleToggleTheme}/>
+                    {/*<AppBar/>*/}
                     <Router>
                         <Switch>
                             <Redirect exact path="/" to='/login'/>

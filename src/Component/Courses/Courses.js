@@ -1,11 +1,12 @@
-import React from 'react';
+import React, {PureComponent, Fragment} from 'react';
 import CourseApi from './CourseApi';
 import PageLoader from '../Utils/PageLoader';
 import { Grid } from "@material-ui/core";
 import { withStyles } from '@material-ui/core/styles'
 import CourseCard from "./CourseCard";
 import MenuBar from '../Layout/MenuBar';
-import DeleteDialog from "../Utils/DeleteDialog";
+import AppBar from '../Layout/AppBar';
+
 
 const styles = theme => ({
     button: {
@@ -14,7 +15,7 @@ const styles = theme => ({
     }
 });
 
-class Courses extends React.Component{
+class Courses extends PureComponent{
     constructor(props) {
         super(props);
         this.state = {
@@ -56,30 +57,22 @@ class Courses extends React.Component{
         }
     }
 
-    // componentDidMount() {
-    //     this.getAllCourse();
-    // }
-    //
-    // getAllCourse = () => {
-    //     CourseApi.getAllCourse().then(courses => {
-    //         courses && this.setState({
-    //             isLoading: false,
-    //             courses: courses,
-    //         });
-    //     });
-    // };
 
     render() {
         const {courses, isLoading,} = this.state;
 
         return (
-            <MenuBar selected='Courses' menu='Courses' name='course'>
-                {isLoading && <PageLoader/>}
-                {!isLoading && courses.length > 0 && this.renderCourseCards(courses)}
-            </MenuBar>
+            <Fragment>
+                <AppBar/>
+                <MenuBar selected='Courses' menu='Courses' name='course'>
+                    {isLoading && <PageLoader/>}
+                    {!isLoading && courses.length > 0 && this.renderCourseCards(courses)}
+                </MenuBar>
+            </Fragment>
+
         );
     }
 }
 
 
-export default withStyles(styles())(Courses);
+export default withStyles(styles)(Courses);
