@@ -1,24 +1,57 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import Card from '@material-ui/core/Card';
+import { Card, CardMedia, Paper} from '@material-ui/core';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import { Link } from 'react-router-dom';
+import LocalLibraryIcon from '@material-ui/icons/LocalLibrary';
+import ClassIcon from '@material-ui/icons/Class';
+import PeopleIcon from '@material-ui/icons/People';
 
 const styles = {
-    card: {
-        width: '100%',
-        height: 250,
-        margin: '25px 5px',
+    paper: {
+        // width: '100%',
+        width: '300px',
+        height: '350px',
+        margin: '10px',
+        flexGrow: 1,
         textAlign: 'left',
-        // background: 'white',
+        background: '#F4F3F3',
+        '&:hover': {
+            background: '#17977A',
+            color: 'white',
+            cursor: 'grab',
+        },
+        color: 'black'
+    },
+    iconWrapper: {
+        height: '150px',
+        width: '280px',
+        margin: '10px',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        background: '#EBEBEB',
     },
 
+    icon: {
+        width: '70px',
+        height: '70px',
+        padding: '20px',
+        color: 'white',
+        borderRadius: '50%',
+        background: '#C94251',
+    },
+
+
     cardContent: {
-        height: '180px',
+        marginTop: '20px',
+        height: '110px',
+        textAlign: 'center',
+        // color: 'black',
     },
 
     link: {
@@ -29,41 +62,24 @@ const styles = {
 class DashboardCard extends Component{
 
     render() {
-        const { classes, title, description, button1, button2, linkUrl1, linkUrl2 } = this.props;
+        const { classes, title, description, linkUrl, button1, button2, linkUrl1, linkUrl2 } = this.props;
+
         return (
-            <Card className={classes.card}>
-                <CardContent className={classes.cardContent}>
-                    <Typography gutterBottom variant="h3" component="h3" >
-                        {title}
-                    </Typography>
-                    <Typography variant='subtitle1' >
-                        {description}
-                    </Typography>
-                </CardContent>
-                <CardActions >
-                    <Link to={linkUrl1} style={{ textDecoration: 'none' }}>
-                        <Button
-                            variant="outlined"
-                            color="primary"
-                            disableRipple
-                            fullWidth
-                            className={classes.link}
-                        >
-                            {button1}
-                        </Button>
-                    </Link>
-                    <Link to={linkUrl2} style={{ textDecoration: 'none' }}>
-                        <Button
-                            variant="outlined"
-                            color="primary"
-                            disableRipple
-                            fullWidth
-                        >
-                            {button2}
-                        </Button>
-                    </Link>
-                </CardActions>
-            </Card>
+            <Link to={linkUrl} style={{ textDecoration: 'none' }}>
+                <Card className={classes.paper}>
+                    <CardContent className={classes.iconWrapper}>
+                        <LocalLibraryIcon className={classes.icon}/>
+                    </CardContent>
+                    <CardContent className={classes.cardContent}>
+                        <Typography gutterBottom variant="h5" component="h5" color='inherit'>
+                            {title}
+                        </Typography>
+                        <Typography variant='subtitle1' color='inherit'>
+                            {description}
+                        </Typography>
+                    </CardContent>
+                </Card>
+            </Link>
         );
     }
 }
