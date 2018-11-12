@@ -23,7 +23,7 @@ const styles = {
         '&:hover': {
             background: '#17977A',
             color: 'white',
-            cursor: 'grab',
+            // cursor: 'grab',
         },
     },
 

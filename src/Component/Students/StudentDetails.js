@@ -144,7 +144,7 @@ class StudentDetails extends PureComponent{
                 return gender === item.name;
             })[0].abbr;
             if ( id === 'create') {
-                const newStudent = {firstName, lastName, gender:newGender, DOB, email, credit};
+                const newStudent = {firstName, lastName, gender:newGender, dateOfBirth:DOB, email, credit};
                 const statusCode = await StudentsApi.createNewStudent(newStudent);
                 if (statusCode === 200) {
                     this.setState({
@@ -156,7 +156,7 @@ class StudentDetails extends PureComponent{
                     })
                 }
             } else {
-                const newStudent = {id, firstName, lastName, gender:newGender, DOB, email, credit};
+                const newStudent = {id, firstName, lastName, gender:newGender, dateOfBirth:DOB, email, credit};
                 const statusCode = await StudentsApi.updateStudent(newStudent);
                 if (statusCode === 204) {
                     this.setState({

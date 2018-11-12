@@ -6,10 +6,10 @@ import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
-import {Paper, Button, MenuItem, Menu} from '@material-ui/core';
-import { Link } from 'react-router-dom';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
+import {Paper, Button } from '@material-ui/core';
 import DeleteDialog from "../Utils/DeleteDialog";
+import DeleteOutline from '@material-ui/icons/DeleteOutline';
+import {redirect} from "./Help";
 
 const CustomTableCell = withStyles(theme => ({
     head: {
@@ -30,12 +30,18 @@ const styles = theme => ({
         textAlign: 'center',
         marginBottom: 0,
     },
-    table: {
-        // minWidth: '600px',
-    },
+
     detailsButton: {
-        paddingRight: 0,
+        padding: 0,
     },
+
+    tableBodyRow: {
+        '&:hover': {
+            background: '#DBDBDB',
+            color: 'white',
+            cursor: 'grab',
+        },
+    }
 });
 
 
@@ -45,23 +51,11 @@ class TableData extends Component {
         this.state = {
             page: 0,
             deleteDialogStatus: false,
-            detailsMenuAnchorEl: null,
             currentId: '',
         }
     }
 
-    handleDetailsMenuClose = () => {
-        this.setState({
-            detailsMenuAnchorEl: null
-        })
-    };
 
-    handleDetailsMenuOpen = (e) => {
-        this.setState({
-            detailsMenuAnchorEl: e.currentTarget,
-            currentId: e.currentTarget.id,
-        })
-    };
 
     handleDeleteDialogClose = () => {
         this.setState({
@@ -69,9 +63,11 @@ class TableData extends Component {
         })
     };
 
-    handleDeleteDialogOpen = () => {
+    handleDeleteDialogOpen = (e) => {
+        e.stopPropagation();
         this.setState({
-            deleteDialogStatus: true
+            deleteDialogStatus: true,
+            currentId: e.currentTarget.id,
         })
     };
 
@@ -83,11 +79,16 @@ class TableData extends Component {
         }
     };
 
+    handleClickTableBodyRow = (e) => {
+        e.stopPropagation();
+        redirect(`${this.props.tableName}s/${e.currentTarget.id}`);
+    };
+
 
     render() {
         const { classes, tableParams, tableHeadArray, tableBodyArray, tableName, page, pageSize, minWidth } = this.props;
-        const { detailsMenuAnchorEl, deleteDialogStatus, currentId } = this.state;
-        const detailsMenuOpen = Boolean(detailsMenuAnchorEl);
+        const { deleteDialogStatus, currentId } = this.state;
+
 
         return (
             <Paper className={classes.root}>
@@ -102,13 +103,13 @@ class TableData extends Component {
                     <TableBody>
                         {tableParams.slice(page*pageSize, page*pageSize + pageSize).map(tableParam => {
                             return (
-                                <TableRow key={tableParam.id}>
+                                <TableRow id={tableParam.id} key={tableParam.id} className={classes.tableBodyRow} onClick={this.handleClickTableBodyRow}>
                                     {tableBodyArray.map(item => {
                                         return <TableCell padding='dense' numeric key={item}>{tableParam[item]}</TableCell>
                                     })}
                                     <TableCell numeric>
-                                        <Button className={classes.detailsButton} id={tableParam.id} onClick={this.handleDetailsMenuOpen}>
-                                            <MoreVertIcon/>
+                                        <Button className={classes.detailsButton} id={tableParam.id} onClick={this.handleDeleteDialogOpen}>
+                                            <DeleteOutline/>
                                         </Button>
                                     </TableCell>
                                 </TableRow>
@@ -116,21 +117,6 @@ class TableData extends Component {
                         })}
                     </TableBody>
                 </Table>
-                <Menu
-                    open={detailsMenuOpen}
-                    anchorEl={detailsMenuAnchorEl}
-                    onClose={this.handleDetailsMenuClose}
-                    PaperProps={{
-                        style: {
-                            width: 200,
-                        }
-                    }}
-                >
-                    <MenuItem key='delete' onClick={this.handleDeleteDialogOpen}>Delete</MenuItem>
-                    <Link to={`${tableName}s/${currentId}`} style={{textDecoration: 'none', width: '100%'}}>
-                        <MenuItem key='details' >Details</MenuItem>
-                    </Link>
-                </Menu>
                 <DeleteDialog
                     id={currentId}
                     deleteDialogStatus={deleteDialogStatus}

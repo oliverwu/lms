@@ -73,7 +73,7 @@ class Students extends PureComponent{
                     {!isLoading && students.length > 0 && <div>
                         <TableData
                             tableParams={students}
-                            tableHeadArray={['Name', 'Email', 'Gender', 'Date of Birth', 'Credit', 'Details']}
+                            tableHeadArray={['Name', 'Email', 'Gender', 'Date of Birth', 'Credit', '']}
                             tableBodyArray={['name', 'email', 'gender', 'DOB', 'credit']}
                             tableName='student'
                             page={0}

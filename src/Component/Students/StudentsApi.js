@@ -128,7 +128,6 @@ let StudentsApi = {
                 },
                 body:  JSON.stringify(student)
             });
-            console.log(response);
             const statusCode = response.status;
             if (statusCode === 401) {
                 localStorage.removeItem('accessToken');

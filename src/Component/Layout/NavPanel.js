@@ -114,7 +114,7 @@ class NavPanel extends PureComponent {
                                 <Grid item xs={12} sm={4} className={classes.navMenuElement}>
                                     <ListItem className={classes.navMenuElementButton}>
                                         <PeopleIcon className={classes.navMenuElementButtonIcon} style={getStudentsIconStyle()}/>
-                                        <ListItemText className={classes.navMenulementButtonText}>Students</ListItemText>
+                                        <ListItemText className={classes.navMenuElementButtonText}>Students</ListItemText>
                                     </ListItem>
                                 </Grid>
                             </Link>
