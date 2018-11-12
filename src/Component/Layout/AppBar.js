@@ -17,6 +17,21 @@ function getPopoverStyle() {
     };
 }
 
+function getLecturersIconStyle() {
+    const color = '#F7A247';
+    return {
+        background: color,
+    }
+}
+
+function getStudentsIconStyle() {
+    const color = '#20BFC1';
+    return {
+        background: color,
+    }
+}
+
+
 const styles = theme => {
     return {
         root: {
@@ -56,7 +71,7 @@ const styles = theme => {
         },
         viewModuleElementButton: {
             '&:hover': {
-                background: '#286681'
+                background: '#17977A'
             },
             minWidth: '200px',
             height: '50px',
@@ -64,6 +79,12 @@ const styles = theme => {
         },
         viewModuleElementButtonIcon: {
             marginRight: '10px',
+            width: '40px',
+            height: '40px',
+            padding: '10px',
+            color: 'white',
+            borderRadius: '50%',
+            background: '#C94251',
         },
         viewModuleElementButtonText: {
             padding: '0',
@@ -160,7 +181,7 @@ class LMSAppBar extends Component{
                                         <Link to='/lecturers' style={{ textDecoration: 'none' }}>
                                             <Grid item xs={12} sm={4} className={classes.viewModuleElement}>
                                                 <ListItem variant='text' className={classes.viewModuleElementButton}>
-                                                    <ClassIcon className={classes.viewModuleElementButtonIcon}/>
+                                                    <ClassIcon className={classes.viewModuleElementButtonIcon} style={getLecturersIconStyle()}/>
                                                     <ListItemText className={classes.viewModuleElementButtonText}>Lecturers</ListItemText>
                                                 </ListItem>
                                             </Grid>
@@ -168,7 +189,7 @@ class LMSAppBar extends Component{
                                         <Link to='/students' style={{ textDecoration: 'none' }}>
                                             <Grid item xs={12} sm={4} className={classes.viewModuleElement}>
                                                 <ListItem className={classes.viewModuleElementButton}>
-                                                    <PeopleIcon className={classes.viewModuleElementButtonIcon}/>
+                                                    <PeopleIcon className={classes.viewModuleElementButtonIcon} style={getStudentsIconStyle()}/>
                                                     <ListItemText className={classes.viewModuleElementButtonText}>Students</ListItemText>
                                                 </ListItem>
                                             </Grid>

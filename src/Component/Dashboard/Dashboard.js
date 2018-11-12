@@ -78,7 +78,7 @@ class Dashboard extends PureComponent {
                           direction="row"
                           justify="flex-start"
                           alignItems="center">
-                        <Grid item className={classes.card}>
+                        <Grid item >
                             <Link to={'/courses'} style={{ textDecoration: 'none' }}>
                                 <Card className={classes.paper}>
                                     <CardContent className={classes.iconWrapper}>
