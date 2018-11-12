@@ -8,6 +8,7 @@ import { Link } from 'react-router-dom';
 import LocalLibraryIcon from '@material-ui/icons/LocalLibrary';
 import ClassIcon from '@material-ui/icons/Class';
 import PeopleIcon from '@material-ui/icons/People';
+import NavPanel from "./NavPanel";
 
 function getPopoverStyle() {
     const top = 5;
@@ -56,7 +57,7 @@ const styles = theme => {
         toggleThemeIcon: {
             color: 'white',
         },
-        ViewModuleIcon: {
+        navMenuIcon: {
             color: 'white',
         },
         viewModulePaper: {
@@ -98,8 +99,8 @@ class LMSAppBar extends Component{
         super(props);
         this.state = {
             accountMenuAnchorEl: null,
-            viewModuleAnchorEl: null,
-            viewModuleChecked: false
+            navMenuAnchorEl: null,
+            navMenuChecked: false
         }
     }
 
@@ -109,9 +110,9 @@ class LMSAppBar extends Component{
         })
     };
 
-    handleClickViewModuleIcon = (event) => {
+    handleClickNavMenuIcon = (event) => {
         this.setState({
-            viewModuleAnchorEl: event.currentTarget,
+            navMenuAnchorEl: event.currentTarget,
         })
     };
 
@@ -121,9 +122,9 @@ class LMSAppBar extends Component{
         })
     };
 
-    handleViewModuleClose = () => {
+    handleNavMenuClose = () => {
         this.setState({
-            viewModuleAnchorEl: null,
+            navMenuAnchorEl: null,
         })
     };
 
@@ -134,9 +135,9 @@ class LMSAppBar extends Component{
 
     render() {
         const { classes } = this.props;
-        const { accountMenuAnchorEl, viewModuleAnchorEl } = this.state;
+        const { accountMenuAnchorEl, navMenuAnchorEl } = this.state;
         const accountMenuOpen = Boolean(accountMenuAnchorEl);
-        const viewModuleOpen = Boolean(viewModuleAnchorEl);
+        const navMenuOpen = Boolean(navMenuAnchorEl);
 
         return (
             <div className={classes.root}>
@@ -148,56 +149,61 @@ class LMSAppBar extends Component{
                         <div className={classes.grow}/>
                         <div>
                             <IconButton
-                                className={classes.ViewModuleIcon}
-                                onClick={this.handleClickViewModuleIcon}
+                                className={classes.navMenuIcon}
+                                onClick={this.handleClickNavMenuIcon}
                             >
                                 <ViewModuleIcon/>
                             </IconButton>
-                            <Popover
-                                style={getPopoverStyle()}
-                                open={viewModuleOpen}
-                                anchorEl={viewModuleAnchorEl}
-                                onClose={this.handleViewModuleClose}
-                                anchorOrigin={{
-                                    vertical: 'bottom',
-                                    horizontal: 'right',
-                                }}
-                                transformOrigin={{
-                                    vertical: 'top',
-                                    horizontal: 'right',
-                                }}
-                            >
-                                <List className={classes.viewModulePaper}>
-                                    <Grid container spacing={8} justify="center"
-                                          alignItems="center">
-                                        <Link to={'/courses'} style={{ textDecoration: 'none' }}>
-                                            <Grid item xs={12} sm={4} className={classes.viewModuleElement}>
-                                                <ListItem className={classes.viewModuleElementButton} >
-                                                    <LocalLibraryIcon className={classes.viewModuleElementButtonIcon}/>
-                                                    <ListItemText className={classes.viewModuleElementButtonText}>Course</ListItemText>
-                                                </ListItem>
-                                            </Grid>
-                                        </Link>
-                                        <Link to='/lecturers' style={{ textDecoration: 'none' }}>
-                                            <Grid item xs={12} sm={4} className={classes.viewModuleElement}>
-                                                <ListItem variant='text' className={classes.viewModuleElementButton}>
-                                                    <ClassIcon className={classes.viewModuleElementButtonIcon} style={getLecturersIconStyle()}/>
-                                                    <ListItemText className={classes.viewModuleElementButtonText}>Lecturers</ListItemText>
-                                                </ListItem>
-                                            </Grid>
-                                        </Link>
-                                        <Link to='/students' style={{ textDecoration: 'none' }}>
-                                            <Grid item xs={12} sm={4} className={classes.viewModuleElement}>
-                                                <ListItem className={classes.viewModuleElementButton}>
-                                                    <PeopleIcon className={classes.viewModuleElementButtonIcon} style={getStudentsIconStyle()}/>
-                                                    <ListItemText className={classes.viewModuleElementButtonText}>Students</ListItemText>
-                                                </ListItem>
-                                            </Grid>
-                                        </Link>
+                            <NavPanel
+                                navMenuOpen={navMenuOpen}
+                                navMenuAnchorEl={navMenuAnchorEl}
+                                handleNavMenuClose={this.handleNavMenuClose}
+                            />
+                            {/*<Popover*/}
+                                {/*style={getPopoverStyle()}*/}
+                                {/*open={viewModuleOpen}*/}
+                                {/*anchorEl={viewModuleAnchorEl}*/}
+                                {/*onClose={this.handleViewModuleClose}*/}
+                                {/*anchorOrigin={{*/}
+                                    {/*vertical: 'bottom',*/}
+                                    {/*horizontal: 'right',*/}
+                                {/*}}*/}
+                                {/*transformOrigin={{*/}
+                                    {/*vertical: 'top',*/}
+                                    {/*horizontal: 'right',*/}
+                                {/*}}*/}
+                            {/*>*/}
+                                {/*<List className={classes.viewModulePaper}>*/}
+                                    {/*<Grid container spacing={8} justify="center"*/}
+                                          {/*alignItems="center">*/}
+                                        {/*<Link to={'/courses'} style={{ textDecoration: 'none' }}>*/}
+                                            {/*<Grid item xs={12} sm={4} className={classes.viewModuleElement}>*/}
+                                                {/*<ListItem className={classes.viewModuleElementButton} >*/}
+                                                    {/*<LocalLibraryIcon className={classes.viewModuleElementButtonIcon}/>*/}
+                                                    {/*<ListItemText className={classes.viewModuleElementButtonText}>Course</ListItemText>*/}
+                                                {/*</ListItem>*/}
+                                            {/*</Grid>*/}
+                                        {/*</Link>*/}
+                                        {/*<Link to='/lecturers' style={{ textDecoration: 'none' }}>*/}
+                                            {/*<Grid item xs={12} sm={4} className={classes.viewModuleElement}>*/}
+                                                {/*<ListItem variant='text' className={classes.viewModuleElementButton}>*/}
+                                                    {/*<ClassIcon className={classes.viewModuleElementButtonIcon} style={getLecturersIconStyle()}/>*/}
+                                                    {/*<ListItemText className={classes.viewModuleElementButtonText}>Lecturers</ListItemText>*/}
+                                                {/*</ListItem>*/}
+                                            {/*</Grid>*/}
+                                        {/*</Link>*/}
+                                        {/*<Link to='/students' style={{ textDecoration: 'none' }}>*/}
+                                            {/*<Grid item xs={12} sm={4} className={classes.viewModuleElement}>*/}
+                                                {/*<ListItem className={classes.viewModuleElementButton}>*/}
+                                                    {/*<PeopleIcon className={classes.viewModuleElementButtonIcon} style={getStudentsIconStyle()}/>*/}
+                                                    {/*<ListItemText className={classes.viewModuleElementButtonText}>Students</ListItemText>*/}
+                                                {/*</ListItem>*/}
+                                            {/*</Grid>*/}
+                                        {/*</Link>*/}
 
-                                    </Grid>
-                                </List>
-                            </Popover>
+                                    {/*</Grid>*/}
+                                {/*</List>*/}
+                            {/*</Popover>*/}
                         </div>
                         <div>
                             <IconButton
