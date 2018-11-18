@@ -1,9 +1,18 @@
 import React, { PureComponent, Fragment } from 'react';
 import AppBar from '../Layout/AppBar';
-import LecturersApi from './LecturersApi';
 import LecturersTable from './LecturersTable';
 import PageLoader from '../Utils/PageLoader';
 import MenuBar from '../Layout/MenuBar';
+import { connect } from 'react-redux';
+import { handleReceivedAllLecturersData, clearLecturersData } from "../../Actions/LecturersActions";
+import ForbidErrorDialog from "../Utils/ForbidErrorDialog";
+
+const state = state => {
+    return {
+        allLecturers: state.lecturers.allLecturers,
+        isLoading: state.lecturers.isLoading,
+    }
+};
 
 class Lecturers extends PureComponent{
     constructor(props) {
@@ -14,28 +23,28 @@ class Lecturers extends PureComponent{
         }
     }
 
-    async componentDidMount() {
-        const lecturers = await LecturersApi.getAllLecturers();
-        lecturers && await this.setState({
-            lecturers: lecturers,
-            isLoading: false,
-        })
+    componentDidMount() {
+        this.props.dispatch(handleReceivedAllLecturersData())
     }
 
+    clearData = () => {
+        this.props.dispatch(clearLecturersData())
+    };
+
     render() {
-        const { lecturers, isLoading } = this.state;
+        const { isLoading, allLecturers } = this.props;
 
         return (
             <Fragment>
                 <AppBar/>
                 <MenuBar menu='Lecturers' selected='Lecturers' name='lecturer'>
                     {isLoading && <PageLoader/>}
-                    {!isLoading && <LecturersTable lecturers = {lecturers} />}
+                    {!isLoading && !allLecturers && <ForbidErrorDialog clearData = {this.clearData}/>}
+                    {!isLoading && allLecturers && <LecturersTable />}
                 </MenuBar>
             </Fragment>
-
         );
     }
 }
 
-export default Lecturers;
+export default connect(state)(Lecturers);

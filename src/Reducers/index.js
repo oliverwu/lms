@@ -1,9 +1,9 @@
 import { combineReducers } from 'redux';
 import { courses } from "./courses";
-import { allLecturers} from "./allLecturers";
+import { lecturers} from "./lecturers";
 
 export default combineReducers({
     courses,
-    allLecturers,
+    lecturers,
 })
 

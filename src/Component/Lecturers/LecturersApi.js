@@ -14,7 +14,7 @@ let LecturersApi = {
             const { ok, status} = response;
             if ( status > 300) {
                 localStorage.removeItem('accessToken');
-                redirect('login');
+                // redirect('login');
             } else {
                 if (ok) {
                     const jsonResponse = await response.json();

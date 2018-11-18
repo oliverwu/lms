@@ -1,12 +1,19 @@
-import { RECEIVED_ALLCOURSESDATA } from "../Actions/CoursesActions";
+import { RECEIVED_COURSESDATA, CLEACR_COURSESDATA } from "../Actions/CoursesActions";
 
-export function courses (state = {allCourses:[], isLoading: true}, action) {
+const initialState = {
+    allCourses:[],
+    isLoading: true
+};
+
+export function courses (state = initialState, action) {
     switch (action.type) {
-        case RECEIVED_ALLCOURSESDATA :
+        case RECEIVED_COURSESDATA :
             return {
                 allCourses: action.allCourses,
                 isLoading: action.isLoading,
             };
+        case CLEACR_COURSESDATA :
+            return initialState;
         default :
             return state;
     }

@@ -2,6 +2,13 @@ import React, {Component} from 'react';
 import LecturersApi from "./LecturersApi";
 import TableControl from "../Utils/TableControl";
 import TableData from "../Utils/TableData";
+import { connect } from 'react-redux';
+
+const state = state => {
+    return {
+        allLecturers: state.lecturers.allLecturers,
+    }
+};
 
 class LecturersTable extends Component {
     constructor(props) {
@@ -19,14 +26,15 @@ class LecturersTable extends Component {
 
 
     render() {
-        const { lecturers } = this.props;
+        const { allLecturers } = this.props;
         const { page } = this.state;
         const pageSize = 5;
+        console.log(allLecturers);
 
         return (
             <div>
                 <TableData
-                    tableParams={lecturers}
+                    tableParams={allLecturers}
                     tableHeadArray={['Name', 'Email', 'Staff Number', 'Details']}
                     tableBodyArray={['name','email', 'staffNumber']}
                     tableName='lecturer'
@@ -36,7 +44,7 @@ class LecturersTable extends Component {
                     minWidth='550px'
                 />
                 <TableControl
-                    count={lecturers.length}
+                    count={allLecturers.length}
                     page={page}
                     pageSize={pageSize}
                     changeCurrentPage={this.changeCurrentPage}
@@ -47,4 +55,4 @@ class LecturersTable extends Component {
 
 }
 
-export default LecturersTable;
+export default connect(state)(LecturersTable);

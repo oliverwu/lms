@@ -1,5 +1,4 @@
 import React, {PureComponent, Fragment} from 'react';
-import CourseApi from './CourseApi';
 import PageLoader from '../Utils/PageLoader';
 import { Grid } from "@material-ui/core";
 import { withStyles } from '@material-ui/core/styles'
@@ -7,7 +6,8 @@ import CourseCard from "./CourseCard";
 import MenuBar from '../Layout/MenuBar';
 import AppBar from '../Layout/AppBar';
 import { connect } from 'react-redux';
-import { handleReceivedALLCoursesData } from "../../Actions/CoursesActions";
+import { handleReceivedALLCoursesData, clearCoursesData } from "../../Actions/CoursesActions";
+import ForbidErrorDialog from '../Utils/ForbidErrorDialog';
 
 const state = state => {
     return {
@@ -53,23 +53,16 @@ class Courses extends PureComponent{
         );
     }
 
-    async componentDidMount() {
-        console.log('courses did mount')
+    componentDidMount() {
         this.props.dispatch(handleReceivedALLCoursesData())
-        // let courses = await CourseApi.getAllCourse();
-        // try {
-        //     courses && this.setState({
-        //         isLoading: false,
-        //         courses: courses,
-        //     });
-        // } catch (e) {
-        //
-        // }
     }
+
+    clearData = () => {
+        this.props.dispatch(clearCoursesData());
+    };
 
 
     render() {
-        // const { isLoading } = this.state;
         const { allCourses, isLoading } = this.props;
 
         return (
@@ -79,11 +72,10 @@ class Courses extends PureComponent{
                 {console.log(isLoading)}
                 <MenuBar selected='Courses' menu='Courses' name='course'>
                     {isLoading && <PageLoader/>}
-                    {!isLoading && allCourses.length > 0 && this.renderCourseCards(allCourses)}
-                    {/*{allCourses.length > 0 && this.renderCourseCards(allCourses)}*/}
+                    {!isLoading && !allCourses && <ForbidErrorDialog clearData = {this.clearData} />}
+                    {!isLoading && allCourses && this.renderCourseCards(allCourses)}
                 </MenuBar>
             </Fragment>
-
         );
     }
 }
