@@ -1,18 +1,18 @@
 import React, { Component } from 'react';
-import './App.css';
-import Dashboard from './Component/Dashboard/Dashboard';
+import '../../App.css';
+import Dashboard from '../Dashboard/Dashboard';
 import {Route, Switch, Redirect, HashRouter as Router} from 'react-router-dom';
-import Courses from "./Component/Courses/Courses";
-import Students from './Component/Students/Students';
-import NotFound from "./Component/Utils/NotFound";
-import CourseDetails from './Component/Courses/CourseDetails';
-import StudentDetails from './Component/Students/StudentDetails';
-import Lecturers from './Component/Lecturers/Lecturers';
-import Login from './Component/Login/Login';
+import Courses from "../Courses/Courses";
+import Students from '../Students/Students';
+import NotFound from "../Utils/NotFound";
+import CourseDetails from '../Courses/CourseDetails';
+import StudentDetails from '../Students/StudentDetails';
+import Lecturers from '../Lecturers/Lecturers';
+import Login from '../Login/Login';
 import { MuiThemeProvider }  from '@material-ui/core/styles';
 import {createMuiTheme} from '@material-ui/core';
-import AppBar from "./Component/Layout/AppBar";
-import LecturerDetails from "./Component/Lecturers/LecturerDetails";
+import AppBar from "../Layout/AppBar";
+import LecturerDetails from "../Lecturers/LecturerDetails";
 
 class App extends Component {
     constructor(props) {
