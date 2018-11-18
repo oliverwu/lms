@@ -83,6 +83,8 @@ let CourseApi = {
                 localStorage.removeItem('accessToken');
                 redirect('login');
             } else {
+                const jsonResponse = await response.json();
+                console.log(jsonResponse);
                 return statusCode
             }
         } catch (e) {

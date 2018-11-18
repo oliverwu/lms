@@ -15,10 +15,6 @@ import AppBar from "../Layout/AppBar";
 import LecturerDetails from "../Lecturers/LecturerDetails";
 
 class App extends Component {
-    constructor(props) {
-        super(props);
-    }
-
 
     render() {
 
