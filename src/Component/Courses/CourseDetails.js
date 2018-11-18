@@ -10,6 +10,7 @@ import ErrorDialog from "../Utils/ErrorDialog";
 import * as yup from "yup";
 import AppBar from "../Layout/AppBar";
 
+
 const schema = yup.object().shape({
     title: yup
         .string()
@@ -196,7 +197,9 @@ class CourseDetails extends PureComponent{
 
 
     render() {
-        const { title, fee, maxStudent, description, language, deleteDialogStatus, createDialogSucceedStatus, errorDialogStatus, validationErrors} = this.state;
+        const {
+            title, fee, maxStudent, description, language,
+            deleteDialogStatus, createDialogSucceedStatus, errorDialogStatus, validationErrors} = this.state;
         const { classes } = this.props;
         const { id } = this.props.match.params;
 

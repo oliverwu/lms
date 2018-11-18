@@ -6,7 +6,15 @@ import { withStyles } from '@material-ui/core/styles'
 import CourseCard from "./CourseCard";
 import MenuBar from '../Layout/MenuBar';
 import AppBar from '../Layout/AppBar';
+import { connect } from 'react-redux';
+import { handleReceivedALLCoursesData } from "../../Actions/CoursesActions";
 
+const state = state => {
+    return {
+        allCourses: state.courses.allCourses,
+        isLoading: state.courses.isLoading,
+    }
+};
 
 const styles = theme => ({
     button: {
@@ -46,27 +54,33 @@ class Courses extends PureComponent{
     }
 
     async componentDidMount() {
-        let courses = await CourseApi.getAllCourse();
-        try {
-            courses && this.setState({
-                isLoading: false,
-                courses: courses,
-            });
-        } catch (e) {
-
-        }
+        console.log('courses did mount')
+        this.props.dispatch(handleReceivedALLCoursesData())
+        // let courses = await CourseApi.getAllCourse();
+        // try {
+        //     courses && this.setState({
+        //         isLoading: false,
+        //         courses: courses,
+        //     });
+        // } catch (e) {
+        //
+        // }
     }
 
 
     render() {
-        const {courses, isLoading,} = this.state;
+        // const { isLoading } = this.state;
+        const { allCourses, isLoading } = this.props;
 
         return (
             <Fragment>
                 <AppBar/>
+                {console.log(allCourses)}
+                {console.log(isLoading)}
                 <MenuBar selected='Courses' menu='Courses' name='course'>
                     {isLoading && <PageLoader/>}
-                    {!isLoading && courses.length > 0 && this.renderCourseCards(courses)}
+                    {!isLoading && allCourses.length > 0 && this.renderCourseCards(allCourses)}
+                    {/*{allCourses.length > 0 && this.renderCourseCards(allCourses)}*/}
                 </MenuBar>
             </Fragment>
 
@@ -75,4 +89,4 @@ class Courses extends PureComponent{
 }
 
 
-export default withStyles(styles)(Courses);
+export default connect(state)(withStyles(styles)(Courses));

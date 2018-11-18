@@ -1,34 +1,19 @@
 import CourseApi from '../Component/Courses/CourseApi';
 
 export const RECEIVED_ALLCOURSESDATA = 'RECEIVED_ALLCOURSESDATA';
-export const RECEIVED_COURSEBYIDDATA = 'RECEIVED_COURSEBYIDDATA';
 
-
-function receivedALLCoursesData(courses) {
+function receivedALLCoursesData(allCourses) {
     return {
         type: RECEIVED_ALLCOURSESDATA,
-        courses,
+        allCourses,
+        isLoading: false,
     }
 }
-
-function receivedCourseByIdData(course) {
-    return {
-        type: RECEIVED_COURSEBYIDDATA,
-        course,
-    }
-}
-
 
 export function handleReceivedALLCoursesData() {
     return async (dispatch) => {
-        const courses = await CourseApi.getAllCourse();
-        dispatch(receivedALLCoursesData(courses))
+        const allCourses = await CourseApi.getAllCourse();
+        dispatch(receivedALLCoursesData(allCourses))
     }
 }
 
-export function handleReceivedCourseByIdData(id) {
-    return async (dispatch) => {
-        const course = await CourseApi.getCourseById(id);
-        dispatch(receivedCourseByIdData(course))
-    }
-}
