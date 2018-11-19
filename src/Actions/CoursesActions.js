@@ -25,3 +25,93 @@ export function handleReceivedALLCoursesData() {
     }
 }
 
+export const RECEIVED_COURSEDATA = 'RECEIVED_COURSEDATA';
+export const UPDATE_COURSEDATA = 'UPDATE_COURSEDATA';
+export const CREATE_COURSEDATA = 'CREATE_COURSEDATA';
+export const DELETE_COURSEDATA = 'DELETE_COURSEDATA';
+export const CLEAR_COURSEDATA = 'CLEAR_COURSEDATA';
+
+function receivedCourseData(course) {
+    return {
+        type: RECEIVED_COURSEDATA,
+        course,
+        isLoading: false,
+        statusCode: null,
+    }
+}
+
+function updateCourseData(course, statusCode) {
+    return {
+        type: UPDATE_COURSEDATA,
+        course,
+        isLoading: false,
+        statusCode,
+    }
+}
+
+function createCourseData(course, statusCode) {
+    return {
+        type: CREATE_COURSEDATA,
+        course,
+        isLoading: false,
+        statusCode,
+    }
+}
+
+function deleteCourseData(statusCode) {
+    return {
+        type: DELETE_COURSEDATA,
+        statusCode,
+        isLoading: false,
+    }
+}
+
+export function clearCourseData() {
+    return {
+        type: CLEAR_COURSEDATA,
+    }
+}
+
+
+
+export function handleReceivedCourseData(id) {
+    return async (dispatch) => {
+        const course = await CourseApi.getCourseById(id);
+        dispatch(receivedCourseData(course))
+    }
+}
+
+export function handleUpdateCourseData(course) {
+    return async (dispatch) => {
+        try {
+            const statusCode = await CourseApi.updateCourse(course);
+            dispatch(updateCourseData(course, statusCode))
+        } catch (e) {
+            console.log(e)
+        }
+    }
+}
+
+export function handleCreateCourseData(course) {
+    return async (dispatch) => {
+        try {
+            const statusCode = await CourseApi.createNewCourse(course);
+            dispatch(createCourseData(course, statusCode))
+        } catch (e) {
+            console.log(e)
+        }
+    }
+}
+
+export function handleDeleteCourseData(id) {
+    return async (dispatch) => {
+        try {
+            const statusCode = await CourseApi.deleteCourse(id);
+            console.log(statusCode);
+            dispatch(deleteCourseData(statusCode))
+        } catch (e) {
+            console.log(e)
+        }
+    }
+}
+

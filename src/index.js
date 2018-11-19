@@ -8,6 +8,7 @@ import reducer from './Reducers/index';
 import middleware from './Middlewares/index';
 import { Provider } from 'react-redux';
 
+
 const store = createStore(reducer, middleware);
 
 

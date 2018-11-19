@@ -5,7 +5,7 @@ import {Route, Switch, Redirect, HashRouter as Router} from 'react-router-dom';
 import Courses from "../Courses/Courses";
 import Students from '../Students/Students';
 import NotFound from "../Utils/NotFound";
-import CourseDetails from '../Courses/CourseDetails';
+import CourseDetails from '../Courses/CourseDetailsWithReduxForm';
 import StudentDetails from '../Students/StudentDetails';
 import Lecturers from '../Lecturers/Lecturers';
 import Login from '../Login/Login';

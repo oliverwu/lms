@@ -14,7 +14,6 @@ let CourseApi = {
             const statusCode = response.status;
             if (statusCode > 300) {
                 localStorage.removeItem('accessToken');
-                // redirect('login');
             } else {
                 if (response.ok) {
                     const jsonResponse = await response.json();
@@ -127,14 +126,12 @@ let CourseApi = {
                 },
             });
             const statusCode = response.status;
+            console.log(statusCode);
             if (statusCode === 401) {
                 localStorage.removeItem('accessToken');
                 redirect('login');
             } else {
-                if (response.ok) {
-                    const jsonResponse = await response.json();
-                    return jsonResponse;
-                }
+                return statusCode;
             }
         } catch (e) {
             console.log(e);

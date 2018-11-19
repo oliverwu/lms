@@ -23,14 +23,15 @@ export function clearStudentsData() {
 
 export function handleReceivedStudentsDataByPage(page) {
     return async (dispatch) => {
-        const data = await StudentsApi.getStudentsByPage(page);
-        if (data) {
+        try {
+            const data = await StudentsApi.getStudentsByPage(page);
             const { pageNum, pageSize, totalPage, students} = data;
             const dataInLastPage = await StudentsApi.getStudentsByPage(totalPage);
             const studentsInLastPageCount = dataInLastPage.students.length;
             const count = (totalPage - 1)*pageSize + studentsInLastPageCount;
             dispatch(receivedStudentsDataByPage(students, pageNum, pageSize, totalPage, count))
-        } else {
+        } catch (e) {
+            console.log(e);
             dispatch(receivedStudentsDataByPage())
         }
     }
