@@ -13,11 +13,27 @@ import {Link} from "react-router-dom";
 
 const styles = theme => {
     return {
+        MenuBarGrid: {
+            [theme.breakpoints.up('xs')]: {
+                width: '100%',
+            },
+            [theme.breakpoints.up('sm')]: {
+                width: '340px',
+            },
+        },
+
         paper: {
-            // width: '100%',
-            width: '300px',
+            [theme.breakpoints.up('xs')]: {
+                width: '300px',
+                margin: '30px auto'
+            },
+            [theme.breakpoints.up('sm')]: {
+                width: '300px',
+                margin: '20px',
+            },
+            // width: '300px',
             height: '350px',
-            margin: '20px',
+            // margin: '20px',
             flexGrow: 1,
             textAlign: 'left',
             background: '#F4F3F3',
@@ -78,7 +94,7 @@ class Dashboard extends PureComponent {
                           direction="row"
                           justify="flex-start"
                           alignItems="center">
-                        <Grid item >
+                        <Grid item className={classes.MenuBarGrid}>
                             <Link to={'/courses'} style={{ textDecoration: 'none' }}>
                                 <Card className={classes.paper}>
                                     <CardContent className={classes.iconWrapper}>
@@ -95,7 +111,7 @@ class Dashboard extends PureComponent {
                                 </Card>
                             </Link>
                         </Grid>
-                        <Grid item>
+                        <Grid item className={classes.MenuBarGrid}>
                             <Link to={'/lecturers'} style={{ textDecoration: 'none' }}>
                                 <Card className={classes.paper}>
                                     <CardContent className={classes.iconWrapper}>
@@ -112,7 +128,7 @@ class Dashboard extends PureComponent {
                                 </Card>
                             </Link>
                         </Grid>
-                        <Grid item >
+                        <Grid item className={classes.MenuBarGrid}>
                             <Link to={'/students'} style={{ textDecoration: 'none' }}>
                                 <Card className={classes.paper}>
                                     <CardContent className={classes.iconWrapper}>

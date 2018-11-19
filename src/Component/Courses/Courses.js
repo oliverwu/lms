@@ -20,6 +20,14 @@ const styles = theme => ({
     button: {
         float: 'right',
         marginRight: '10px',
+    },
+    coursesCardGrid: {
+        [theme.breakpoints.up('xs')]: {
+            width: '100%'
+        },
+        [theme.breakpoints.up('sm')]: {
+            width: '330px'
+        },
     }
 });
 
@@ -34,6 +42,8 @@ class Courses extends PureComponent{
 
 
     renderCourseCards(courses) {
+        const { classes } = this.props;
+
         return (
             <div>
                 <Grid container
@@ -43,7 +53,7 @@ class Courses extends PureComponent{
                 >
                     {courses.map((course) => {
                         return (
-                            <Grid item key={course.id}>
+                            <Grid item key={course.id} className={classes.coursesCardGrid}>
                                 <CourseCard title = {course.title} description = {course.description} id={course.id}/>
                             </Grid>
                         )

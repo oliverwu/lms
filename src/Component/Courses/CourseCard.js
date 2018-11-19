@@ -9,15 +9,22 @@ import DeleteDialog from "../Utils/DeleteDialog";
 import CourseApi from "./CourseApi";
 import LocalLibraryIcon from '@material-ui/icons/LocalLibrary';
 
-const styles = {
-
+const styles = theme => ({
     paper: {
+        [theme.breakpoints.up('xs')]: {
+            width: '290px',
+            margin: '30px auto'
+        },
+        [theme.breakpoints.up('sm')]: {
+            width: '300px',
+            margin: '30px 15px',
+        },
         display: 'flex',
         flexDirection: 'column',
-        margin: '30px 15px',
+        // margin: '30px 15px',
         background: '#F4F3F3',
         borderRadius: '5px',
-        width: '300px',
+        // width: '300px',
         height: '200px',
         color: 'black',
         '&:hover': {
@@ -69,7 +76,7 @@ const styles = {
         marginRight: '20px',
         marginBottom: '10px',
     },
-};
+});
 
 class MediaCard extends Component{
     constructor(props) {
