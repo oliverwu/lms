@@ -36,10 +36,18 @@ const styles = theme => ({
         [theme.breakpoints.up('sm')]: {
             display: 'none',
         },
+        [theme.breakpoints.up('xs')]: {
+            // fontSize: '20px',
+            marginRight: '5px'
+        },
     },
     title: {
-        marginRight: '20px',
-
+        [theme.breakpoints.up('sm')]: {
+            marginRight: '20px',
+        },
+        [theme.breakpoints.up('xs')]: {
+            marginRight: '0',
+        },
     },
     panelTitle: {
         display: 'flex',
@@ -95,9 +103,6 @@ class MenuBar extends React.Component {
                         <ListItem button selected={selected === 'Dashboard'} >
                             <ListItemIcon>{<DashboardIcon/>}</ListItemIcon>
                             <ListItemText primary='Dashboard' />
-                            {/*<Typography variant="subtitle1" style={{color: 'white', }} align='center' noWrap >*/}
-                                {/*Dashboard*/}
-                            {/*</Typography>*/}
                         </ListItem>
                     </Link>
                     <Link to='/courses' style={{ textDecoration: 'none' }}>
