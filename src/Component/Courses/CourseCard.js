@@ -1,13 +1,18 @@
-import React, {Component} from 'react';
+import React, {Component, Fragment} from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import { Paper, MenuItem, Menu, IconButton } from '@material-ui/core';
+import { Paper, IconButton } from '@material-ui/core';
 import Typography from '@material-ui/core/Typography';
 import { Link } from 'react-router-dom';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
 import DeleteDialog from "../Utils/DeleteDialog";
-import CourseApi from "./CourseApi";
 import LocalLibraryIcon from '@material-ui/icons/LocalLibrary';
+import { connect } from 'react-redux';
+import DeleteOutline from '@material-ui/icons/DeleteOutline';
+import {clearCourseData, handleDeleteCourseData} from "../../Actions/CoursesActions";
+
+const state = state => ({
+   statusCode: state.course.statusCode,
+});
 
 const styles = theme => ({
     paper: {
@@ -21,16 +26,15 @@ const styles = theme => ({
         },
         display: 'flex',
         flexDirection: 'column',
-        // margin: '30px 15px',
         background: '#F4F3F3',
         borderRadius: '5px',
-        // width: '300px',
+        position: 'relative',
         height: '200px',
         color: 'black',
         '&:hover': {
             background: '#17977A',
             color: 'white',
-            // cursor: 'grab',
+            cursor: 'grab',
         },
     },
 
@@ -72,45 +76,32 @@ const styles = theme => ({
     },
 
     detailsButton: {
-        float: 'right',
+        position: 'absolute',
+        right: 0,
+        bottom: 0,
         marginRight: '20px',
-        marginBottom: '10px',
+        marginBottom: '20px',
+        width: '50px',
+        height: '50px',
     },
 });
 
-class MediaCard extends Component{
+class CourseCard extends Component{
     constructor(props) {
         super(props);
         this.state = {
-            anchorEl: null,
             deleteDialogStatus: false,
         }
     }
 
-
-    handleClick = event => {
-        this.setState({ anchorEl: event.currentTarget });
-    };
-
-    handleClose = () => {
-        this.setState({ anchorEl: null });
-    };
-
-    handleDelete = () => {
-        const { id } = this.props;
-        CourseApi.deleteCourse(id).then(data => {
-            this.setState({
-                deleteDialogStatus: false,
-            });
+    handleDelete = async () => {
+        const id = this.props.id;
+        await this.props.dispatch(handleDeleteCourseData(id));
+        const statusCode = this.props.statusCode;
+        if (statusCode === 204) {
             window.location.reload();
-        });
-
-    };
-
-    handleDeleteDialogOpen = () => {
-        this.setState({
-            deleteDialogStatus: true,
-        })
+            this.props.dispatch(clearCourseData());
+        }
     };
 
     handleDeleteDialogClose = () => {
@@ -119,64 +110,56 @@ class MediaCard extends Component{
         })
     };
 
+    handleDeleteClick = (e) => {
+        e.preventDefault();
+        this.setState({
+            deleteDialogStatus: true,
+        })
+    };
 
 
     render() {
-        const { anchorEl, deleteDialogStatus } = this.state;
+        const { deleteDialogStatus } = this.state;
         const { classes, title, description, id } = this.props;
-        const open = Boolean(anchorEl);
 
         return (
-            <div>
-                <Paper className={classes.paper}>
-                    <div className={classes.paperTitle}>
-                        <LocalLibraryIcon className={classes.icon}/>
-                        <Typography component="h6" variant="h6" color='inherit' className={classes.paperTitleText}>
-                            {title}
+            <Fragment>
+                <Link to={`courses/${id}`} style={{textDecoration: 'none', width: '100%'}}>
+                    <Paper className={classes.paper}>
+                        <div className={classes.paperTitle}>
+                            <LocalLibraryIcon className={classes.icon}/>
+                            <Typography component="h6" variant="h6" color='inherit' className={classes.paperTitleText}>
+                                {title}
+                            </Typography>
+                        </div>
+                        <Typography variant="subtitle1" color="inherit" className={classes.paperDescription}>
+                            {description}
                         </Typography>
-                    </div>
-
-                    <Typography variant="subtitle1" color="inherit" className={classes.paperDescription}>
-                        {description}
-                    </Typography>
-                    <div >
                         <IconButton
                             className={classes.detailsButton}
-                            onClick={this.handleClick}
+                            onClick={this.handleDeleteClick}
                             color='inherit'
                         >
-                            <MoreVertIcon />
+                            <DeleteOutline />
                         </IconButton>
-                        <Menu
-                            open={open}
-                            anchorEl={anchorEl}
-                            onClose={this.handleClose}
-                            PaperProps={{
-                                style: {
-                                    width: 200,
-                                }
-                            }}
-                        >
-                            <MenuItem key='delete' onClick={this.handleDeleteDialogOpen}>Delete</MenuItem>
-                            <Link to={`courses/${id}`} style={{textDecoration: 'none', width: '100%'}}>
-                                <MenuItem key='details' >Details</MenuItem>
-                            </Link>
-                        </Menu>
-                    </div>
-                </Paper>
+                    </Paper>
+                </Link>
                 <DeleteDialog
                     deleteDialogStatus={deleteDialogStatus}
                     handleDeleteDialogClose={this.handleDeleteDialogClose}
                     content='course'
                     handleDelete={this.handleDelete}
                 />
-            </div>
+            </Fragment>
         );
     }
 }
 
-MediaCard.propTypes = {
+CourseCard.propTypes = {
     classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(MediaCard);
+
+CourseCard = withStyles(styles)(CourseCard);
+
+export default connect(state)(CourseCard);

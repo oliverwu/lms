@@ -90,5 +90,6 @@ class Courses extends PureComponent{
     }
 }
 
+Courses = withStyles(styles)(Courses);
 
-export default connect(state)(withStyles(styles)(Courses));
+export default connect(state)(Courses);
