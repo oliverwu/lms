@@ -26,7 +26,7 @@ let StudentsApi = {
             const statusCode = response.status;
             if (statusCode > 300) {
                 localStorage.removeItem('accessToken');
-                redirect('dashboard');
+                // redirect('dashboard');
             } else {
                 if (response.ok) {
                     const jsonResponse = await response.json();
