@@ -7,10 +7,9 @@ import PeopleIcon from '@material-ui/icons/People';
 import React, { PureComponent, Fragment } from "react";
 
 function getPopoverStyle() {
-    const top = 5;
-
     return {
-        top: `${top}px`,
+        top: `5px`,
+        right: 0
     };
 }
 
@@ -34,27 +33,34 @@ const styles = theme => {
             color: 'white',
         },
         navMenuPaper: {
-            minWidth: '240px',
-            // minWidth: 240,
-            // maxWidth: 600,
+            [theme.breakpoints.up('xs')]: {
+                width: '280px',
+            },
+            [theme.breakpoints.up('sm')]: {
+                width: '400px',
+            },
+            maxWidth: '400px',
             minHeight: '90px',
             padding: '20px',
         },
         navMenuElement: {
-            width: '200px',
+            width: '120px',
         },
-        navMenuElementButton: {
+        navMenuElementList: {
             '&:hover': {
-                background: '#17977A'
+                border: '1px solid #CDCFCF'
             },
-            minWidth: '200px',
-            height: '50px',
+            width: '100px',
+            height: '100px',
             borderRadius: 0,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            margin: '10px',
         },
         navMenuElementButtonIcon: {
-            marginRight: '10px',
-            width: '40px',
-            height: '40px',
+            width: '60px',
+            height: '60px',
             padding: '10px',
             color: 'white',
             borderRadius: '50%',
@@ -67,20 +73,17 @@ const styles = theme => {
 }
 
 class NavPanel extends PureComponent {
-    constructor(props) {
-        super(props);
-
-    }
 
     render() {
-        const { classes, navMenuOpen, navMenuAnchorEl, handleNavMenuClose } = this.props;
+        const { classes, navMenuOpen, handleNavMenuClose } = this.props;
 
         return (
             <Fragment>
                 <Popover
                     style={getPopoverStyle()}
                     open={navMenuOpen}
-                    anchorEl={navMenuAnchorEl}
+                    anchorReference="anchorPosition"
+                    anchorPosition={{ top: 55, left: 10000 }}
                     onClose={handleNavMenuClose}
                     anchorOrigin={{
                         vertical: 'bottom',
@@ -92,27 +95,27 @@ class NavPanel extends PureComponent {
                     }}
                 >
                     <List className={classes.navMenuPaper}>
-                        <Grid container spacing={8} justify="center"
+                        <Grid container justify="flex-start"
                               alignItems="center">
                             <Link to={'/courses'} style={{ textDecoration: 'none' }}>
-                                <Grid item xs={12} sm={4} className={classes.navMenuElement}>
-                                    <ListItem className={classes.navMenuElementButton} >
+                                <Grid item xs={6} sm={4} className={classes.navMenuElement}>
+                                    <ListItem className={classes.navMenuElementList} >
                                         <LocalLibraryIcon className={classes.navMenuElementButtonIcon}/>
                                         <ListItemText className={classes.navMenuElementButtonText}>Course</ListItemText>
                                     </ListItem>
                                 </Grid>
                             </Link>
                             <Link to='/lecturers' style={{ textDecoration: 'none' }}>
-                                <Grid item xs={12} sm={4} className={classes.navMenuElement}>
-                                    <ListItem variant='text' className={classes.navMenuElementButton}>
+                                <Grid item xs={6} sm={4} className={classes.navMenuElement}>
+                                    <ListItem variant='text' className={classes.navMenuElementList}>
                                         <ClassIcon className={classes.navMenuElementButtonIcon} style={getLecturersIconStyle()}/>
                                         <ListItemText className={classes.navMenuElementButtonText}>Lecturers</ListItemText>
                                     </ListItem>
                                 </Grid>
                             </Link>
                             <Link to='/students' style={{ textDecoration: 'none' }}>
-                                <Grid item xs={12} sm={4} className={classes.navMenuElement}>
-                                    <ListItem className={classes.navMenuElementButton}>
+                                <Grid item xs={6} sm={4} className={classes.navMenuElement}>
+                                    <ListItem className={classes.navMenuElementList}>
                                         <PeopleIcon className={classes.navMenuElementButtonIcon} style={getStudentsIconStyle()}/>
                                         <ListItemText className={classes.navMenuElementButtonText}>Students</ListItemText>
                                     </ListItem>

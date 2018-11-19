@@ -48,7 +48,7 @@ class LMSAppBar extends Component{
         super(props);
         this.state = {
             accountMenuAnchorEl: null,
-            navMenuAnchorEl: null,
+            navMenuOpen: false,
             navMenuChecked: false
         }
     }
@@ -61,7 +61,7 @@ class LMSAppBar extends Component{
 
     handleClickNavMenuIcon = (event) => {
         this.setState({
-            navMenuAnchorEl: event.currentTarget,
+            navMenuOpen: true,
         })
     };
 
@@ -73,7 +73,7 @@ class LMSAppBar extends Component{
 
     handleNavMenuClose = () => {
         this.setState({
-            navMenuAnchorEl: null,
+            navMenuOpen: false,
         })
     };
 
@@ -88,14 +88,13 @@ class LMSAppBar extends Component{
 
     render() {
         const { classes } = this.props;
-        const { accountMenuAnchorEl, navMenuAnchorEl } = this.state;
+        const { accountMenuAnchorEl, navMenuOpen } = this.state;
         const accountMenuOpen = Boolean(accountMenuAnchorEl);
-        const navMenuOpen = Boolean(navMenuAnchorEl);
 
         return (
-            <div className={classes.root}>
-                <AppBar position='static' className={classes.appBar}>
-                    <Toolbar className={classes.toolbar}>
+            <div className={classes.root} ref={(appBarRef) => {this.appBarRef = appBarRef}}>
+                <AppBar position='static' className={classes.appBar} >
+                    <Toolbar className={classes.toolbar} >
                         <Typography variant="h6"  className={classes.title}>
                             LMS Platform
                         </Typography>
@@ -114,7 +113,6 @@ class LMSAppBar extends Component{
                             </IconButton>
                             <NavPanel
                                 navMenuOpen={navMenuOpen}
-                                navMenuAnchorEl={navMenuAnchorEl}
                                 handleNavMenuClose={this.handleNavMenuClose}
                             />
                         </div>
