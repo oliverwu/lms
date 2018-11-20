@@ -76,8 +76,12 @@ export function clearCourseData() {
 
 export function handleReceivedCourseData(id) {
     return async (dispatch) => {
-        const course = await CourseApi.getCourseById(id);
-        dispatch(receivedCourseData(course))
+        try {
+            const course = await CourseApi.getCourseById(id);
+            dispatch(receivedCourseData(course))
+        } catch (e) {
+            console.log(e)
+        }
     }
 }
 

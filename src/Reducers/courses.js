@@ -17,11 +17,12 @@ const initialCourseState = {
 };
 
 export function courses (state = initialCoursesState, action) {
-    switch (action.type) {
+    const { type, allCourses, isLoading } = action;
+    switch (type) {
         case RECEIVED_COURSESDATA :
             return {
-                allCourses: action.allCourses,
-                isLoading: action.isLoading,
+                allCourses,
+                isLoading,
             };
         case CLEACR_COURSESDATA :
             return initialCoursesState;
@@ -31,30 +32,33 @@ export function courses (state = initialCoursesState, action) {
 }
 
 export function course (state = initialCourseState, action) {
-    switch (action.type) {
+    const { type, course, isLoading, statusCode } = action;
+    switch (type) {
         case RECEIVED_COURSEDATA :
             return {
                 ...initialCourseState,
-                course: action.course,
-                isLoading: action.isLoading,
+                course,
+                isLoading,
             };
         case UPDATE_COURSEDATA :
             return {
                 ...initialCourseState,
-                isLoading: action.isLoading,
-                statusCode: action.statusCode,
+                course,
+                isLoading,
+                statusCode,
             };
         case CREATE_COURSEDATA :
             return {
                 ...initialCourseState,
-                isLoading: action.isLoading,
-                statusCode: action.statusCode,
+                course,
+                isLoading,
+                statusCode,
             };
         case DELETE_COURSEDATA :
             return {
                 ...initialCourseState,
-                isLoading: action.isLoading,
-                statusCode: action.statusCode,
+                isLoading,
+                statusCode,
             };
         case CLEAR_COURSEDATA :
             return {

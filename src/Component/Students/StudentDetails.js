@@ -177,6 +177,12 @@ class StudentDetails extends PureComponent{
         }
     };
 
+    handleSucceedDialogClose = () => {
+        this.setState({
+            createDialogSucceedStatus: false,
+        })
+    };
+
     handleErrorDialogClose = () => {
         this.setState({
             errorDialogStatus: false,
@@ -352,8 +358,11 @@ class StudentDetails extends PureComponent{
                         </div>
                     </form>
                     <CreateSucceedDialog
+                        name='student'
+                        redirect={id === 'create'}
                         url='students'
                         createDialogSucceedStatus={createDialogSucceedStatus}
+                        handleSucceedDialogClose={this.handleSucceedDialogClose}
                     />
                     <ErrorDialog
                         content='student'

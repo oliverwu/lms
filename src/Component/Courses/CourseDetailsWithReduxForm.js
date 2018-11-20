@@ -21,7 +21,7 @@ import { connect } from 'react-redux';
 const state = state => {
     return {
         course: state.course,
-        materialUiFormData: state.form.MaterialUiForm,
+        courseDetailsForm: state.form.courseDetailsForm,
     }
 };
 
@@ -73,10 +73,12 @@ const styles = {
         justifyContent: 'space-between'
     },
 
-    buttonRest: {
+    buttonReset: {
         width: '60px',
         margin: '10px 0',
-        paddingLeft: 0
+        paddingLeft: 0,
+        paddingRight: 0,
+        color: '#757575'
     },
 
     buttonDelete: {
@@ -99,40 +101,45 @@ const styles = {
 const maxStudentsOptions = [10, 20, 30, 40, 50];
 
 const renderTextField = (
-    { input, name, fullWidth, label, meta: { touched, error }, ...custom },
+    { validationErrors, input, name, fullWidth, label, meta: { touched, error, dirty }, ...custom  },
 ) => (
-    <TextField
-        label={label}
-        placeholder={label}
-        fullWidth={fullWidth}
-        name={name}
-        margin='normal'
-        {...input}
-        {...custom}
-    />
+    <Fragment>
+        <TextField
+            label={label}
+            placeholder={label}
+            fullWidth={fullWidth}
+            margin='normal'
+            {...input}
+            {...custom}
+        />
+        {validationErrors[input.name] && <FormHelperText error>{validationErrors[input.name]}</FormHelperText>}
+    </Fragment>
 );
 
 const renderSelectTextField = (
-    { input, name, fullWidth, label, meta: { touched, error }, ...custom },
+    { validationErrors, input, name, fullWidth, label, meta: { touched, error }, ...custom },
 ) => (
-    <TextField
-        select
-        label={label}
-        placeholder={label}
-        fullWidth={fullWidth}
-        margin='normal'
-        name={name}
-        {...input}
-        {...custom}
-        onChange={(event) => input.onChange(event.target.value)}
-        helperText="Please select the number of max students"
-    >
-        {maxStudentsOptions.map(option => (
-            <MenuItem key={option} value={option}>
-                {option}
-            </MenuItem>
-        ))}
-    </TextField>
+    <Fragment>
+        <TextField
+            select
+            label={label}
+            placeholder={label}
+            fullWidth={fullWidth}
+            margin='normal'
+            name={name}
+            {...input}
+            {...custom}
+            onChange={(event) => input.onChange(event.target.value)}
+            helperText="Please select the number of max students"
+        >
+            {maxStudentsOptions.map(option => (
+                <MenuItem key={option} value={option}>
+                    {option}
+                </MenuItem>
+            ))}
+        </TextField>
+        {validationErrors[input.name] && <FormHelperText error>{validationErrors[input.name]}</FormHelperText>}
+    </Fragment>
 );
 
 
@@ -147,19 +154,26 @@ class CourseDetails extends PureComponent {
         }
     }
 
-
-
-
     handleDelete = async () => {
         const { id } = this.props.match.params;
         if (id !== 'create') {
-            await this.props.dispatch(handleDeleteCourseData(id));
-            const statusCode = this.props.course.statusCode;
-            if (statusCode === 204) {
-                redirect('courses');
-                this.props.dispatch(clearCourseData());
+            try {
+                await this.props.dispatch(handleDeleteCourseData(id));
+                const statusCode = this.props.course.statusCode;
+                if (statusCode === 204) {
+                    redirect('courses');
+                    this.props.dispatch(clearCourseData());
+                }
+            } catch (e) {
+                console.log(e)
             }
         }
+    };
+
+    handleSucceedDialogClose = () => {
+        this.setState({
+            createDialogSucceedStatus: false,
+        })
     };
 
     handleDeleteDialogOpen = () => {
@@ -190,14 +204,22 @@ class CourseDetails extends PureComponent {
 
     handleFormSubmit = async (e) => {
         e.preventDefault();
-        const userInput = this.props.materialUiFormData.values;
+        const userInput = this.props.courseDetailsForm.values;
         try {
             await schema.validate(userInput, {
                 abortEarly: false
             });
             const { id } = this.props.match.params;
+            const { title, fee, maxStudent, description, language } = userInput;
+            const newCourse = {
+                title: title.trim(),
+                fee: fee.trim(),
+                maxStudent,
+                description: description.trim(),
+                language: language.trim(),
+            };
             if (id === 'create') {
-                await this.props.dispatch(handleCreateCourseData(userInput));
+                await this.props.dispatch(handleCreateCourseData(newCourse));
                 const statusCode = this.props.course.statusCode;
                 if (statusCode === 200) {
                     this.setState({
@@ -209,8 +231,10 @@ class CourseDetails extends PureComponent {
                     })
                 }
             } else {
-                const newCourse = {...userInput, id};
-                await this.props.dispatch(handleUpdateCourseData(newCourse));
+                await this.props.dispatch(handleUpdateCourseData({
+                    ...newCourse,
+                    id,
+                }));
                 const statusCode = this.props.course.statusCode;
                 if (statusCode === 204) {
                     this.setState({
@@ -249,8 +273,8 @@ class CourseDetails extends PureComponent {
                                     component={renderTextField}
                                     label="Title"
                                     fullWidth={true}
+                                    validationErrors={validationErrors}
                                 />
-                                {validationErrors.title && <FormHelperText error>{validationErrors.title}</FormHelperText>}
                             </Grid>
                             <Grid item xs={12} md={6} className={classes.textField}>
                                 <Field
@@ -258,8 +282,8 @@ class CourseDetails extends PureComponent {
                                     component={renderTextField}
                                     label="Fee($)"
                                     fullWidth={true}
+                                    validationErrors={validationErrors}
                                 />
-                                {validationErrors.fee && <FormHelperText error>{validationErrors.fee.slice(0, 27)}</FormHelperText>}
                             </Grid>
                             <Grid item xs={12} md={6} className={classes.textField}>
                                 <Field
@@ -267,8 +291,8 @@ class CourseDetails extends PureComponent {
                                     component={renderSelectTextField}
                                     label="Max Student"
                                     fullWidth={true}
+                                    validationErrors={validationErrors}
                                 />
-                                {validationErrors.maxStudent && <FormHelperText error>{validationErrors.maxStudent}</FormHelperText>}
                             </Grid>
                             <Grid item xs={12} className={classes.textField}>
                                 <Field
@@ -276,8 +300,8 @@ class CourseDetails extends PureComponent {
                                     component={renderTextField}
                                     label="Description"
                                     fullWidth={true}
+                                    validationErrors={validationErrors}
                                 />
-                                {validationErrors.description && <FormHelperText error>{validationErrors.description}</FormHelperText>}
                             </Grid>
                             <Grid item xs={12} className={classes.textField}>
                                 <Field
@@ -285,17 +309,19 @@ class CourseDetails extends PureComponent {
                                     component={renderTextField}
                                     label="Language"
                                     fullWidth={true}
+                                    validationErrors={validationErrors}
                                 />
-                                {validationErrors.language && <FormHelperText error>{validationErrors.language}</FormHelperText>}
                             </Grid>
                         </Grid>
                         <div className={classes.buttons}>
                             <Button
                                 color='default'
                                 variant='text'
-                                className={classes.buttonRest}
+                                className={classes.buttonReset}
                                 onClick={reset}
-                            >reset</Button>
+                            >
+                                reset
+                            </Button>
                             <div>
                                 <Button
                                     color='secondary'
@@ -319,8 +345,11 @@ class CourseDetails extends PureComponent {
                         handleDelete={this.handleDelete}
                     />
                     <CreateSucceedDialog
+                        name='course'
+                        redirect={id === 'create'}
                         url='courses'
                         createDialogSucceedStatus={createDialogSucceedStatus}
+                        handleSucceedDialogClose={this.handleSucceedDialogClose}
                     />
                     <ErrorDialog
                         errorDialogStatus={errorDialogStatus}
@@ -335,7 +364,7 @@ class CourseDetails extends PureComponent {
 }
 
 CourseDetails = reduxForm({
-    form: 'MaterialUiForm', // a unique identifier for this form
+    form: 'courseDetailsForm', // a unique identifier for this form
 })(withStyles(styles)(CourseDetails));
 
 export default connect(state)(CourseDetails);

@@ -12,7 +12,7 @@ import Login from '../Login/Login';
 import { MuiThemeProvider }  from '@material-ui/core/styles';
 import {createMuiTheme} from '@material-ui/core';
 import AppBar from "../Layout/AppBar";
-import LecturerDetails from "../Lecturers/LecturerDetails";
+import LecturerDetails from "../Lecturers/LecturerDetailsWithReduxForm";
 
 class App extends Component {
 

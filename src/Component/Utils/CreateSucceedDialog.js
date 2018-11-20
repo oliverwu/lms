@@ -5,21 +5,23 @@ import { redirect } from "./Help";
 class CreateSucceedDialog extends Component {
 
     handleRedirect = () => {
-        redirect(this.props.url);
+        this.props.redirect ? redirect(this.props.url) : this.props.handleSucceedDialogClose();
+
     };
 
     render() {
-        const { createDialogSucceedStatus } = this.props;
+        const { name, createDialogSucceedStatus, handleSucceedDialogClose } = this.props;
 
         return (
             <Dialog
                 open={createDialogSucceedStatus}
                 scroll='body'
+                onClose={handleSucceedDialogClose}
             >
                 <DialogTitle>Congratulation!</DialogTitle>
                 <DialogContent>
                     <DialogContentText>
-                        This course has already been saved.
+                        {`This ${name} has already been saved.`}
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
