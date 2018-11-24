@@ -16,3 +16,11 @@ export function getValidationErrors(error) {
     }, {});
     return validationErrors;
 }
+
+export function isNum(num){
+    if (num !== null && num !== "")
+    {
+        return !isNaN(num);
+    }
+    return false;
+}

@@ -1,13 +1,14 @@
-import CourseApi from '../Component/Courses/CourseApi';
+import CourseApi from '../Component/Courses/CourseApiOliver';
 
 export const RECEIVED_COURSESDATA = 'RECEIVED_COURSESDATA';
 export const CLEACR_COURSESDATA = 'CLEACR_COURSESDATA';
 
-function receivedALLCoursesData(allCourses) {
+function receivedCoursesData(courses, statusCode) {
     return {
         type: RECEIVED_COURSESDATA,
-        allCourses,
+        courses,
         isLoading: false,
+        statusCode,
     }
 }
 
@@ -17,11 +18,15 @@ export function clearCoursesData() {
     }
 }
 
-export function handleReceivedALLCoursesData() {
+export function handleReceivedCoursesData() {
     return async (dispatch) => {
-        const allCourses = await CourseApi.getAllCourse();
-        console.log(allCourses);
-        dispatch(receivedALLCoursesData(allCourses))
+        try {
+            const data = await CourseApi.getAllCourse();
+            data && dispatch(receivedCoursesData(data.courses, data.statusCode))
+        } catch (e) {
+            console.log(e)
+        }
+
     }
 }
 
@@ -77,8 +82,8 @@ export function clearCourseData() {
 export function handleReceivedCourseData(id) {
     return async (dispatch) => {
         try {
-            const course = await CourseApi.getCourseById(id);
-            dispatch(receivedCourseData(course))
+            const data = await CourseApi.getCourseById(id);
+            data && dispatch(receivedCourseData(data.course, data.statusCode))
         } catch (e) {
             console.log(e)
         }
@@ -88,8 +93,8 @@ export function handleReceivedCourseData(id) {
 export function handleUpdateCourseData(course) {
     return async (dispatch) => {
         try {
-            const statusCode = await CourseApi.updateCourse(course);
-            dispatch(updateCourseData(course, statusCode))
+            const data = await CourseApi.updateCourse(course);
+            data && dispatch(updateCourseData(data.course, data.statusCode))
         } catch (e) {
             console.log(e)
         }
@@ -99,8 +104,8 @@ export function handleUpdateCourseData(course) {
 export function handleCreateCourseData(course) {
     return async (dispatch) => {
         try {
-            const statusCode = await CourseApi.createNewCourse(course);
-            dispatch(createCourseData(course, statusCode))
+            const data = await CourseApi.createNewCourse(course);
+            data && dispatch(createCourseData(data.course, data.statusCode))
         } catch (e) {
             console.log(e)
         }
@@ -110,9 +115,8 @@ export function handleCreateCourseData(course) {
 export function handleDeleteCourseData(id) {
     return async (dispatch) => {
         try {
-            const statusCode = await CourseApi.deleteCourse(id);
-            console.log(statusCode);
-            dispatch(deleteCourseData(statusCode))
+            const data = await CourseApi.deleteCourse(id);
+            data && dispatch(deleteCourseData(data.statusCode))
         } catch (e) {
             console.log(e)
         }

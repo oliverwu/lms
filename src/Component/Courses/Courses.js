@@ -6,13 +6,14 @@ import CourseCard from "./CourseCard";
 import MenuBar from '../Layout/MenuBar';
 import AppBar from '../Layout/AppBar';
 import { connect } from 'react-redux';
-import { handleReceivedALLCoursesData, clearCoursesData } from "../../Actions/CoursesActions";
+import { handleReceivedCoursesData, clearCoursesData } from "../../Actions/CoursesActions";
 import ForbidErrorDialog from '../Utils/ForbidErrorDialog';
 
 const state = state => {
     return {
-        allCourses: state.courses.allCourses,
+        courses: state.courses.courses,
         isLoading: state.courses.isLoading,
+        statusCode: state.courses.statusCode,
     }
 };
 
@@ -35,8 +36,7 @@ class Courses extends PureComponent{
     constructor(props) {
         super(props);
         this.state = {
-            isLoading: true,
-            courses: [],
+            ForbidErrorDialogStatus: false,
         }
     }
 
@@ -63,9 +63,22 @@ class Courses extends PureComponent{
         );
     }
 
-    componentDidMount() {
-        this.props.dispatch(handleReceivedALLCoursesData())
+    componentWillMount() {
+        this.props.dispatch(clearCoursesData())
     }
+
+    async componentDidMount() {
+        await this.props.dispatch(handleReceivedCoursesData());
+        this.props.statusCode > 300 && this.setState({
+            ForbidErrorDialogStatus: true,
+        })
+    }
+
+    handleForbidErrorDialogClose = () => {
+        this.setState({
+            ForbidErrorDialogStatus: false,
+        })
+    };
 
     clearData = () => {
         this.props.dispatch(clearCoursesData());
@@ -73,18 +86,24 @@ class Courses extends PureComponent{
 
 
     render() {
-        const { allCourses, isLoading } = this.props;
+        const { courses, isLoading, statusCode } = this.props;
+        const { ForbidErrorDialogStatus } = this.state;
 
         return (
             <Fragment>
                 <AppBar/>
-                {console.log(allCourses)}
+                {console.log(courses)}
                 {console.log(isLoading)}
                 <MenuBar selected='Courses' menu='Courses' name='course'>
                     {isLoading && <PageLoader/>}
-                    {!isLoading && !allCourses && <ForbidErrorDialog clearData = {this.clearData} />}
-                    {!isLoading && allCourses && this.renderCourseCards(allCourses)}
+                    {!isLoading && courses && this.renderCourseCards(courses)}
                 </MenuBar>
+                <ForbidErrorDialog
+                    ForbidErrorDialogStatus = { ForbidErrorDialogStatus }
+                    clearData = {this.clearData}
+                    statusCode={statusCode}
+                    handleForbidErrorDialogClose={this.handleForbidErrorDialogClose}
+                />
             </Fragment>
         );
     }

@@ -2,7 +2,7 @@ import React, { PureComponent} from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import { Paper, Avatar, TextField, Button, CircularProgress, IconButton } from '@material-ui/core';
 import PermIdentityIcon from '@material-ui/icons/PermIdentity';
-import LoginApi from './LoginApi';
+import LoginApi from './LoginApiOliver';
 import { redirect } from '../Utils/Help';
 import PriorityHighIcon from '@material-ui/icons/PriorityHigh';
 import classNames from 'classnames';
@@ -118,6 +118,7 @@ class Login extends PureComponent{
         const { userName, password } = this.state;
         const data = await LoginApi.getToken(userName, password);
         if (data) {
+            console.log(data);
             const { access_token } = data;
             localStorage.setItem('accessToken', access_token);
             redirect('dashboard');

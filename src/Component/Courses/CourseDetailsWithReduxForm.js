@@ -2,10 +2,9 @@ import React, {PureComponent, Fragment} from 'react';
 import { TextField, MenuItem, Grid, Button, FormHelperText } from '@material-ui/core';
 import { withStyles} from '@material-ui/core/styles';
 import MenuBar from '../Layout/MenuBar';
-import { redirect, getValidationErrors } from "../Utils/Help";
+import {redirect, getValidationErrors, isNum} from "../Utils/Help";
 import CreateSucceedDialog from "../Utils/CreateSucceedDialog";
 import DeleteDialog from "../Utils/DeleteDialog";
-import ErrorDialog from "../Utils/ErrorDialog";
 import * as yup from "yup";
 import AppBar from "../Layout/AppBar";
 import { Field, reduxForm } from 'redux-form';
@@ -17,6 +16,7 @@ import {
     handleUpdateCourseData
 } from "../../Actions/CoursesActions";
 import { connect } from 'react-redux';
+import ForbidErrorDialog from "../Utils/ForbidErrorDialog";
 
 const state = state => {
     return {
@@ -149,10 +149,64 @@ class CourseDetails extends PureComponent {
         this.state = {
             deleteDialogStatus: false,
             createDialogSucceedStatus: false,
-            errorDialogStatus: false,
-            validationErrors: ''
+            validationErrors: '',
+            ForbidErrorDialogStatus: false,
         }
     }
+
+    async componentDidMount() {
+        const { id } = this.props.match.params;
+        if (id !== 'create') {
+            await this.props.dispatch(handleReceivedCourseData(id));
+            this.props.initialize(this.props.course.course)
+            this.props.statusCode > 300 && this.setState({
+                ForbidErrorDialogStatus: true,
+            })
+        }
+    }
+
+    componentWillMount() {
+        this.props.dispatch(clearCourseData())
+    }
+
+    handleFormSubmit = async (e) => {
+        e.preventDefault();
+        const userInput = this.props.courseDetailsForm.values;
+        try {
+            await schema.validate(userInput, {
+                abortEarly: false
+            });
+            const { id } = this.props.match.params;
+            const { title, description, language } = userInput;
+            const newCourse = {
+                ...userInput,
+                title: title.trim(),
+                description: description.trim(),
+                language: language.trim(),
+            };
+            if (id === 'create') {
+                await this.props.dispatch(handleCreateCourseData(newCourse));
+            } else if(isNum(id)) {
+                await this.props.dispatch(handleUpdateCourseData({
+                    ...newCourse,
+                    id,
+                }));
+            }
+            const statusCode = this.props.course.statusCode;
+            statusCode > 300 && this.setState({
+                ForbidErrorDialogStatus: true,
+            });
+            statusCode === 200 && this.setState({
+                createDialogSucceedStatus: true,
+            })
+        } catch (error) {
+            console.log(error);
+            const validationErrors = getValidationErrors(error);
+            this.setState({
+                validationErrors
+            })
+        }
+    };
 
     handleDelete = async () => {
         const { id } = this.props.match.params;
@@ -160,6 +214,9 @@ class CourseDetails extends PureComponent {
             try {
                 await this.props.dispatch(handleDeleteCourseData(id));
                 const statusCode = this.props.course.statusCode;
+                statusCode > 300 && this.setState({
+                    ForbidErrorDialogStatus: true,
+                });
                 if (statusCode === 204) {
                     redirect('courses');
                     this.props.dispatch(clearCourseData());
@@ -168,6 +225,16 @@ class CourseDetails extends PureComponent {
                 console.log(e)
             }
         }
+    };
+
+    clearData = () => {
+        this.props.dispatch(clearCourseData())
+    };
+
+    handleForbidErrorDialogClose = () => {
+        this.setState({
+            ForbidErrorDialogStatus: false,
+        })
     };
 
     handleSucceedDialogClose = () => {
@@ -188,79 +255,15 @@ class CourseDetails extends PureComponent {
         })
     };
 
-    handleErrorDialogClose = () => {
-        this.setState({
-            errorDialogStatus: false,
-        })
-    };
-
-    async componentDidMount() {
-        const { id } = this.props.match.params;
-            if (id !== 'create') {
-                await this.props.dispatch(handleReceivedCourseData(id));
-                this.props.initialize(this.props.course.course)
-            }
-    }
-
-    handleFormSubmit = async (e) => {
-        e.preventDefault();
-        const userInput = this.props.courseDetailsForm.values;
-        try {
-            await schema.validate(userInput, {
-                abortEarly: false
-            });
-            const { id } = this.props.match.params;
-            const { title, fee, maxStudent, description, language } = userInput;
-            const newCourse = {
-                title: title.trim(),
-                fee: fee.trim(),
-                maxStudent,
-                description: description.trim(),
-                language: language.trim(),
-            };
-            if (id === 'create') {
-                await this.props.dispatch(handleCreateCourseData(newCourse));
-                const statusCode = this.props.course.statusCode;
-                if (statusCode === 200) {
-                    this.setState({
-                        createDialogSucceedStatus: true,
-                    })
-                } else if (statusCode > 300) {
-                    this.setState({
-                        errorDialogStatus: true,
-                    })
-                }
-            } else {
-                await this.props.dispatch(handleUpdateCourseData({
-                    ...newCourse,
-                    id,
-                }));
-                const statusCode = this.props.course.statusCode;
-                if (statusCode === 204) {
-                    this.setState({
-                        createDialogSucceedStatus: true,
-                    })
-                } else if (statusCode > 300) {
-                    this.setState({
-                        errorDialogStatus: true,
-                    })
-                }
-            }
-        } catch (error) {
-            const validationErrors = getValidationErrors(error);
-            this.setState({
-                validationErrors
-            })
-        }
-    };
 
     render() {
-        const { deleteDialogStatus, createDialogSucceedStatus, errorDialogStatus, validationErrors } = this.state;
+        const { deleteDialogStatus, createDialogSucceedStatus, validationErrors, ForbidErrorDialogStatus } = this.state;
         const { classes, reset } = this.props;
         const { id } = this.props.match.params;
 
         return (
             <Fragment>
+                {console.log(this.props)}
                 <AppBar/>
                 <MenuBar selected='Courses' menu={id === 'create' ? 'CREATE NEW COURSE' : 'COURSE DETAILS'}>
                     <form className={classes.root} onSubmit={this.handleFormSubmit}>
@@ -346,15 +349,15 @@ class CourseDetails extends PureComponent {
                     />
                     <CreateSucceedDialog
                         name='course'
-                        redirect={id === 'create'}
-                        url='courses'
+                        url={`courses/${this.props.course.course.id}`}
                         createDialogSucceedStatus={createDialogSucceedStatus}
                         handleSucceedDialogClose={this.handleSucceedDialogClose}
                     />
-                    <ErrorDialog
-                        errorDialogStatus={errorDialogStatus}
-                        handleErrorDialogClose={this.handleErrorDialogClose}
-                        content='course'
+                    <ForbidErrorDialog
+                        ForbidErrorDialogStatus = { ForbidErrorDialogStatus }
+                        clearData = {this.clearData}
+                        statusCode={this.props.course.statusCode}
+                        handleForbidErrorDialogClose={this.handleForbidErrorDialogClose}
                     />
                 </MenuBar>
             </Fragment>

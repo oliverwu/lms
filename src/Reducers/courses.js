@@ -8,6 +8,7 @@ import {
 const initialCoursesState = {
     allCourses:[],
     isLoading: true,
+    statusCode: null,
 };
 
 const initialCourseState = {
@@ -17,12 +18,13 @@ const initialCourseState = {
 };
 
 export function courses (state = initialCoursesState, action) {
-    const { type, allCourses, isLoading } = action;
+    const { type, courses, isLoading, statusCode } = action;
     switch (type) {
         case RECEIVED_COURSESDATA :
             return {
-                allCourses,
+                courses,
                 isLoading,
+                statusCode,
             };
         case CLEACR_COURSESDATA :
             return initialCoursesState;
@@ -42,14 +44,12 @@ export function course (state = initialCourseState, action) {
             };
         case UPDATE_COURSEDATA :
             return {
-                ...initialCourseState,
                 course,
                 isLoading,
                 statusCode,
             };
         case CREATE_COURSEDATA :
             return {
-                ...initialCourseState,
                 course,
                 isLoading,
                 statusCode,

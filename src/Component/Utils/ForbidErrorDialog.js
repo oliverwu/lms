@@ -1,7 +1,11 @@
-import {Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle} from "@material-ui/core";
+import {Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Slide} from "@material-ui/core";
 import { withStyles } from '@material-ui/core/styles';
 import React, { Component } from "react";
 import {redirect} from "./Help";
+
+function Transition(props) {
+    return <Slide direction="down" {...props} />;
+}
 
 const styles = theme => {
     return {
@@ -17,23 +21,34 @@ const styles = theme => {
 class ForbidErrorDialog extends Component{
 
     handleForbidErrorDialogClose = () => {
-        this.props.clearData();
-        redirect('login');
+        const { statusCode } = this.props;
+        if (statusCode === 401) {
+            this.props.clearData();
+            redirect('login');
+        } else {
+            this.props.handleForbidErrorDialogClose();
+        }
     };
+
+    handleNoClose() {
+
+    }
 
 
     render() {
-        const { classes, } = this.props;
+        const { classes, statusCode, handleForbidErrorDialogClose, ForbidErrorDialogStatus} = this.props;
 
         return (
             <Dialog
-                open={true}
-                scroll='body'
+                open={ForbidErrorDialogStatus}
+                TransitionComponent={Transition}
+                scroll= 'body'
+                onClose={statusCode === 401 ? this.handleNoClose : handleForbidErrorDialogClose}
             >
                 <DialogTitle className={classes.error}>Error!!!</DialogTitle>
                 <DialogContent className={classes.error}>
                     <DialogContentText className={classes.errorText}>
-                        {`Error occurred while fetching the data!!!`}
+                        {statusCode === 401 ? 'You login Token is expired, you need to log again!' : `Oops, Some error occurred, try to refresh your page or log again!!`}
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>

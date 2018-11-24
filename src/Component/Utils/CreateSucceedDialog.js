@@ -5,8 +5,8 @@ import { redirect } from "./Help";
 class CreateSucceedDialog extends Component {
 
     handleRedirect = () => {
-        this.props.redirect ? redirect(this.props.url) : this.props.handleSucceedDialogClose();
-
+        this.props.handleSucceedDialogClose();
+        redirect(this.props.url)
     };
 
     render() {

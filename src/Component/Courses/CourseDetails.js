@@ -130,6 +130,7 @@ class CourseDetails extends PureComponent{
             if (id === 'create') {
                 const newCourse = {title, fee, maxStudent, description, language};
                 const statusCode = await CourseApi.createNewCourse(newCourse);
+
                 if (statusCode === 200) {
                     this.setState({
                         createDialogSucceedStatus: true,
@@ -142,6 +143,7 @@ class CourseDetails extends PureComponent{
             } else {
                 const newCourse = {id, title, fee, maxStudent, description, language};
                 const statusCode = await CourseApi.updateCourse(newCourse);
+                console.log(statusCode);
                 if (statusCode === 204) {
                     this.setState({
                         createDialogSucceedStatus: true,
@@ -153,6 +155,7 @@ class CourseDetails extends PureComponent{
                 }
             }
         } catch (error) {
+            console.log(error);
             const validationErrors = getValidationErrors(error);
             this.setState({
                 validationErrors
