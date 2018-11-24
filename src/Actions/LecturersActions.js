@@ -1,13 +1,19 @@
-import LecturersApi from '../Component/Lecturers/LecturersApi';
+import LecturersApi from '../Component/Lecturers/LecturersApiOliver';
+import StudentsApi from "../Component/Students/StudentsApiOliver";
 
-export const RECEIVED_ALlLECTURERSDATA = 'RECEIVED_ALlLECTURERSDATA';
+export const RECEIVED_LECTURERSBYPAGE = 'RECEIVED_LECTURERSBYPAGE';
 export const CLEACR_LECTURERSDATA = 'CLEACR_LECTURERSDATA';
 
-function receivedAllLecturersData(allLecturers) {
+function receivedLecturersDataByPage(lecturers, pageNum, pageSize, totalPage, amount, statusCode) {
     return {
-        type: RECEIVED_ALlLECTURERSDATA,
-        allLecturers,
-        isLoading: false
+        type: RECEIVED_LECTURERSBYPAGE,
+        lecturers,
+        isLoading: false,
+        pageNum,
+        pageSize,
+        totalPage,
+        amount,
+        statusCode,
     }
 }
 
@@ -17,10 +23,14 @@ export function clearLecturersData() {
     }
 }
 
-export function handleReceivedAllLecturersData() {
+export function handleReceivedLecturersDataByPage(pageSize, pageNum) {
     return async (dispatch) => {
-        const allLecturers = await LecturersApi.getAllLecturers();
-        dispatch(receivedAllLecturersData(allLecturers))
+        try {
+            const data = await LecturersApi.getLecturersByPage(pageSize, pageNum);
+            data && dispatch(receivedLecturersDataByPage(data.lecturers, data.pageNum, data.pageSize, data.totalPage, data.amount, data.statusCode))
+        } catch (e) {
+            console.log(e);
+        }
     }
 }
 
@@ -30,12 +40,12 @@ export const CREATE_LECTURERDATA = 'CREATE_LECTURERDATA';
 export const DELETE_LECTURERDATA = 'DELETE_LECTURERDATA';
 export const CLEAR_LECTURERDATA = 'CLEAR_LECTURERDATA';
 
-function receivedLecturerData(lecturer) {
+function receivedLecturerData(lecturer, statusCode) {
     return {
         type: RECEIVED_LECTURERDATA,
         lecturer,
         isLoading: false,
-        statusCode: null,
+        statusCode,
     }
 }
 
@@ -74,8 +84,8 @@ export function clearLecturerData() {
 export function handleReceivedLecturerData(id) {
     return async (dispatch) => {
         try {
-            const lecturer = await LecturersApi.getLecturerById(id);
-            dispatch(receivedLecturerData(lecturer));
+            const data = await LecturersApi.getLecturerById(id);
+            data && dispatch(receivedLecturerData(data.lecturer, data.statusCode));
         } catch (e) {
             console.log(e)
         }
@@ -85,8 +95,8 @@ export function handleReceivedLecturerData(id) {
 export function handleUpdateLecturerData(lecturer) {
     return async (dispatch) => {
         try {
-            const statusCode = await LecturersApi.updateLecturer(lecturer);
-            dispatch(updateLecturerData(lecturer, statusCode))
+            const data = await LecturersApi.updateLecturer(lecturer);
+            data && dispatch(updateLecturerData(data.lecturer, data.statusCode))
         } catch (e) {
             console.log(e)
         }
@@ -96,8 +106,8 @@ export function handleUpdateLecturerData(lecturer) {
 export function handleCreateLecturerData(lecturer) {
     return async (dispatch) => {
         try {
-            const statusCode = await LecturersApi.createNewLecturer(lecturer);
-            dispatch(createLecturerData(lecturer, statusCode))
+            const data = await LecturersApi.createNewLecturer(lecturer);
+            data && dispatch(createLecturerData(data.lecturer, data.statusCode))
         } catch (e) {
             console.log(e)
         }
@@ -107,8 +117,8 @@ export function handleCreateLecturerData(lecturer) {
 export function handleDeleteLecturerData(id) {
     return async (dispatch) => {
         try {
-            const statusCode = await LecturersApi.deleteLecturer(id);
-            dispatch(deleteLecturerData(statusCode));
+            const data = await LecturersApi.deleteLecturer(id);
+            dispatch(deleteLecturerData(data.statusCode));
         } catch (e) {
             console.log(e)
         }

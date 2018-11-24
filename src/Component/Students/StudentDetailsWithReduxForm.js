@@ -207,13 +207,12 @@ class StudentDetails extends PureComponent{
                 gender,
             };
             if ( id === 'create') {
-                console.log(newStudent);
                 await this.props.dispatch(handleCreateStudentData(newStudent));
             } else if(isNum(id)){
                 console.log(newStudent);
                 await this.props.dispatch(handleUpdateStudentData(newStudent));
             }
-            const statusCode = this.props.student.statusCode;
+            const statusCode = this.props.statusCode;
             console.log(statusCode);
             statusCode > 300 && this.setState({
                 forbidErrorDialogStatus: true,
@@ -283,8 +282,8 @@ class StudentDetails extends PureComponent{
             <Fragment>
                 <AppBar/>
                 <MenuBar selected='Students' menu={id === 'create' ? 'CREATE NEW STUDENT' : 'STUDENT DETAILS'}>
-                    {isLoading && <PageLoader/>}
-                    {!isLoading && <form onSubmit={this.handleFormSubmit} className={classes.root}>
+                    {isLoading && isNum(id) && <PageLoader/>}
+                    {(!isLoading || !isNum(id)) && <form onSubmit={this.handleFormSubmit} className={classes.root}>
                         <Grid container >
                             <Grid
                                 item xs={12} md={6} className={classes.textField}

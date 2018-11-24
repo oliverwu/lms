@@ -69,8 +69,8 @@ function createStudentData(student, statusCode) {
 function deleteStudentData(statusCode) {
     return {
         type: DELETE_STUDENTDATA,
-        statusCode,
         isLoading: false,
+        statusCode,
     }
 }
 
@@ -120,7 +120,6 @@ export function handleDeleteStudentData(id) {
     return async (dispatch) => {
         try {
             const data = await StudentsApi.deleteStudent(id);
-            console.log(data);
             data && dispatch(deleteStudentData(data.statusCode))
         } catch (e) {
             console.log(e)

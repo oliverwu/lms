@@ -1,53 +1,40 @@
 import React, {Component} from 'react';
-import LecturersApi from "./LecturersApi";
 import TableControl from "../Utils/TableControl";
 import TableData from "../Utils/TableData";
 import { connect } from 'react-redux';
 
 const state = state => {
     return {
-        allLecturers: state.lecturers.allLecturers,
+        lecturers: state.lecturers.lecturers,
+        pageSize: state.lecturers.pageSize,
+        amount: state.lecturers.amount,
+        pageNum: state.lecturers.pageNum,
     }
 };
 
 class LecturersTable extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            page: 0,
-        }
-    }
-
-    changeCurrentPage = (page) => {
-        this.setState({
-            page:page,
-        })
-    };
-
 
     render() {
-        const { allLecturers } = this.props;
-        const { page } = this.state;
-        const pageSize = 5;
-        console.log(allLecturers);
+        const { lecturers, pageSize, handleDeleteLecturer, amount, handleChangePageSize, pageNum, changeCurrentPage } = this.props;
 
         return (
             <div>
                 <TableData
-                    tableParams={allLecturers}
+                    tableParams={lecturers}
                     tableHeadArray={['Name', 'Email', 'Staff Number', 'Details']}
                     tableBodyArray={['name','email', 'staffNumber']}
                     tableName='lecturer'
-                    page={page}
+                    page={0}
                     pageSize={pageSize}
-                    tableApiDeleteMethod={LecturersApi.deleteLecturer}
+                    tableApiDeleteMethod={handleDeleteLecturer}
                     minWidth='550px'
                 />
                 <TableControl
-                    count={allLecturers.length}
-                    page={page}
+                    handleChangePageSize={handleChangePageSize}
+                    count={amount}
+                    page={pageNum - 1}
                     pageSize={pageSize}
-                    changeCurrentPage={this.changeCurrentPage}
+                    changeCurrentPage={changeCurrentPage}
                 />
             </div>
         );

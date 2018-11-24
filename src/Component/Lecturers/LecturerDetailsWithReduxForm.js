@@ -3,7 +3,7 @@ import AppBar from '../Layout/AppBar';
 import {TextField, Grid, Button, FormHelperText} from '@material-ui/core';
 import { withStyles} from '@material-ui/core/styles';
 import MenuBar from '../Layout/MenuBar';
-import { redirect, getValidationErrors } from "../Utils/Help";
+import {redirect, getValidationErrors, isNum} from "../Utils/Help";
 import CreateSucceedDialog from "../Utils/CreateSucceedDialog";
 import DeleteDialog from "../Utils/DeleteDialog";
 import ErrorDialog from "../Utils/ErrorDialog";
@@ -16,9 +16,14 @@ import {
     handleReceivedLecturerData,
     handleUpdateLecturerData
 } from "../../Actions/LecturersActions";
+import {clearStudentData} from "../../Actions/StudentsActions";
+import PageLoader from "../Utils/PageLoader";
+import ForbidErrorDialog from "../Utils/ForbidErrorDialog";
 
 const state = state => ({
-    lecturer: state.lecturer,
+    lecturer: state.lecturer.lecturer,
+    isLoading: state.lecturer.isLoading,
+    statusCode: state.lecturer.statusCode,
     lecturerDetailsForm: state.form.lecturerDetailsForm,
 });
 
@@ -34,8 +39,8 @@ const schema = yup.object().shape({
         .label("Last Name")
         .required(),
     staffNumber: yup
-        .number()
-        .max(65536)
+        .string()
+        .max(50)
         .label("Staff Number")
         .required(),
     email: yup
@@ -107,13 +112,28 @@ const renderTextField = (
 );
 
 class LecturerDetails extends PureComponent{
-    constructor(props) {
-        super(props);
+    constructor() {
+        super();
         this.state = {
             validationErrors: '',
             createDialogSucceedStatus: false,
             deleteDialogStatus: false,
-            errorDialogStatus: false,
+            forbidErrorDialogStatus: false,
+        }
+    }
+
+    componentWillMount() {
+        this.props.dispatch(clearLecturerData());
+    }
+
+    async componentDidMount() {
+        const { id } = this.props.match.params;
+        if (isNum(id)) {
+            await this.props.dispatch(handleReceivedLecturerData(id));
+            this.props.initialize(this.props.lecturer);
+            this.props.statusCode > 300 && this.setState({
+                forbidErrorDialogStatus: true,
+            })
         }
     }
 
@@ -127,6 +147,7 @@ class LecturerDetails extends PureComponent{
             const { id } = this.props.match.params;
             const { firstName, lastName, staffNumber, email, bibliography } = userInput;
             const newLecturer = {
+                ...userInput,
                 name: `${firstName.trim()} ${lastName.trim()}`,
                 staffNumber: staffNumber.trim(),
                 email: email.trim(),
@@ -134,32 +155,16 @@ class LecturerDetails extends PureComponent{
             };
             if (id === 'create') {
                 await this.props.dispatch(handleCreateLecturerData(newLecturer));
-                const statusCode = this.props.lecturer.statusCode;
-                if (statusCode === 200) {
-                    this.setState({
-                        createDialogSucceedStatus: true
-                    })
-                } else if (statusCode > 300) {
-                    this.setState({
-                        errorDialogStatus: true,
-                    })
-                }
             } else {
-                await this.props.dispatch(handleUpdateLecturerData({
-                    ...newLecturer,
-                    id,
-                }));
-                const statusCode = this.props.lecturer.statusCode;
-                if (statusCode === 204) {
-                    this.setState({
-                        createDialogSucceedStatus: true
-                    })
-                } else if (statusCode > 300) {
-                    this.setState({
-                        errorDialogStatus: true,
-                    })
-                }
+                await this.props.dispatch(handleUpdateLecturerData(newLecturer));
             }
+            const statusCode = this.props.statusCode;
+            statusCode > 300 && this.setState({
+                forbidErrorDialogStatus: true,
+            });
+            statusCode === 200 && this.setState({
+                createDialogSucceedStatus: true,
+            })
         } catch (error) {
             const validationErrors = getValidationErrors(error);
             console.log(validationErrors);
@@ -171,18 +176,26 @@ class LecturerDetails extends PureComponent{
 
     handleDelete = async () => {
         const { id } = this.props.match.params;
-        if (id !== 'create') {
+        if (isNum(id)) {
             try {
                 await this.props.dispatch(handleDeleteLecturerData(id));
                 const statusCode = this.props.lecturer.statusCode;
+                statusCode > 300 && this.setState({
+                    forbidErrorDialogStatus: true,
+                });
                 if (statusCode === 204) {
                     redirect('lecturers');
-                    this.props.dispatch(clearLecturerData())
                 }
             } catch (e) {
                 console.log(e)
             }
         }
+    };
+
+    handleForbidErrorDialogClose = () => {
+        this.setState({
+            forbidErrorDialogStatus: false,
+        })
     };
 
     handleSucceedDialogClose = () => {
@@ -203,30 +216,17 @@ class LecturerDetails extends PureComponent{
         })
     };
 
-    handleErrorDialogClose = () => {
-        this.setState({
-            errorDialogStatus: false,
-        })
-    };
-
-    async componentDidMount() {
-        const { id } = this.props.match.params;
-        if (id !== 'create') {
-            await this.props.dispatch(handleReceivedLecturerData(id));
-            this.props.initialize(this.props.lecturer.lecturer)
-        }
-    }
-
     render() {
-        const { validationErrors, createDialogSucceedStatus, deleteDialogStatus, errorDialogStatus } = this.state;
-        const { classes, reset } = this.props;
+        const { validationErrors, createDialogSucceedStatus, deleteDialogStatus, forbidErrorDialogStatus } = this.state;
+        const { classes, reset, isLoading, statusCode } = this.props;
         const { id } = this.props.match.params;
 
         return (
             <Fragment>
                 <AppBar/>
                 <MenuBar selected='Lecturers' menu={id === 'create' ? 'CREATE NEW LECTURER' : 'LECTURER DETAILS'}>
-                    <form onSubmit={this.handleFormSubmit} className={classes.root}>
+                    {isLoading && isNum(id) && <PageLoader/>}
+                    {(!isLoading || !isNum(id)) && <form onSubmit={this.handleFormSubmit} className={classes.root}>
                         <Grid container >
                             <Grid item xs={12} md={6} className={classes.textField} >
                                 <Field
@@ -296,11 +296,10 @@ class LecturerDetails extends PureComponent{
                                 >{id !== 'create' ? 'Save' : 'Create'}</Button>
                             </div>
                         </div>
-                    </form>
+                    </form>}
                     <CreateSucceedDialog
                         name='lecturer'
-                        redirect={id === 'create'}
-                        url='lecturers'
+                        url={`lecturers/${this.props.lecturer.id}`}
                         createDialogSucceedStatus={createDialogSucceedStatus}
                         handleSucceedDialogClose={this.handleSucceedDialogClose}
                     />
@@ -310,14 +309,13 @@ class LecturerDetails extends PureComponent{
                         deleteDialogStatus={deleteDialogStatus}
                         content='lecturer'
                     />
-                    <ErrorDialog
-                        content='lecturer'
-                        errorDialogStatus={errorDialogStatus}
-                        handleErrorDialogClose={this.handleErrorDialogClose}
+                    <ForbidErrorDialog
+                        forbidErrorDialogStatus = { forbidErrorDialogStatus }
+                        statusCode={ statusCode }
+                        handleForbidErrorDialogClose={this.handleForbidErrorDialogClose}
                     />
                 </MenuBar>
             </Fragment>
-
         );
     }
 }

@@ -1,13 +1,21 @@
 import {
-    CLEACR_LECTURERSDATA, CLEAR_LECTURERDATA, CREATE_LECTURERDATA, DELETE_LECTURERDATA,
-    RECEIVED_ALlLECTURERSDATA,
+    CLEACR_LECTURERSDATA,
+    CLEAR_LECTURERDATA,
+    CREATE_LECTURERDATA,
+    DELETE_LECTURERDATA,
+    RECEIVED_LECTURERSBYPAGE,
     RECEIVED_LECTURERDATA,
     UPDATE_LECTURERDATA
 } from "../Actions/LecturersActions";
 
 const initialLecturersState = {
-    allLecturers: [],
+    lecturers: [],
     isLoading: true,
+    pageNum: 1,
+    pageSize: 10,
+    totalPage: 1,
+    amount: 0,
+    statusCode: null,
 };
 
 const initialLecturerState = {
@@ -17,12 +25,17 @@ const initialLecturerState = {
 };
 
 export function lecturers(state = initialLecturersState, action) {
-    const { type, allLecturers, isLoading} = action;
+    const { type, lecturers, isLoading, pageNum, pageSize, totalPage, amount, statusCode } = action;
     switch (type) {
-        case RECEIVED_ALlLECTURERSDATA :
+        case RECEIVED_LECTURERSBYPAGE :
             return {
-                allLecturers,
+                lecturers,
                 isLoading,
+                pageNum,
+                pageSize,
+                totalPage,
+                amount,
+                statusCode,
             };
         case CLEACR_LECTURERSDATA :
             return initialLecturersState;
@@ -42,13 +55,13 @@ export function lecturer(state = initialLecturerState, action) {
             };
         case UPDATE_LECTURERDATA :
             return {
-                ...initialLecturerState,
+                lecturer,
                 isLoading,
                 statusCode,
             };
         case CREATE_LECTURERDATA :
             return {
-                ...initialLecturerState,
+                lecturer,
                 isLoading,
                 statusCode,
             };

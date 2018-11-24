@@ -1,24 +1,12 @@
-import {lmsURL} from "../Login/LoginApiOliver";
-import moment from 'moment';
-import { redirect, getAccessToken } from "../Utils/Help";
-
-const genderMap = [
-    {
-        abbr: 'M',
-        name: 'Male'
-    },
-    {
-        abbr: 'F',
-        name: 'Female'
-    }
-];
+import { lmsURL } from "../Login/LoginApiOliver";
+import { getAccessToken } from "../Utils/Help";
 
 
-let StudentsApi = {
-    getStudentsByPage: async ( pageSize, pageNum ) => {
-        let endpoint = `${lmsURL}api/students?pageSize=${pageSize}&pageNumber=${pageNum}`;
+let LecturersApi = {
+    getLecturersByPage: async ( pageSize, pageNum ) => {
+        let endpoint = `${lmsURL}api/lecturers?pageSize=${pageSize}&pageNumber=${pageNum}`;
         try {
-            const response = await fetch(endpoint,{
+            const response = await fetch(endpoint, {
                 headers: {
                     'Authorization': getAccessToken(),
                 }
@@ -29,7 +17,7 @@ let StudentsApi = {
                     localStorage.removeItem('accessToken');
                 }
                 return {
-                    students: [],
+                    lecturers: [],
                     pageNum: 1,
                     pageSize: 10,
                     totalPage: 1,
@@ -39,37 +27,29 @@ let StudentsApi = {
             } else {
                 if (response.ok) {
                     const jsonResponse = await response.json();
-                    console.log(jsonResponse);
                     return {
                         pageNum: jsonResponse.pageNumber,
                         pageSize: jsonResponse.pageSize,
                         totalPage: jsonResponse.totalPage,
                         amount: jsonResponse.amount,
-                        students: jsonResponse.students.map((student) => {
-                            const dateOfBirth = moment(student.dateOfBirth).format("YYYY-MM-DD");
+                        lecturers: jsonResponse.lecturers.map((lecturer) => {
                             return {
-                                id: student.id,
-                                name: `${student.firstName} ${student.lastName}`,
-                                email: student.email,
-                                gender: student.gender,
-                                dateOfBirth,
-                                credit: student.credit,
+                                ...lecturer
                             }
                         }),
                         statusCode,
                     }
                 }
             }
-
         } catch (e) {
-            console.log(e);
+            console.log(e)
         }
     },
 
-    getStudentById: async (id) => {
-        let endpoint = `${lmsURL}api/students?id=${id}`;
+    getLecturerById: async (id) => {
+        let endpoint = `${lmsURL}api/lecturers?id=${id}`;
         try {
-            const response = await fetch(endpoint,{
+            const response = await fetch(endpoint, {
                 headers: {
                     'Authorization': getAccessToken(),
                 }
@@ -80,35 +60,32 @@ let StudentsApi = {
                     localStorage.removeItem('accessToken');
                 }
                 return {
-                    student: {},
+                    lecturer: {},
                     statusCode,
                 };
             } else {
                 if (response.ok) {
                     const jsonResponse = await response.json();
-                    console.log(jsonResponse);
-                    const newGender = genderMap.filter((item) => {
-                        return  jsonResponse.gender === item.abbr;
-                    })[0].name;
-                    const dateOfBirth =moment(jsonResponse.dateOfBirth).format("YYYY-MM-DD");
+                    const { name } = jsonResponse;
+                    const firstName = name.split(' ')[0];
+                    const lastName= name.split(' ')[1];
                     return {
-                        student: {
+                        lecturer: {
                             ...jsonResponse,
-                            gender: newGender,
-                            dateOfBirth,
+                            firstName,
+                            lastName,
                         },
                         statusCode,
                     }
                 }
             }
         } catch (e) {
-            console.log(e);
+            console.log(e)
         }
     },
 
-    createNewStudent: async (student) => {
-        console.log(student);
-        let endpoint = `${lmsURL}api/students`;
+    createNewLecturer: async (lecturer) => {
+        let endpoint = `${lmsURL}api/lecturers`;
         try {
             const response = await fetch(endpoint,{
                 method: 'POST',
@@ -116,30 +93,28 @@ let StudentsApi = {
                     'Authorization': getAccessToken(),
                     "Content-type": "application/json",
                 },
-                body:  JSON.stringify(student)
+                body:  JSON.stringify(lecturer)
             });
             const statusCode = response.status;
-            console.log(response);
             if (statusCode > 300) {
                 if (statusCode === 401 ) {
                     localStorage.removeItem('accessToken');
                 }
                 return {
-                    student: {},
+                    lecturer: {},
                     statusCode,
                 };
             } else {
                 if (response.ok) {
                     const jsonResponse = await response.json();
-                    const newGender = genderMap.filter((item) => {
-                        return  jsonResponse.gender === item.abbr;
-                    })[0].name;
-                    const dateOfBirth =moment(jsonResponse.dateOfBirth).format("YYYY-MM-DD");
+                    const { name } = jsonResponse;
+                    const firstName = name.split(' ')[0];
+                    const lastName= name.split(' ')[1];
                     return {
-                        student: {
+                        lecturer: {
                             ...jsonResponse,
-                            gender: newGender,
-                            dateOfBirth,
+                            firstName,
+                            lastName,
                         },
                         statusCode,
                     }
@@ -150,8 +125,8 @@ let StudentsApi = {
         }
     },
 
-    updateStudent: async (student) => {
-        let endpoint = `${lmsURL}api/students`;
+    updateLecturer: async (lecturer) => {
+        let endpoint = `${lmsURL}api/lecturers`;
         try {
             const response = await fetch(endpoint,{
                 method: 'PUT',
@@ -159,7 +134,7 @@ let StudentsApi = {
                     'Authorization': getAccessToken(),
                     "Content-type": "application/json",
                 },
-                body:  JSON.stringify(student)
+                body:  JSON.stringify(lecturer)
             });
             const statusCode = response.status;
             if (statusCode > 300) {
@@ -167,21 +142,20 @@ let StudentsApi = {
                     localStorage.removeItem('accessToken');
                 }
                 return {
-                    student: {},
+                    lecturer: {},
                     statusCode,
                 };
             } else {
                 if (response.ok) {
                     const jsonResponse = await response.json();
-                    const newGender = genderMap.filter((item) => {
-                        return  jsonResponse.gender === item.abbr;
-                    })[0].name;
-                    const dateOfBirth =moment(jsonResponse.dateOfBirth).format("YYYY-MM-DD");
+                    const { name } = jsonResponse;
+                    const firstName = name.split(' ')[0];
+                    const lastName= name.split(' ')[1];
                     return {
-                        student: {
+                        lecturer: {
                             ...jsonResponse,
-                            gender: newGender,
-                            dateOfBirth,
+                            firstName,
+                            lastName,
                         },
                         statusCode,
                     }
@@ -192,8 +166,8 @@ let StudentsApi = {
         }
     },
 
-    deleteStudent: async (id) => {
-        let endpoint = `${lmsURL}api/students?id=${id}`;
+    deleteLecturer: async (id) => {
+        let endpoint = `${lmsURL}api/lecturers?id=${id}`;
         try {
             const response = await fetch(endpoint,{
                 method: 'DELETE',
@@ -207,12 +181,12 @@ let StudentsApi = {
                     localStorage.removeItem('accessToken');
                 }
                 return {
-                    student: {},
+                    lecturer: {},
                     statusCode,
                 };
             } else {
                 return {
-                    student: {},
+                    lecturer: {},
                     statusCode,
                 }
             }
@@ -222,4 +196,4 @@ let StudentsApi = {
     },
 };
 
-export default StudentsApi;
+export default LecturersApi;

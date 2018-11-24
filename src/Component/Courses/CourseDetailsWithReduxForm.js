@@ -17,11 +17,14 @@ import {
 } from "../../Actions/CoursesActions";
 import { connect } from 'react-redux';
 import ForbidErrorDialog from "../Utils/ForbidErrorDialog";
+import PageLoader from "../Utils/PageLoader";
 
 const state = state => {
     return {
         course: state.course,
         courseDetailsForm: state.form.courseDetailsForm,
+        isLoading: state.course.isLoading,
+        statusCode: state.course.statusCode,
     }
 };
 
@@ -253,14 +256,15 @@ class CourseDetails extends PureComponent {
 
     render() {
         const { deleteDialogStatus, createDialogSucceedStatus, validationErrors, forbidErrorDialogStatus } = this.state;
-        const { classes, reset } = this.props;
+        const { classes, reset, isLoading } = this.props;
         const { id } = this.props.match.params;
 
         return (
             <Fragment>
                 <AppBar/>
                 <MenuBar selected='Courses' menu={id === 'create' ? 'CREATE NEW COURSE' : 'COURSE DETAILS'}>
-                    <form className={classes.root} onSubmit={this.handleFormSubmit}>
+                    {isLoading && isNum(id) && <PageLoader/>}
+                    {(!isLoading || !isNum(id)) && <form className={classes.root} onSubmit={this.handleFormSubmit}>
                         <Grid container >
                             <Grid item xs={12} className={classes.textField}>
                                 <Field
@@ -332,7 +336,7 @@ class CourseDetails extends PureComponent {
                                 >{id !== 'create' ? 'Save' : 'Create'}</Button>
                             </div>
                         </div>
-                    </form>
+                    </form>}
                     <DeleteDialog
                         deleteDialogStatus={deleteDialogStatus}
                         handleDeleteDialogClose={this.handleDeleteDialogClose}
