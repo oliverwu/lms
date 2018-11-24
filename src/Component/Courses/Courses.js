@@ -6,14 +6,21 @@ import CourseCard from "./CourseCard";
 import MenuBar from '../Layout/MenuBar';
 import AppBar from '../Layout/AppBar';
 import { connect } from 'react-redux';
-import { handleReceivedCoursesData, clearCoursesData } from "../../Actions/CoursesActions";
+import {
+    handleReceivedCoursesData,
+    clearCoursesData,
+    handleDeleteCourseData,
+    clearCourseData
+} from "../../Actions/CoursesActions";
 import ForbidErrorDialog from '../Utils/ForbidErrorDialog';
+import {clearStudentsData, handleReceivedStudentsDataByPage} from "../../Actions/StudentsActions";
 
 const state = state => {
     return {
         courses: state.courses.courses,
         isLoading: state.courses.isLoading,
         statusCode: state.courses.statusCode,
+        courseStatusCode: state.course.statusCode,
     }
 };
 
@@ -36,10 +43,10 @@ class Courses extends PureComponent{
     constructor(props) {
         super(props);
         this.state = {
-            ForbidErrorDialogStatus: false,
+            forbidErrorDialogStatus: false,
+            errorStatusCode: null,
         }
     }
-
 
     renderCourseCards(courses) {
         const { classes } = this.props;
@@ -54,7 +61,12 @@ class Courses extends PureComponent{
                     {courses.map((course) => {
                         return (
                             <Grid item key={course.id} className={classes.coursesCardGrid}>
-                                <CourseCard title = {course.title} description = {course.description} id={course.id}/>
+                                <CourseCard
+                                    title = {course.title}
+                                    description = {course.description}
+                                    id={course.id}
+                                    handleDeleteCourse={this.handleDeleteCourse}
+                                />
                             </Grid>
                         )
                     })}
@@ -70,37 +82,42 @@ class Courses extends PureComponent{
     async componentDidMount() {
         await this.props.dispatch(handleReceivedCoursesData());
         this.props.statusCode > 300 && this.setState({
-            ForbidErrorDialogStatus: true,
+            forbidErrorDialogStatus: true,
+            errorStatusCode: this.props.statusCode,
         })
     }
 
+    handleDeleteCourse = async (id) => {
+        await this.props.dispatch(handleDeleteCourseData(id));
+        if (this.props.studentStatusCode > 300) {
+            this.setState({
+                forbidErrorDialogStatus: true,
+                errorStatusCode: this.props.courseStatusCode,
+            })
+        } else {
+            window.location.reload();
+        }
+    };
+
     handleForbidErrorDialogClose = () => {
         this.setState({
-            ForbidErrorDialogStatus: false,
+            forbidErrorDialogStatus: false,
         })
     };
 
-    clearData = () => {
-        this.props.dispatch(clearCoursesData());
-    };
-
-
     render() {
         const { courses, isLoading, statusCode } = this.props;
-        const { ForbidErrorDialogStatus } = this.state;
+        const { forbidErrorDialogStatus } = this.state;
 
         return (
             <Fragment>
                 <AppBar/>
-                {console.log(courses)}
-                {console.log(isLoading)}
                 <MenuBar selected='Courses' menu='Courses' name='course'>
                     {isLoading && <PageLoader/>}
                     {!isLoading && courses && this.renderCourseCards(courses)}
                 </MenuBar>
                 <ForbidErrorDialog
-                    ForbidErrorDialogStatus = { ForbidErrorDialogStatus }
-                    clearData = {this.clearData}
+                    forbidErrorDialogStatus = { forbidErrorDialogStatus }
                     statusCode={statusCode}
                     handleForbidErrorDialogClose={this.handleForbidErrorDialogClose}
                 />

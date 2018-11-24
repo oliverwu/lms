@@ -6,7 +6,7 @@ import Courses from "../Courses/Courses";
 import Students from '../Students/Students';
 import NotFound from "../Utils/NotFound";
 import CourseDetails from '../Courses/CourseDetailsWithReduxForm';
-import StudentDetails from '../Students/StudentDetails';
+import StudentDetails from '../Students/StudentDetailsWithReduxForm';
 import Lecturers from '../Lecturers/Lecturers';
 import Login from '../Login/Login';
 import { MuiThemeProvider }  from '@material-ui/core/styles';

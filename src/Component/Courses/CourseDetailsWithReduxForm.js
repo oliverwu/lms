@@ -144,29 +144,29 @@ const renderSelectTextField = (
 
 
 class CourseDetails extends PureComponent {
-    constructor(props) {
-        super(props);
+    constructor() {
+        super();
         this.state = {
             deleteDialogStatus: false,
             createDialogSucceedStatus: false,
             validationErrors: '',
-            ForbidErrorDialogStatus: false,
-        }
-    }
-
-    async componentDidMount() {
-        const { id } = this.props.match.params;
-        if (id !== 'create') {
-            await this.props.dispatch(handleReceivedCourseData(id));
-            this.props.initialize(this.props.course.course)
-            this.props.statusCode > 300 && this.setState({
-                ForbidErrorDialogStatus: true,
-            })
+            forbidErrorDialogStatus: false,
         }
     }
 
     componentWillMount() {
         this.props.dispatch(clearCourseData())
+    }
+
+    async componentDidMount() {
+        const { id } = this.props.match.params;
+        if (isNum(id)) {
+            await this.props.dispatch(handleReceivedCourseData(id));
+            this.props.initialize(this.props.course.course)
+            this.props.statusCode > 300 && this.setState({
+                forbidErrorDialogStatus: true,
+            })
+        }
     }
 
     handleFormSubmit = async (e) => {
@@ -194,7 +194,7 @@ class CourseDetails extends PureComponent {
             }
             const statusCode = this.props.course.statusCode;
             statusCode > 300 && this.setState({
-                ForbidErrorDialogStatus: true,
+                forbidErrorDialogStatus: true,
             });
             statusCode === 200 && this.setState({
                 createDialogSucceedStatus: true,
@@ -210,16 +210,15 @@ class CourseDetails extends PureComponent {
 
     handleDelete = async () => {
         const { id } = this.props.match.params;
-        if (id !== 'create') {
+        if (isNum(id)) {
             try {
                 await this.props.dispatch(handleDeleteCourseData(id));
                 const statusCode = this.props.course.statusCode;
                 statusCode > 300 && this.setState({
-                    ForbidErrorDialogStatus: true,
+                    forbidErrorDialogStatus: true,
                 });
                 if (statusCode === 204) {
                     redirect('courses');
-                    this.props.dispatch(clearCourseData());
                 }
             } catch (e) {
                 console.log(e)
@@ -227,13 +226,9 @@ class CourseDetails extends PureComponent {
         }
     };
 
-    clearData = () => {
-        this.props.dispatch(clearCourseData())
-    };
-
     handleForbidErrorDialogClose = () => {
         this.setState({
-            ForbidErrorDialogStatus: false,
+            forbidErrorDialogStatus: false,
         })
     };
 
@@ -257,19 +252,16 @@ class CourseDetails extends PureComponent {
 
 
     render() {
-        const { deleteDialogStatus, createDialogSucceedStatus, validationErrors, ForbidErrorDialogStatus } = this.state;
+        const { deleteDialogStatus, createDialogSucceedStatus, validationErrors, forbidErrorDialogStatus } = this.state;
         const { classes, reset } = this.props;
         const { id } = this.props.match.params;
 
         return (
             <Fragment>
-                {console.log(this.props)}
                 <AppBar/>
                 <MenuBar selected='Courses' menu={id === 'create' ? 'CREATE NEW COURSE' : 'COURSE DETAILS'}>
                     <form className={classes.root} onSubmit={this.handleFormSubmit}>
-                        <Grid
-                            container
-                        >
+                        <Grid container >
                             <Grid item xs={12} className={classes.textField}>
                                 <Field
                                     name="title"
@@ -354,8 +346,7 @@ class CourseDetails extends PureComponent {
                         handleSucceedDialogClose={this.handleSucceedDialogClose}
                     />
                     <ForbidErrorDialog
-                        ForbidErrorDialogStatus = { ForbidErrorDialogStatus }
-                        clearData = {this.clearData}
+                        forbidErrorDialogStatus = { forbidErrorDialogStatus }
                         statusCode={this.props.course.statusCode}
                         handleForbidErrorDialogClose={this.handleForbidErrorDialogClose}
                     />

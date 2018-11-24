@@ -1,28 +1,82 @@
-import {CLEAR_STUDENTDATA, RECEIVED_STUDENTSDATABYPAGE} from "../Actions/StudentsActions";
+import {
+    CLEAR_STUDENTDATA,
+    CLEAR_STUDENTSDATA,
+    CREATE_STUDENTDATA,
+    DELETE_STUDENTDATA,
+    RECEIVED_STUDENTDATA,
+    RECEIVED_STUDENTSDATABYPAGE,
+    UPDATE_STUDENTDATA
+} from "../Actions/StudentsActions";
 
-const initialState = {
+
+const initialStudentsState = {
     students: [],
     isLoading: true,
     pageNum: 1,
     pageSize: 10,
     totalPage: 1,
-    count: 0,
+    amount: 0,
+    statusCode: null,
 };
 
-export function students(state = initialState, action) {
-    switch (action.type) {
+const initialStudentState = {
+    student: {},
+    isLoading: true,
+    statusCode: null,
+};
+
+export function students(state = initialStudentsState, action) {
+    const { type, students, isLoading, pageNum, pageSize, totalPage, amount, statusCode } = action;
+    switch (type) {
         case RECEIVED_STUDENTSDATABYPAGE :
             return {
-                students: action.students,
-                isLoading: action.isLoading,
-                pageNum: action.pageNum,
-                pageSize: action.pageSize,
-                totalPage: action.totalPage,
-                count: action.count,
+                students,
+                isLoading,
+                pageNum,
+                pageSize,
+                totalPage,
+                amount,
+                statusCode,
             };
-        case CLEAR_STUDENTDATA :
-            return initialState;
+        case CLEAR_STUDENTSDATA :
+            return initialStudentsState;
         default :
             return state
+    }
+}
+
+export function student (state = initialStudentState, action) {
+    const { type, student, isLoading, statusCode } = action;
+    switch (type) {
+        case RECEIVED_STUDENTDATA :
+            return {
+                ...initialStudentState,
+                student,
+                isLoading,
+            };
+        case UPDATE_STUDENTDATA :
+            return {
+                student,
+                isLoading,
+                statusCode,
+            };
+        case CREATE_STUDENTDATA :
+            return {
+                student,
+                isLoading,
+                statusCode,
+            };
+        case DELETE_STUDENTDATA :
+            return {
+                ...initialStudentState,
+                isLoading,
+                statusCode,
+            };
+        case CLEAR_STUDENTDATA :
+            return {
+                ...initialStudentState,
+            };
+        default :
+            return state;
     }
 }

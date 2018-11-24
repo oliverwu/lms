@@ -72,11 +72,8 @@ class TableData extends Component {
     };
 
     handleDelete = async (id) => {
-        const { tableApiDeleteMethod } = this.props;
-        const statusCode = await tableApiDeleteMethod(id);
-        if (statusCode >= 200 && statusCode < 300) {
-            window.location.reload();
-        }
+        const { tableElementDeleteMethod } = this.props;
+        const statusCode = await tableElementDeleteMethod(id);
     };
 
     handleClickTableBodyRow = (e) => {

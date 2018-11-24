@@ -94,14 +94,9 @@ class CourseCard extends Component{
         }
     }
 
-    handleDelete = async () => {
+    handleDelete = () => {
         const id = this.props.id;
-        await this.props.dispatch(handleDeleteCourseData(id));
-        const statusCode = this.props.statusCode;
-        if (statusCode === 204) {
-            window.location.reload();
-            this.props.dispatch(clearCourseData());
-        }
+        this.props.handleDeleteCourse(id);
     };
 
     handleDeleteDialogClose = () => {

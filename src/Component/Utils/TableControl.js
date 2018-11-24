@@ -91,15 +91,16 @@ const TablePaginationActionsWrapped = withStyles(actionsStyles, { withTheme: tru
 
 
 class TableControl extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            page: 0,
-        }
-    }
 
     handleChangePage = (event, page) => {
         this.props.changeCurrentPage(page);
+    };
+
+    handleChangeRowsPerPage = (event) => {
+        const page = this.props.page;
+        const rowsPerPage = event.target.value;
+        const pageNum = rowsPerPage === 5 ? 2*page + 1 : Math.floor((page + 2)/2);
+        this.props.handleChangePageSize(rowsPerPage, pageNum);
     };
 
 
@@ -115,9 +116,10 @@ class TableControl extends Component {
                                 // colSpan={3}
                                 count={count}
                                 rowsPerPage={pageSize}
-                                rowsPerPageOptions={[pageSize]}
+                                rowsPerPageOptions={[5, 10]}
                                 page={page}
                                 onChangePage={this.handleChangePage}
+                                onChangeRowsPerPage={this.handleChangeRowsPerPage}
                                 ActionsComponent={TablePaginationActionsWrapped}
                             />
                         </TableRow>

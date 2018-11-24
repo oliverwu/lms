@@ -23,7 +23,6 @@ class ForbidErrorDialog extends Component{
     handleForbidErrorDialogClose = () => {
         const { statusCode } = this.props;
         if (statusCode === 401) {
-            this.props.clearData();
             redirect('login');
         } else {
             this.props.handleForbidErrorDialogClose();
@@ -36,11 +35,11 @@ class ForbidErrorDialog extends Component{
 
 
     render() {
-        const { classes, statusCode, handleForbidErrorDialogClose, ForbidErrorDialogStatus} = this.props;
+        const { classes, statusCode, handleForbidErrorDialogClose, forbidErrorDialogStatus} = this.props;
 
         return (
             <Dialog
-                open={ForbidErrorDialogStatus}
+                open={forbidErrorDialogStatus}
                 TransitionComponent={Transition}
                 scroll= 'body'
                 onClose={statusCode === 401 ? this.handleNoClose : handleForbidErrorDialogClose}
