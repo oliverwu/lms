@@ -1,5 +1,5 @@
-import LecturersApi from '../Component/Lecturers/LecturersApi';
-import StudentsApi from "../Component/Students/StudentsApi";
+import LecturersApi from '../Component/Lecturers/LecturersApiOliver';
+import StudentsApi from "../Component/Students/StudentsApiOliver";
 
 export const RECEIVED_LECTURERSBYPAGE = 'RECEIVED_LECTURERSBYPAGE';
 export const CLEACR_LECTURERSDATA = 'CLEACR_LECTURERSDATA';

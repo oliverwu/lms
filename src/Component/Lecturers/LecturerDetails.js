@@ -2,28 +2,13 @@ import React, { PureComponent, Fragment } from 'react';
 import AppBar from '../Layout/AppBar';
 import {TextField, Grid, Button, FormHelperText} from '@material-ui/core';
 import { withStyles} from '@material-ui/core/styles';
+import LecturersApi from './LecturersApi';
 import MenuBar from '../Layout/MenuBar';
-import {redirect, getValidationErrors, isNum} from "../Utils/Help";
+import { redirect, getValidationErrors } from "../Utils/Help";
 import CreateSucceedDialog from "../Utils/CreateSucceedDialog";
 import DeleteDialog from "../Utils/DeleteDialog";
+import ErrorDialog from "../Utils/ErrorDialog";
 import * as yup from "yup";
-import { Field, reduxForm } from 'redux-form';
-import { connect } from 'react-redux';
-import {
-    clearLecturerData,
-    handleCreateLecturerData, handleDeleteLecturerData,
-    handleReceivedLecturerData,
-    handleUpdateLecturerData
-} from "../../Actions/LecturersActions";
-import PageLoader from "../Utils/PageLoader";
-import ForbidErrorDialog from "../Utils/ForbidErrorDialog";
-
-const state = state => ({
-    lecturer: state.lecturer.lecturer,
-    isLoading: state.lecturer.isLoading,
-    statusCode: state.lecturer.statusCode,
-    lecturerDetailsForm: state.form.lecturerDetailsForm,
-});
 
 const schema = yup.object().shape({
     firstName: yup
@@ -37,8 +22,8 @@ const schema = yup.object().shape({
         .label("Last Name")
         .required(),
     staffNumber: yup
-        .string()
-        .max(50)
+        .number()
+        .max(65536)
         .label("Staff Number")
         .required(),
     email: yup
@@ -69,12 +54,10 @@ const styles = {
         justifyContent: 'space-between'
     },
 
-    buttonReset: {
+    buttonRest: {
         width: '60px',
         margin: '10px 0',
-        paddingLeft: 0,
-        paddingRight: 0,
-        color: '#757575'
+        paddingLeft: 0
     },
 
     buttonDelete: {
@@ -93,112 +76,86 @@ const styles = {
     },
 };
 
-const renderTextField = (
-    { validationErrors, input, name, fullWidth, label, meta: { touched, error, dirty }, ...custom  },
-) => (
-    <Fragment>
-        <TextField
-            label={label}
-            placeholder={label}
-            fullWidth={fullWidth}
-            margin='normal'
-            {...input}
-            {...custom}
-        />
-        {validationErrors[input.name] && <FormHelperText error>{validationErrors[input.name]}</FormHelperText>}
-    </Fragment>
-);
-
-class LecturerDetails extends PureComponent{
-    constructor() {
-        super();
+class CourseDetails extends PureComponent{
+    constructor(props) {
+        super(props);
         this.state = {
+            id: '',
+            firstName: '',
+            lastName: '',
+            staffNumber: '',
+            email: '',
+            bibliography: '',
             validationErrors: '',
             createDialogSucceedStatus: false,
             deleteDialogStatus: false,
-            forbidErrorDialogStatus: false,
+            errorDialogStatus: false,
         }
     }
 
-    componentWillMount() {
-        this.props.dispatch(clearLecturerData());
-    }
+    handleReset = () => {
+        this.setState({
+            firstName: '',
+            lastName: '',
+            staffNumber: '',
+            email: '',
+            bibliography: ''
+        })
+    };
 
-    async componentDidMount() {
-        const { id } = this.props.match.params;
-        if (isNum(id)) {
-            await this.props.dispatch(handleReceivedLecturerData(id));
-            this.props.initialize(this.props.lecturer);
-            this.props.statusCode > 300 && this.setState({
-                forbidErrorDialogStatus: true,
-            })
-        }
-    }
+    handleChange = (e) => {
+        const { name, value } = e.target;
+        this.setState({
+            [name]: value,
+        })
+    };
 
-    handleFormSubmit = async (e) => {
+    handleSubmit = async (e) => {
         e.preventDefault();
-        const userInput = this.props.lecturerDetailsForm.values;
+        const { firstName, lastName, staffNumber, email, bibliography } = this.state;
+        const userInput = { firstName, lastName, staffNumber, email, bibliography };
         try {
             await schema.validate(userInput, {
                 abortEarly: false
             });
             const { id } = this.props.match.params;
-            const { firstName, lastName, staffNumber, email, bibliography } = userInput;
-            const newLecturer = {
-                ...userInput,
-                name: `${firstName.trim()} ${lastName.trim()}`,
-                staffNumber: staffNumber.trim(),
-                email: email.trim(),
-                bibliography: bibliography.trim(),
-            };
+            const name = `${firstName.trim()} ${lastName.trim()}`;
             if (id === 'create') {
-                await this.props.dispatch(handleCreateLecturerData(newLecturer));
+                const newLecturer = { name, staffNumber, email, bibliography };
+                const statusCode = await LecturersApi.createNewLecturer(newLecturer);
+                if (statusCode === 200) {
+                    this.setState({
+                        createDialogSucceedStatus: true
+                    })
+                }
             } else {
-                await this.props.dispatch(handleUpdateLecturerData(newLecturer));
+                const newLecturer = { id, name, staffNumber, email, bibliography };
+                const statusCode = await LecturersApi.updateLecturer(newLecturer);
+                if (statusCode === 204) {
+                    this.setState({
+                        createDialogSucceedStatus: true
+                    })
+                }
             }
-            const statusCode = this.props.statusCode;
-            statusCode > 300 && this.setState({
-                forbidErrorDialogStatus: true,
-            });
-            statusCode === 200 && this.setState({
-                createDialogSucceedStatus: true,
-            })
+
         } catch (error) {
             const validationErrors = getValidationErrors(error);
+            console.log(validationErrors);
             this.setState({
                 validationErrors
             })
         }
+
+
+        console.log({ firstName, lastName, staffNumber, email, bibliography})
     };
 
     handleDelete = async () => {
         const { id } = this.props.match.params;
-        if (isNum(id)) {
-            try {
-                await this.props.dispatch(handleDeleteLecturerData(id));
-                const statusCode = this.props.lecturer.statusCode;
-                statusCode > 300 && this.setState({
-                    forbidErrorDialogStatus: true,
-                });
-                if (statusCode === 204) {
-                    redirect('lecturers');
-                }
-            } catch (e) {
-                console.log(e)
-            }
+        const statusCode = await LecturersApi.deleteLecturer(id);
+        if (statusCode === 204) {
+            redirect('lecturers')
         }
-    };
-
-    handleForbidErrorDialogClose = () => {
-        this.setState({
-            forbidErrorDialogStatus: false,
-        })
-    };
-
-    handleSucceedDialogClose = () => {
-        this.setState({
-            createDialogSucceedStatus: false,
-        })
     };
 
     handleDeleteDialogClose = () => {
@@ -213,70 +170,109 @@ class LecturerDetails extends PureComponent{
         })
     };
 
+    handleErrorDialogClose = () => {
+        this.setState({
+            errorDialogStatus: false,
+        })
+    };
+
+    async componentDidMount() {
+        const { id } = this.props.match.params;
+        if (id !== 'create') {
+            const lecturer = await LecturersApi.getLecturerById(id);
+            lecturer && this.setState({
+                ...lecturer
+            })
+        }
+    }
+
     render() {
-        const { validationErrors, createDialogSucceedStatus, deleteDialogStatus, forbidErrorDialogStatus } = this.state;
-        const { classes, reset, isLoading, statusCode } = this.props;
+        const { firstName, lastName, staffNumber, email, bibliography, validationErrors, createDialogSucceedStatus, deleteDialogStatus, errorDialogStatus } = this.state;
+        const { classes } = this.props;
         const { id } = this.props.match.params;
 
         return (
             <Fragment>
                 <AppBar/>
                 <MenuBar selected='Lecturers' menu={id === 'create' ? 'CREATE NEW LECTURER' : 'LECTURER DETAILS'}>
-                    {isLoading && isNum(id) && <PageLoader/>}
-                    {(!isLoading || !isNum(id)) && <form onSubmit={this.handleFormSubmit} className={classes.root}>
-                        <Grid container >
-                            <Grid item xs={12} md={6} className={classes.textField} >
-                                <Field
-                                    name="firstName"
-                                    component={renderTextField}
-                                    label="First Name"
-                                    fullWidth={true}
-                                    validationErrors={validationErrors}
+                    <form onSubmit={this.handleSubmit} className={classes.root}>
+                        <Grid
+                            container
+                        >
+                            <Grid
+                                item xs={12} md={6} className={classes.textField}
+                            >
+                                <TextField
+                                    label='First Name'
+                                    id='student-firstName'
+                                    placeholder='First Name'
+                                    fullWidth
+                                    name='firstName'
+                                    value={firstName}
+                                    margin='normal'
+                                    onChange={this.handleChange}
                                 />
+                                {validationErrors.firstName && <FormHelperText error>{validationErrors.firstName}</FormHelperText>}
                             </Grid>
                             <Grid item xs={12} md={6} className={classes.textField}>
-                                <Field
-                                    name="lastName"
-                                    component={renderTextField}
+                                <TextField
+                                    id="student-lastName"
                                     label="Last Name"
-                                    fullWidth={true}
-                                    validationErrors={validationErrors}
-                                />
+                                    fullWidth
+                                    placeholder='Last Name'
+                                    margin='normal'
+                                    // className={classes.maxStudents}
+                                    value={lastName}
+                                    name='lastName'
+                                    onChange={this.handleChange}
+                                >
+                                </TextField>
+                                {validationErrors.lastName && <FormHelperText error>{validationErrors.lastName}</FormHelperText>}
                             </Grid>
                         </Grid>
                         <Grid item xs={12} className={classes.textField}>
-                            <Field
-                                name="staffNumber"
-                                component={renderTextField}
+                            <TextField
                                 label="Staff Number"
-                                fullWidth={true}
-                                validationErrors={validationErrors}
+                                placeholder='Staff Number'
+                                fullWidth
+                                // margin='normal'
+                                name='staffNumber'
+                                value={staffNumber}
+                                onChange={this.handleChange}
                             />
+                            {validationErrors.staffNumber && <FormHelperText error>{validationErrors.staffNumber}</FormHelperText>}
                         </Grid >
                         <Grid item xs={12} className={classes.textField}>
-                            <Field
-                                name="email"
-                                component={renderTextField}
+                            <TextField
                                 label="Email"
-                                fullWidth={true}
-                                validationErrors={validationErrors}
+                                placeholder='Email'
+                                type='email'
+                                fullWidth
+                                // margin='normal'
+                                name='email'
+                                value={email}
+                                onChange={this.handleChange}
                             />
+                            {validationErrors.email && <FormHelperText error>{validationErrors.email}</FormHelperText>}
                         </Grid >
                         <Grid item xs={12} className={classes.textField}>
-                            <Field
-                                name="bibliography"
-                                component={renderTextField}
-                                label="Bibliography"
-                                fullWidth={true}
-                                validationErrors={validationErrors}
+                            <TextField
+                                label='Bibliography'
+                                placeholder='Bibliography'
+                                fullWidth
+                                name='bibliography'
+                                value={bibliography}
+                                margin='normal'
+                                onChange={this.handleChange}
                             />
+                            {validationErrors.bibliography && <FormHelperText error>{validationErrors.bibliography}</FormHelperText>}
                         </Grid >
                         <div className={classes.buttons}>
                             <Button
                                 color='default'
                                 variant='text'
-                                className={classes.buttonReset}
-                                onClick={reset}
+                                className={classes.buttonRest}
+                                onClick={this.handleReset}
                             >reset</Button>
                             <div>
                                 <Button
@@ -293,12 +289,10 @@ class LecturerDetails extends PureComponent{
                                 >{id !== 'create' ? 'Save' : 'Create'}</Button>
                             </div>
                         </div>
-                    </form>}
+                    </form>
                     <CreateSucceedDialog
-                        name='lecturer'
-                        url={`lecturers/${this.props.lecturer.id}`}
+                        url='lecturers'
                         createDialogSucceedStatus={createDialogSucceedStatus}
-                        handleSucceedDialogClose={this.handleSucceedDialogClose}
                     />
                     <DeleteDialog
                         handleDelete={this.handleDelete}
@@ -306,19 +300,16 @@ class LecturerDetails extends PureComponent{
                         deleteDialogStatus={deleteDialogStatus}
                         content='lecturer'
                     />
-                    <ForbidErrorDialog
-                        forbidErrorDialogStatus = { forbidErrorDialogStatus }
-                        statusCode={ statusCode }
-                        handleForbidErrorDialogClose={this.handleForbidErrorDialogClose}
+                    <ErrorDialog
+                        content='lecturer'
+                        errorDialogStatus={errorDialogStatus}
+                        handleErrorDialogClose={this.handleErrorDialogClose}
                     />
                 </MenuBar>
             </Fragment>
+
         );
     }
 }
 
-LecturerDetails = reduxForm({
-    form: 'lecturerDetailsForm', // a unique identifier for this form
-})(withStyles(styles)(LecturerDetails));
-
-export default connect(state)(LecturerDetails);
+export default withStyles(styles)(CourseDetails);

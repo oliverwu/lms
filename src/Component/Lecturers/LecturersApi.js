@@ -1,44 +1,32 @@
-import { lmsURL } from "../Login/LoginApiOliver";
-import { getAccessToken } from "../Utils/Help";
+import {lmsURL} from "../Login/LoginApi";
+import { redirect, getAccessToken} from "../Utils/Help";
 
 
 let LecturersApi = {
-    getLecturersByPage: async ( pageSize, pageNum ) => {
-        let endpoint = `${lmsURL}api/lecturers?pageSize=${pageSize}&pageNumber=${pageNum}`;
+    getAllLecturers: async () => {
+        let endpoint = `${lmsURL}api/lecturers`;
         try {
             const response = await fetch(endpoint, {
                 headers: {
                     'Authorization': getAccessToken(),
                 }
             });
-            const statusCode = response.status;
-            if (statusCode > 300) {
-                if (statusCode === 401 ) {
-                    localStorage.removeItem('accessToken');
-                }
-                return {
-                    lecturers: [],
-                    pageNum: 1,
-                    pageSize: 10,
-                    totalPage: 1,
-                    amount: 0,
-                    statusCode,
-                };
+            const { ok, status} = response;
+            if ( status > 300) {
+                localStorage.removeItem('accessToken');
+                // redirect('login');
             } else {
-                if (response.ok) {
+                if (ok) {
                     const jsonResponse = await response.json();
-                    return {
-                        pageNum: jsonResponse.pageNumber,
-                        pageSize: jsonResponse.pageSize,
-                        totalPage: jsonResponse.totalPage,
-                        amount: jsonResponse.amount,
-                        lecturers: jsonResponse.lecturers.map((lecturer) => {
-                            return {
-                                ...lecturer
-                            }
-                        }),
-                        statusCode,
-                    }
+                    return jsonResponse.map((item) => {
+                        return {
+                            id: item.id,
+                            name: item.name,
+                            staffNumber: item.staffNumber,
+                            email: item.email,
+                            bibliography: item.bibliography,
+                        }
+                    })
                 }
             }
         } catch (e) {
@@ -47,35 +35,30 @@ let LecturersApi = {
     },
 
     getLecturerById: async (id) => {
-        let endpoint = `${lmsURL}api/lecturers?id=${id}`;
+        let endpoint = `${lmsURL}api/lecturers/${id}`;
         try {
             const response = await fetch(endpoint, {
                 headers: {
                     'Authorization': getAccessToken(),
                 }
             });
-            const statusCode = response.status;
-            if (statusCode > 300) {
-                if (statusCode === 401 ) {
-                    localStorage.removeItem('accessToken');
-                }
-                return {
-                    lecturer: {},
-                    statusCode,
-                };
+            const { ok, status} = response;
+            if ( status > 300) {
+                localStorage.removeItem('accessToken');
+                redirect('login');
             } else {
-                if (response.ok) {
+                if (ok) {
                     const jsonResponse = await response.json();
-                    const { name } = jsonResponse;
+                    const { id, name, staffNumber, email, bibliography } = jsonResponse;
                     const firstName = name.split(' ')[0];
                     const lastName= name.split(' ')[1];
                     return {
-                        lecturer: {
-                            ...jsonResponse,
-                            firstName,
-                            lastName,
-                        },
-                        statusCode,
+                        id: id,
+                        firstName: firstName,
+                        lastName: lastName,
+                        staffNumber: staffNumber,
+                        email: email,
+                        bibliography: bibliography,
                     }
                 }
             }
@@ -96,29 +79,11 @@ let LecturersApi = {
                 body:  JSON.stringify(lecturer)
             });
             const statusCode = response.status;
-            if (statusCode > 300) {
-                if (statusCode === 401 ) {
-                    localStorage.removeItem('accessToken');
-                }
-                return {
-                    lecturer: {},
-                    statusCode,
-                };
+            if (statusCode === 401) {
+                localStorage.removeItem('accessToken');
+                redirect('login');
             } else {
-                if (response.ok) {
-                    const jsonResponse = await response.json();
-                    const { name } = jsonResponse;
-                    const firstName = name.split(' ')[0];
-                    const lastName= name.split(' ')[1];
-                    return {
-                        lecturer: {
-                            ...jsonResponse,
-                            firstName,
-                            lastName,
-                        },
-                        statusCode,
-                    }
-                }
+                return statusCode
             }
         } catch (e) {
             console.log(e);
@@ -137,29 +102,11 @@ let LecturersApi = {
                 body:  JSON.stringify(lecturer)
             });
             const statusCode = response.status;
-            if (statusCode > 300) {
-                if (statusCode === 401 ) {
-                    localStorage.removeItem('accessToken');
-                }
-                return {
-                    lecturer: {},
-                    statusCode,
-                };
+            if (statusCode === 401) {
+                localStorage.removeItem('accessToken');
+                redirect('login');
             } else {
-                if (response.ok) {
-                    const jsonResponse = await response.json();
-                    const { name } = jsonResponse;
-                    const firstName = name.split(' ')[0];
-                    const lastName= name.split(' ')[1];
-                    return {
-                        lecturer: {
-                            ...jsonResponse,
-                            firstName,
-                            lastName,
-                        },
-                        statusCode,
-                    }
-                }
+                return statusCode
             }
         } catch (e) {
             console.log(e);
@@ -167,7 +114,7 @@ let LecturersApi = {
     },
 
     deleteLecturer: async (id) => {
-        let endpoint = `${lmsURL}api/lecturers?id=${id}`;
+        let endpoint = `${lmsURL}api/lecturers/${id}`;
         try {
             const response = await fetch(endpoint,{
                 method: 'DELETE',
@@ -176,19 +123,11 @@ let LecturersApi = {
                 },
             });
             const statusCode = response.status;
-            if (statusCode > 300) {
-                if (statusCode === 401 ) {
-                    localStorage.removeItem('accessToken');
-                }
-                return {
-                    lecturer: {},
-                    statusCode,
-                };
+            if (statusCode === 401) {
+                localStorage.removeItem('accessToken');
+                redirect('login');
             } else {
-                return {
-                    lecturer: {},
-                    statusCode,
-                }
+                return statusCode;
             }
         } catch (e) {
             console.log(e);

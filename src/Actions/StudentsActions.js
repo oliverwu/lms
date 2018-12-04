@@ -1,4 +1,4 @@
-import StudentsApi from '../Component/Students/StudentsApi';
+import StudentsApi from '../Component/Students/StudentsApiOliver';
 
 export const RECEIVED_STUDENTSDATABYPAGE = 'RECEIVED_STUDENTSDATABYPAGE';
 export const CLEAR_STUDENTSDATA = "CLEAR_STUDENTDATA";
@@ -97,6 +97,7 @@ export function handleUpdateStudentData(student) {
     return async (dispatch) => {
         try {
             const data = await StudentsApi.updateStudent(student);
+            console.log(data);
             data && dispatch(updateStudentData(data.student, data.statusCode))
         } catch (e) {
             console.log(e)

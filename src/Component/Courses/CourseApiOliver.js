@@ -1,4 +1,4 @@
-import {lmsURL} from "../Login/LoginApi";
+import { lmsURL } from "../Login/LoginApiOliver";
 import { redirect, getAccessToken } from "../Utils/Help";
 
 
@@ -13,20 +13,24 @@ let CourseApi = {
             });
             const statusCode = response.status;
             if (statusCode > 300) {
-                localStorage.removeItem('accessToken');
+                if (statusCode === 401 ) {
+                    localStorage.removeItem('accessToken');
+                }
+                return {
+                    courses: [],
+                    statusCode,
+                };
             } else {
                 if (response.ok) {
                     const jsonResponse = await response.json();
-                    return (jsonResponse instanceof Array) && jsonResponse.map((data) => {
-                        return {
-                            id: data.id,
-                            title: data.title,
-                            description: data.description,
-                            fee: data.fee,
-                            maxStudent: data.maxStudent,
-                            language: data.language,
-                        }
-                    });
+                    return {
+                        courses: (jsonResponse instanceof Array) ? jsonResponse.map((data) => {
+                            return {
+                                ...data
+                            }
+                        }) : [],
+                        statusCode,
+                    };
                 }
             }
         } catch (e) {
@@ -35,7 +39,7 @@ let CourseApi = {
     },
 
     getCourseById: async (id) => {
-        let endpoint = `${lmsURL}api/courses/${id}`;
+        let endpoint = `${lmsURL}api/courses?id=${id}`;
         try {
             const response = await fetch(endpoint,{
                 headers: {
@@ -44,20 +48,22 @@ let CourseApi = {
             });
             const statusCode = response.status;
             if (statusCode > 300) {
-                localStorage.removeItem('accessToken');
-                redirect('login');
+                if (statusCode === 401 ) {
+                    localStorage.removeItem('accessToken');
+                }
+                return {
+                    course: {},
+                    statusCode,
+                };
             } else {
                 if (response.ok) {
                     const jsonResponse = await response.json();
-                    console.log(jsonResponse.maxStudent);
-                    const { id, title, fee, maxStudent, description, language} = jsonResponse;
+                    console.log(jsonResponse);
                     return {
-                        id: id,
-                        title: title,
-                        description: description,
-                        fee: fee,
-                        maxStudent: maxStudent,
-                        language: language,
+                        course: jsonResponse ? {
+                            ...jsonResponse
+                        } : {},
+                        statusCode,
                     }
                 }
             }
@@ -78,13 +84,23 @@ let CourseApi = {
                 body:  JSON.stringify(course)
             });
             const statusCode = response.status;
-            if (statusCode === 401) {
-                localStorage.removeItem('accessToken');
-                redirect('login');
+            if (statusCode > 300) {
+                if (statusCode === 401 ) {
+                    localStorage.removeItem('accessToken');
+                }
+                return {
+                    course: {},
+                    statusCode,
+                };
             } else {
                 const jsonResponse = await response.json();
                 console.log(jsonResponse);
-                return statusCode
+                return {
+                    course: jsonResponse ? {
+                        ...jsonResponse
+                    } : {},
+                    statusCode,
+                }
             }
         } catch (e) {
             console.log(e);
@@ -104,11 +120,22 @@ let CourseApi = {
             });
             console.log(response);
             const statusCode = response.status;
-            if (statusCode === 401) {
-                localStorage.removeItem('accessToken');
-                redirect('login');
+            if (statusCode > 300) {
+                if (statusCode === 401 ) {
+                    localStorage.removeItem('accessToken');
+                }
+                return {
+                    course: {},
+                    statusCode,
+                };
             } else {
-                return statusCode
+                const jsonResponse = await response.json();
+                return {
+                    course: jsonResponse ? {
+                        ...jsonResponse
+                    } : {},
+                    statusCode,
+                }
             }
         } catch (e) {
             console.log(e);
@@ -117,7 +144,7 @@ let CourseApi = {
 
 
     deleteCourse: async (id) => {
-        let endpoint = `${lmsURL}api/courses/${id}`;
+        let endpoint = `${lmsURL}api/courses?id=${id}`;
         try {
             const response = await fetch(endpoint,{
                 method: 'DELETE',
@@ -126,12 +153,19 @@ let CourseApi = {
                 },
             });
             const statusCode = response.status;
-            console.log(statusCode);
-            if (statusCode === 401) {
-                localStorage.removeItem('accessToken');
-                redirect('login');
+            if (statusCode > 300) {
+                if (statusCode === 401 ) {
+                    localStorage.removeItem('accessToken');
+                }
+                return {
+                    course: {},
+                    statusCode,
+                };
             } else {
-                return statusCode;
+                return {
+                    course: {},
+                    statusCode,
+                }
             }
         } catch (e) {
             console.log(e);

@@ -1,13 +1,7 @@
-import React, { Fragment } from 'react';
-import './NotFound.css';
+import React from 'react';
 
 const NotFound = () => {
-    return <div className='not-found'>
-            <div className='not-found__content'>
-                <h1>Page Not Found</h1>
-                <p>Sorry, but the page you were trying to view does not exist.</p>
-            </div>
-        </div>
+    return <h1>404</h1>
 };
 
 export default NotFound;
