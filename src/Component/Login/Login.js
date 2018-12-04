@@ -118,7 +118,6 @@ class Login extends PureComponent{
         const { userName, password } = this.state;
         const data = await LoginApi.getToken(userName, password);
         if (data) {
-            console.log(data);
             const { access_token } = data;
             localStorage.setItem('accessToken', access_token);
             redirect('dashboard');

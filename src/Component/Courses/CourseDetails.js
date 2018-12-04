@@ -1,15 +1,32 @@
 import React, {PureComponent, Fragment} from 'react';
 import { TextField, MenuItem, Grid, Button, FormHelperText } from '@material-ui/core';
 import { withStyles} from '@material-ui/core/styles';
-import CourseApi from './CourseApi';
 import MenuBar from '../Layout/MenuBar';
-import { redirect, getValidationErrors } from "../Utils/Help";
+import {redirect, getValidationErrors, isNum} from "../Utils/Help";
 import CreateSucceedDialog from "../Utils/CreateSucceedDialog";
 import DeleteDialog from "../Utils/DeleteDialog";
-import ErrorDialog from "../Utils/ErrorDialog";
 import * as yup from "yup";
 import AppBar from "../Layout/AppBar";
+import { Field, reduxForm } from 'redux-form';
+import {
+    clearCourseData,
+    handleCreateCourseData,
+    handleDeleteCourseData,
+    handleReceivedCourseData,
+    handleUpdateCourseData
+} from "../../Actions/CoursesActions";
+import { connect } from 'react-redux';
+import ForbidErrorDialog from "../Utils/ForbidErrorDialog";
+import PageLoader from "../Utils/PageLoader";
 
+const state = state => {
+    return {
+        course: state.course,
+        courseDetailsForm: state.form.courseDetailsForm,
+        isLoading: state.course.isLoading,
+        statusCode: state.course.statusCode,
+    }
+};
 
 const schema = yup.object().shape({
     title: yup
@@ -59,10 +76,12 @@ const styles = {
         justifyContent: 'space-between'
     },
 
-    buttonRest: {
+    buttonReset: {
         width: '60px',
         margin: '10px 0',
-        paddingLeft: 0
+        paddingLeft: 0,
+        paddingRight: 0,
+        color: '#757575'
     },
 
     buttonDelete: {
@@ -84,78 +103,106 @@ const styles = {
 
 const maxStudentsOptions = [10, 20, 30, 40, 50];
 
-class CourseDetails extends PureComponent{
-    constructor(props) {
-        super(props);
+const renderTextField = (
+    { validationErrors, input, name, fullWidth, label, meta: { touched, error, dirty }, ...custom  },
+) => (
+    <Fragment>
+        <TextField
+            label={label}
+            placeholder={label}
+            fullWidth={fullWidth}
+            margin='normal'
+            {...input}
+            {...custom}
+        />
+        {validationErrors[input.name] && <FormHelperText error>{validationErrors[input.name]}</FormHelperText>}
+    </Fragment>
+);
+
+const renderSelectTextField = (
+    { validationErrors, input, name, fullWidth, label, meta: { touched, error }, ...custom },
+) => (
+    <Fragment>
+        <TextField
+            select
+            label={label}
+            placeholder={label}
+            fullWidth={fullWidth}
+            margin='normal'
+            name={name}
+            {...input}
+            {...custom}
+            onChange={(event) => input.onChange(event.target.value)}
+            helperText="Please select the number of max students"
+        >
+            {maxStudentsOptions.map(option => (
+                <MenuItem key={option} value={option}>
+                    {option}
+                </MenuItem>
+            ))}
+        </TextField>
+        {validationErrors[input.name] && <FormHelperText error>{validationErrors[input.name]}</FormHelperText>}
+    </Fragment>
+);
+
+
+class CourseDetails extends PureComponent {
+    constructor() {
+        super();
         this.state = {
-            title: '',
-            fee: '',
-            maxStudent: 0,
-            description: '',
-            language: '',
             deleteDialogStatus: false,
             createDialogSucceedStatus: false,
-            errorDialogStatus: false,
-            validationErrors: ''
+            validationErrors: '',
+            forbidErrorDialogStatus: false,
         }
     }
 
-    handleReset = () => {
-        this.setState({
-            title: '',
-            fee: '',
-            maxStudent: 0,
-            description: '',
-            language: '',
-        })
-    };
+    componentWillMount() {
+        this.props.dispatch(clearCourseData())
+    }
 
-    handleChange = (e) => {
-        const { name, value } = e.target;
-        this.setState({
-            [name]: value,
-        })
-    };
+    async componentDidMount() {
+        const { id } = this.props.match.params;
+        if (isNum(id)) {
+            await this.props.dispatch(handleReceivedCourseData(id));
+            this.props.initialize(this.props.course.course)
+            this.props.statusCode > 300 && this.setState({
+                forbidErrorDialogStatus: true,
+            })
+        }
+    }
 
-    handleSubmit = async (e) => {
+    handleFormSubmit = async (e) => {
         e.preventDefault();
-        const { title, fee, maxStudent, description, language } = this.state;
-
-        const userInput = { title, fee, maxStudent, description, language };
+        const userInput = this.props.courseDetailsForm.values;
         try {
             await schema.validate(userInput, {
                 abortEarly: false
             });
             const { id } = this.props.match.params;
+            const { title, description, language } = userInput;
+            const newCourse = {
+                ...userInput,
+                title: title.trim(),
+                description: description.trim(),
+                language: language.trim(),
+            };
             if (id === 'create') {
-                const newCourse = {title, fee, maxStudent, description, language};
-                const statusCode = await CourseApi.createNewCourse(newCourse);
-
-                if (statusCode === 200) {
-                    this.setState({
-                        createDialogSucceedStatus: true,
-                    })
-                } else if (statusCode > 300) {
-                    this.setState({
-                        errorDialogStatus: true,
-                    })
-                }
-            } else {
-                const newCourse = {id, title, fee, maxStudent, description, language};
-                const statusCode = await CourseApi.updateCourse(newCourse);
-                console.log(statusCode);
-                if (statusCode === 204) {
-                    this.setState({
-                        createDialogSucceedStatus: true,
-                    })
-                } else if (statusCode > 300) {
-                    this.setState({
-                        errorDialogStatus: true,
-                    })
-                }
+                await this.props.dispatch(handleCreateCourseData(newCourse));
+            } else if(isNum(id)) {
+                await this.props.dispatch(handleUpdateCourseData({
+                    ...newCourse,
+                    id,
+                }));
             }
+            const statusCode = this.props.course.statusCode;
+            statusCode > 300 && this.setState({
+                forbidErrorDialogStatus: true,
+            });
+            statusCode === 200 && this.setState({
+                createDialogSucceedStatus: true,
+            })
         } catch (error) {
-            console.log(error);
             const validationErrors = getValidationErrors(error);
             this.setState({
                 validationErrors
@@ -163,11 +210,34 @@ class CourseDetails extends PureComponent{
         }
     };
 
-    handleDelete = () => {
+    handleDelete = async () => {
         const { id } = this.props.match.params;
-        if (id !== 'create') {
-            CourseApi.deleteCourse(id).then(data => redirect('courses'));
+        if (isNum(id)) {
+            try {
+                await this.props.dispatch(handleDeleteCourseData(id));
+                const statusCode = this.props.course.statusCode;
+                statusCode > 300 && this.setState({
+                    forbidErrorDialogStatus: true,
+                });
+                if (statusCode === 204) {
+                    redirect('courses');
+                }
+            } catch (e) {
+                console.log(e)
+            }
         }
+    };
+
+    handleForbidErrorDialogClose = () => {
+        this.setState({
+            forbidErrorDialogStatus: false,
+        })
+    };
+
+    handleSucceedDialogClose = () => {
+        this.setState({
+            createDialogSucceedStatus: false,
+        })
     };
 
     handleDeleteDialogOpen = () => {
@@ -182,123 +252,74 @@ class CourseDetails extends PureComponent{
         })
     };
 
-    handleErrorDialogClose = () => {
-        this.setState({
-            errorDialogStatus: false,
-        })
-    };
-
-    async componentDidMount() {
-        const { id } = this.props.match.params;
-        if (id !== 'create') {
-            const course  = await CourseApi.getCourseById(id);
-            course && this.setState({
-                ...course
-            })
-        }
-    }
-
 
     render() {
-        const {
-            title, fee, maxStudent, description, language,
-            deleteDialogStatus, createDialogSucceedStatus, errorDialogStatus, validationErrors} = this.state;
-        const { classes } = this.props;
+        const { deleteDialogStatus, createDialogSucceedStatus, validationErrors, forbidErrorDialogStatus } = this.state;
+        const { classes, reset, isLoading } = this.props;
         const { id } = this.props.match.params;
 
         return (
             <Fragment>
                 <AppBar/>
                 <MenuBar selected='Courses' menu={id === 'create' ? 'CREATE NEW COURSE' : 'COURSE DETAILS'}>
-                    <form className={classes.root} onSubmit={this.handleSubmit}>
-                        <Grid
-                            container
-                        >
+                    {isLoading && isNum(id) && <PageLoader/>}
+                    {(!isLoading || !isNum(id)) && <form className={classes.root} onSubmit={this.handleFormSubmit}>
+                        <Grid container >
                             <Grid item xs={12} className={classes.textField}>
-                                <TextField
-                                    label='Title'
-                                    id='course-title'
-                                    placeholder='Title'
-                                    fullWidth
-                                    name='title'
-                                    value={title}
-                                    margin='normal'
-                                    onChange={this.handleChange}
+                                <Field
+                                    name="title"
+                                    component={renderTextField}
+                                    label="Title"
+                                    fullWidth={true}
+                                    validationErrors={validationErrors}
                                 />
-                                {validationErrors.title && <FormHelperText error>{validationErrors.title}</FormHelperText>}
                             </Grid>
                             <Grid item xs={12} md={6} className={classes.textField}>
-                                <TextField
-                                    label='Fee($)'
-                                    id='course-fee'
-                                    // type='number'
-                                    placeholder='Fee($)'
-                                    fullWidth
-                                    name='fee'
-                                    value={fee}
-                                    margin='normal'
-                                    onChange={this.handleChange}
+                                <Field
+                                    name="fee"
+                                    component={renderTextField}
+                                    label="Fee($)"
+                                    fullWidth={true}
+                                    validationErrors={validationErrors}
                                 />
-                                {validationErrors.fee && <FormHelperText error>{validationErrors.fee.slice(0, 27)}</FormHelperText>}
                             </Grid>
                             <Grid item xs={12} md={6} className={classes.textField}>
-                                <TextField
-                                    id="max-student"
-                                    select
+                                <Field
+                                    name="maxStudent"
+                                    component={renderSelectTextField}
                                     label="Max Student"
-                                    fullWidth
-                                    margin='normal'
-                                    value={maxStudent}
-                                    name='maxStudent'
-                                    onChange={this.handleChange}
-                                    // SelectProps={{
-                                    //     MenuProps: {
-                                    //         className: classes.menu,
-                                    //     },
-                                    // }}
-                                    helperText="Please select the number of max students"
-                                >
-                                    {maxStudentsOptions.map(option => (
-                                        <MenuItem key={option} value={option}>
-                                            {option}
-                                        </MenuItem>
-                                    ))}
-                                </TextField>
-                                {validationErrors.maxStudent && <FormHelperText error>{validationErrors.maxStudent}</FormHelperText>}
+                                    fullWidth={true}
+                                    validationErrors={validationErrors}
+                                />
                             </Grid>
                             <Grid item xs={12} className={classes.textField}>
-                                <TextField
+                                <Field
+                                    name="description"
+                                    component={renderTextField}
                                     label="Description"
-                                    placeholder='Description for the course'
-                                    fullWidth
-                                    margin='normal'
-                                    name='description'
-                                    value={description}
-                                    onChange={this.handleChange}
+                                    fullWidth={true}
+                                    validationErrors={validationErrors}
                                 />
-                                {validationErrors.description && <FormHelperText error>{validationErrors.description}</FormHelperText>}
                             </Grid>
                             <Grid item xs={12} className={classes.textField}>
-                                <TextField
-                                    label='Language'
-                                    id='course-language'
-                                    placeholder='Language'
-                                    fullWidth
-                                    name='language'
-                                    value={language}
-                                    margin='normal'
-                                    onChange={this.handleChange}
+                                <Field
+                                    name="language"
+                                    component={renderTextField}
+                                    label="Language"
+                                    fullWidth={true}
+                                    validationErrors={validationErrors}
                                 />
-                                {validationErrors.language && <FormHelperText error>{validationErrors.language}</FormHelperText>}
                             </Grid>
                         </Grid>
                         <div className={classes.buttons}>
                             <Button
                                 color='default'
                                 variant='text'
-                                className={classes.buttonRest}
-                                onClick={this.handleReset}
-                            >reset</Button>
+                                className={classes.buttonReset}
+                                onClick={reset}
+                            >
+                                reset
+                            </Button>
                             <div>
                                 <Button
                                     color='secondary'
@@ -314,7 +335,7 @@ class CourseDetails extends PureComponent{
                                 >{id !== 'create' ? 'Save' : 'Create'}</Button>
                             </div>
                         </div>
-                    </form>
+                    </form>}
                     <DeleteDialog
                         deleteDialogStatus={deleteDialogStatus}
                         handleDeleteDialogClose={this.handleDeleteDialogClose}
@@ -322,13 +343,15 @@ class CourseDetails extends PureComponent{
                         handleDelete={this.handleDelete}
                     />
                     <CreateSucceedDialog
-                        url='courses'
+                        name='course'
+                        url={`courses/${this.props.course.course.id}`}
                         createDialogSucceedStatus={createDialogSucceedStatus}
+                        handleSucceedDialogClose={this.handleSucceedDialogClose}
                     />
-                    <ErrorDialog
-                        errorDialogStatus={errorDialogStatus}
-                        handleErrorDialogClose={this.handleErrorDialogClose}
-                        content='course'
+                    <ForbidErrorDialog
+                        forbidErrorDialogStatus = { forbidErrorDialogStatus }
+                        statusCode={this.props.course.statusCode}
+                        handleForbidErrorDialogClose={this.handleForbidErrorDialogClose}
                     />
                 </MenuBar>
             </Fragment>
@@ -337,4 +360,11 @@ class CourseDetails extends PureComponent{
     }
 }
 
-export default withStyles(styles)(CourseDetails);
+CourseDetails = reduxForm({
+    form: 'courseDetailsForm', // a unique identifier for this form
+})(withStyles(styles)(CourseDetails));
+
+export default connect(state)(CourseDetails);
+
+
+

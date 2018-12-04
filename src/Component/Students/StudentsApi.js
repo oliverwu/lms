@@ -1,4 +1,4 @@
-import {lmsURL} from "../Login/LoginApi";
+import {lmsURL} from "../Login/LoginApiOliver";
 import moment from 'moment';
 import { redirect, getAccessToken } from "../Utils/Help";
 
@@ -15,8 +15,8 @@ const genderMap = [
 
 
 let StudentsApi = {
-    getStudentsByPage: async (pageNum) => {
-        let endpoint = `${lmsURL}api/students?pageNumber=${pageNum}`;
+    getStudentsByPage: async ( pageSize, pageNum ) => {
+        let endpoint = `${lmsURL}api/students?pageSize=${pageSize}&pageNumber=${pageNum}`;
         try {
             const response = await fetch(endpoint,{
                 headers: {
@@ -25,8 +25,17 @@ let StudentsApi = {
             });
             const statusCode = response.status;
             if (statusCode > 300) {
-                localStorage.removeItem('accessToken');
-                // redirect('dashboard');
+                if (statusCode === 401 ) {
+                    localStorage.removeItem('accessToken');
+                }
+                return {
+                    students: [],
+                    pageNum: 1,
+                    pageSize: 10,
+                    totalPage: 1,
+                    amount: 0,
+                    statusCode,
+                };
             } else {
                 if (response.ok) {
                     const jsonResponse = await response.json();
@@ -34,17 +43,19 @@ let StudentsApi = {
                         pageNum: jsonResponse.pageNumber,
                         pageSize: jsonResponse.pageSize,
                         totalPage: jsonResponse.totalPage,
+                        amount: jsonResponse.amount,
                         students: jsonResponse.students.map((student) => {
-                            const DOB = moment(student.dateOfBirth).format("YYYY-MM-DD");
+                            const dateOfBirth = moment(student.dateOfBirth).format("YYYY-MM-DD");
                             return {
                                 id: student.id,
-                                name: student.fullName,
+                                name: `${student.firstName} ${student.lastName}`,
                                 email: student.email,
                                 gender: student.gender,
-                                DOB: DOB,
+                                dateOfBirth,
                                 credit: student.credit,
                             }
                         }),
+                        statusCode,
                     }
                 }
             }
@@ -55,7 +66,7 @@ let StudentsApi = {
     },
 
     getStudentById: async (id) => {
-        let endpoint = `${lmsURL}api/students/${id}`;
+        let endpoint = `${lmsURL}api/students?id=${id}`;
         try {
             const response = await fetch(endpoint,{
                 headers: {
@@ -64,26 +75,27 @@ let StudentsApi = {
             });
             const statusCode = response.status;
             if (statusCode > 300) {
-                localStorage.removeItem('accessToken');
-                redirect('dashboard');
+                if (statusCode === 401 ) {
+                    localStorage.removeItem('accessToken');
+                }
+                return {
+                    student: {},
+                    statusCode,
+                };
             } else {
                 if (response.ok) {
                     const jsonResponse = await response.json();
-                    const { id, fullName, dateOfBirth, gender, email, credit} = jsonResponse;
-                    const firstName = fullName.split(' ')[0];
-                    const lastName= fullName.split(' ')[1];
                     const newGender = genderMap.filter((item) => {
-                        return  gender === item.abbr;
+                        return  jsonResponse.gender === item.abbr;
                     })[0].name;
-                    const formatDOB =moment(dateOfBirth).format("YYYY-MM-DD");
+                    const dateOfBirth =moment(jsonResponse.dateOfBirth).format("YYYY-MM-DD");
                     return {
-                        id: id,
-                        firstName: firstName,
-                        lastName: lastName,
-                        gender: newGender,
-                        DOB: formatDOB,
-                        email: email,
-                        credit: credit
+                        student: {
+                            ...jsonResponse,
+                            gender: newGender,
+                            dateOfBirth,
+                        },
+                        statusCode,
                     }
                 }
             }
@@ -93,7 +105,6 @@ let StudentsApi = {
     },
 
     createNewStudent: async (student) => {
-        console.log(student);
         let endpoint = `${lmsURL}api/students`;
         try {
             const response = await fetch(endpoint,{
@@ -105,12 +116,30 @@ let StudentsApi = {
                 body:  JSON.stringify(student)
             });
             const statusCode = response.status;
-            console.log(response)
-            if (statusCode === 401) {
-                localStorage.removeItem('accessToken');
-                redirect('login');
+            if (statusCode > 300) {
+                if (statusCode === 401 ) {
+                    localStorage.removeItem('accessToken');
+                }
+                return {
+                    student: {},
+                    statusCode,
+                };
             } else {
-                return statusCode
+                if (response.ok) {
+                    const jsonResponse = await response.json();
+                    const newGender = genderMap.filter((item) => {
+                        return  jsonResponse.gender === item.abbr;
+                    })[0].name;
+                    const dateOfBirth =moment(jsonResponse.dateOfBirth).format("YYYY-MM-DD");
+                    return {
+                        student: {
+                            ...jsonResponse,
+                            gender: newGender,
+                            dateOfBirth,
+                        },
+                        statusCode,
+                    }
+                }
             }
         } catch (e) {
             console.log(e);
@@ -129,11 +158,30 @@ let StudentsApi = {
                 body:  JSON.stringify(student)
             });
             const statusCode = response.status;
-            if (statusCode === 401) {
-                localStorage.removeItem('accessToken');
-                redirect('login');
+            if (statusCode > 300) {
+                if (statusCode === 401 ) {
+                    localStorage.removeItem('accessToken');
+                }
+                return {
+                    student: {},
+                    statusCode,
+                };
             } else {
-                return statusCode
+                if (response.ok) {
+                    const jsonResponse = await response.json();
+                    const newGender = genderMap.filter((item) => {
+                        return  jsonResponse.gender === item.abbr;
+                    })[0].name;
+                    const dateOfBirth =moment(jsonResponse.dateOfBirth).format("YYYY-MM-DD");
+                    return {
+                        student: {
+                            ...jsonResponse,
+                            gender: newGender,
+                            dateOfBirth,
+                        },
+                        statusCode,
+                    }
+                }
             }
         } catch (e) {
             console.log(e);
@@ -141,8 +189,7 @@ let StudentsApi = {
     },
 
     deleteStudent: async (id) => {
-        console.log(id);
-        let endpoint = `${lmsURL}api/students/${id}`;
+        let endpoint = `${lmsURL}api/students?id=${id}`;
         try {
             const response = await fetch(endpoint,{
                 method: 'DELETE',
@@ -151,12 +198,19 @@ let StudentsApi = {
                 },
             });
             const statusCode = response.status;
-            console.log(response);
-            if (statusCode === 401) {
-                localStorage.removeItem('accessToken');
-                redirect('login');
+            if (statusCode > 300) {
+                if (statusCode === 401 ) {
+                    localStorage.removeItem('accessToken');
+                }
+                return {
+                    student: {},
+                    statusCode,
+                };
             } else {
-                return statusCode;
+                return {
+                    student: {},
+                    statusCode,
+                }
             }
         } catch (e) {
             console.log(e);

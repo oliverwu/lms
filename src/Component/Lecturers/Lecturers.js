@@ -87,7 +87,6 @@ class Lecturers extends PureComponent{
                 <MenuBar menu='Lecturers' selected='Lecturers' name='lecturer'>
                     {isLoading && <PageLoader/>}
                     {!isLoading && lecturers && <div>
-                        {console.log(lecturers)}
                         <TableData
                             tableParams={lecturers}
                             tableHeadArray={['Name', 'Email', 'Staff Number','Bibliography', 'Details']}

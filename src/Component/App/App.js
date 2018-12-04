@@ -1,18 +1,18 @@
 import React, { Component } from 'react';
-import '../../App.css';
+import './app.css';
 import Dashboard from '../Dashboard/Dashboard';
 import {Route, Switch, Redirect, HashRouter as Router} from 'react-router-dom';
 import Courses from "../Courses/Courses";
 import Students from '../Students/Students';
 import NotFound from "../Utils/NotFound";
-import CourseDetails from '../Courses/CourseDetailsWithReduxForm';
-import StudentDetails from '../Students/StudentDetailsWithReduxForm';
+import CourseDetails from '../Courses/CourseDetails';
+import StudentDetails from '../Students/StudentDetails';
 import Lecturers from '../Lecturers/Lecturers';
 import Login from '../Login/Login';
 import { MuiThemeProvider }  from '@material-ui/core/styles';
 import {createMuiTheme} from '@material-ui/core';
 import AppBar from "../Layout/AppBar";
-import LecturerDetails from "../Lecturers/LecturerDetailsWithReduxForm";
+import LecturerDetails from "../Lecturers/LecturerDetails";
 
 class App extends Component {
 

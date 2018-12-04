@@ -40,7 +40,6 @@ class Students extends PureComponent{
 
     async componentDidMount() {
         await this.props.dispatch(handleReceivedStudentsDataByPage(this.props.pageSize, this.props.pageNum));
-        console.log(this.props);
         this.props.statusCode > 300 && this.setState({
             forbidErrorDialogStatus: true,
             errorStatusCode: this.props.statusCode,
@@ -62,7 +61,6 @@ class Students extends PureComponent{
     };
 
     changeCurrentPage = (page) => {
-        console.log(page);
         let pageNum = page + 1;
         this.props.dispatch(clearStudentsData());
         this.props.dispatch(handleReceivedStudentsDataByPage(this.props.pageSize, pageNum))

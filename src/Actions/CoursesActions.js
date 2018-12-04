@@ -1,4 +1,4 @@
-import CourseApi from '../Component/Courses/CourseApiOliver';
+import CourseApi from '../Component/Courses/CourseApi';
 
 export const RECEIVED_COURSESDATA = 'RECEIVED_COURSESDATA';
 export const CLEACR_COURSESDATA = 'CLEACR_COURSESDATA';
